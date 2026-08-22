@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Autoencoder Game — Micheal Lanham</title>
+<meta name="description" content="Encode and reconstruct. Watch an encoder and decoder pair learn a compressed representation of the input.">
+<link rel="shortcut icon" href="TemplateData/favicon.ico">
+<link rel="stylesheet" href="TemplateData/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Theme wrapper matching micheal-lanham.com. The Unity loader markup
+     below is unchanged from the original build — only the page around
+     it is restyled. */
+  :root { --bg:#0F0E0C; --text:#EDE7DD; --dim:#A79E90; --amber:#E09B4A; --border:#2A2620; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:"Inter",-apple-system,Segoe UI,Roboto,sans-serif; }
+  .bar { border-bottom:1px solid var(--border); padding:.9rem 1.5rem;
+         display:flex; align-items:center; gap:1rem; }
+  .bar a { color:var(--dim); text-decoration:none; font-size:.9rem; font-weight:500; }
+  .bar a:hover { color:var(--amber); }
+  .shell { max-width:1120px; margin:0 auto; padding:2rem 1.5rem 3rem; }
+  .shell h1 { font-family:"Fraunces",Georgia,serif; font-weight:500;
+              font-size:clamp(1.7rem,4vw,2.4rem); margin:0 0 .5rem; letter-spacing:-.015em; }
+  .shell .desc { color:var(--dim); margin:0 0 1.8rem; max-width:44rem; }
+  .stage { overflow-x:auto; }                       /* keeps the fixed-size canvas usable on small screens */
+  .webgl-content { color:var(--text); }
+  /* Unity's TemplateData/style.css absolutely-centres .webgl-content,
+     which made the canvas overlap the heading. Force it back into flow. */
+  .webgl-content { position:static !important; transform:none !important;
+                   margin:0 !important; left:auto !important; top:auto !important; }
+  .webgl-content .footer { width:auto !important; }
+  .webgl-content h1 { display:none; }               /* original in-canvas heading, replaced above */
+  .footer { margin-top:.6rem; }
+  .note { margin-top:2rem; font-size:.85rem; color:#6F675C; border-top:1px solid var(--border); padding-top:1.2rem; }
+</style>
+<script src="TemplateData/UnityProgress.js"></script>
+<script src="Build/UnityLoader.js"></script>
+<script>
+  var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Web.json", {onProgress: UnityProgress});
+</script>
+</head>
+<body>
+  <div class="bar"><a href="../../">&larr; Micheal Lanham</a><a href="../../#demos">All demos</a></div>
+  <div class="shell">
+    <h1>The Autoencoder Game</h1>
+    <p class="desc">Encode and reconstruct. Watch an encoder and decoder pair learn a compressed representation of the input.</p>
+    <div class="stage">
+      <div class="webgl-content">
+        <div id="unityContainer" style="width:1050px;height:600px"></div>
+        <div class="footer">
+          <div class="webgl-logo"></div>
+          <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+          <div class="title">The Autoencoder Game</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Built in Unity WebGL. Requires a desktop browser with WebGL enabled;
+       the build is around 5&nbsp;MB, so first load takes a moment.</p>
+  </div>
+</body>
+</html>
