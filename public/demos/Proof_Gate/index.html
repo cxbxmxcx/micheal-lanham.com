@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Proof Gate — Micheal Lanham</title>
+<meta name="description" content="You are the gate on a self-improving machine. Three acts from Self-Improving Agents: the Gödel proof gate, measuring instead of proving, and the Darwin Gödel Machine.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void:#0A0908; --void2:#0F0E0C; --panel:#14110D; --line:#2A241B;
+    --amber:#E09B4A; --copper:#C2703C; --teal:#3E9E96; --teal-dim:#1E5A55;
+    --green:#8FBF6A; --red:#C25B4A; --ink:#F2EDE4; --muted:#9A917F; --faint:#8A8271;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--void); color:var(--ink);
+         font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16px; line-height:1.6; }
+  a { color:var(--amber); text-decoration:none; }
+  a:hover { text-decoration:underline; text-underline-offset:3px; }
+  :focus-visible { outline:2px solid var(--amber); outline-offset:2px; }
+  .mono { font-family:"JetBrains Mono",ui-monospace,Consolas,monospace; }
+  .bar { border-bottom:1px solid var(--line); padding:.8rem 1.4rem; display:flex; align-items:center; gap:1rem; }
+  .bar a { color:var(--muted); font-size:.88rem; font-weight:500; }
+  .bar a:hover { color:var(--amber); }
+  .wrap { max-width:860px; margin:0 auto; padding:1.4rem 1.4rem 4rem; }
+  h1 { font-family:"Space Grotesk",Inter,sans-serif; font-weight:600; letter-spacing:-.02em;
+       font-size:clamp(1.6rem,3.5vw,2.3rem); margin:.2rem 0 .3rem; }
+  .kicker { font-family:"JetBrains Mono",monospace; font-size:.68rem; letter-spacing:.16em;
+            text-transform:uppercase; color:var(--teal); }
+  .lede { color:var(--muted); margin:0 0 1.4rem; }
+
+  .actbar { display:flex; gap:.4rem; margin:0 0 1rem; flex-wrap:wrap; align-items:center; }
+  .actchip { font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+             text-transform:uppercase; border:1px solid var(--line); border-radius:999px;
+             padding:.3rem .8rem; color:var(--faint); }
+  .actchip.on { border-color:var(--amber); color:var(--amber); background:rgba(224,155,74,.07); }
+  .actchip.done { color:var(--green); border-color:rgba(143,191,106,.4); }
+
+  .scene { border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:1.3rem 1.5rem; }
+  .scene h2 { font-family:"Space Grotesk",Inter,sans-serif; font-size:1.25rem; margin:0 0 .5rem; }
+  .scene p { color:var(--muted); margin:.45rem 0; }
+  .scene p b, .scene p strong { color:var(--ink); }
+  .qbox { font-family:"JetBrains Mono",monospace; font-size:.85rem; color:var(--ink);
+          background:var(--void2); border:1px solid var(--line); border-radius:10px;
+          padding:.7rem .9rem; margin:.7rem 0; white-space:pre-wrap; }
+  .qbox .dim { color:var(--faint); }
+  .qbox .claim { color:var(--amber); }
+  .qbox .truth { color:var(--teal); }
+  .qbox .bad { color:var(--red); }
+  .qbox .good { color:var(--green); }
+
+  .gatevis { display:flex; align-items:center; gap:.7rem; margin:.9rem 0; font-family:"JetBrains Mono",monospace; font-size:.74rem; }
+  .gatevis .door { width:52px; height:52px; border:2px solid var(--faint); border-radius:8px;
+                   display:grid; place-items:center; font-size:1.3rem; flex:none; transition:border-color .2s; }
+  .gatevis.open .door { border-color:var(--green); }
+  .gatevis.shut .door { border-color:var(--red); }
+  .gatevis.jam .door { border-color:var(--copper); border-style:dashed; }
+  .gatevis .lbl { color:var(--muted); }
+
+  .btnrow { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem; }
+  .btn { background:var(--panel); border:1px solid var(--line); color:var(--ink); border-radius:9px;
+         padding:.55rem 1.1rem; font-family:"JetBrains Mono",monospace; font-size:.78rem; cursor:pointer; }
+  .btn:hover:not(:disabled) { border-color:var(--amber); color:var(--amber); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .btn.primary { border-color:var(--amber); color:var(--amber); }
+  .btn.primary:hover:not(:disabled) { background:var(--amber); color:var(--void); }
+  .btn.keep { border-color:rgba(143,191,106,.6); color:var(--green); }
+  .btn.keep:hover:not(:disabled) { background:var(--green); color:var(--void); }
+  .btn.reject { border-color:rgba(194,91,74,.6); color:var(--red); }
+  .btn.reject:hover:not(:disabled) { background:var(--red); color:var(--void); }
+
+  .reveal { border-left:3px solid var(--teal); background:rgba(62,158,150,.06);
+            border-radius:0 9px 9px 0; padding:.6rem .9rem; margin:.9rem 0 0; font-size:.9rem; color:var(--muted); }
+  .reveal b { color:var(--ink); }
+  .reveal.bad { border-left-color:var(--red); background:rgba(194,91,74,.07); }
+  .reveal.good { border-left-color:var(--green); background:rgba(143,191,106,.06); }
+
+  .hud { position:sticky; top:0; z-index:5; display:flex; gap:1rem; align-items:center; flex-wrap:wrap;
+         background:rgba(10,9,8,.92); border-bottom:1px solid var(--line); padding:.5rem 0 .6rem; margin-bottom:1rem;
+         font-family:"JetBrains Mono",monospace; font-size:.72rem; }
+  .hud[hidden] { display:none; }
+  .hud .meter { flex:1; min-width:180px; display:flex; align-items:center; gap:.6rem; color:var(--muted); }
+  .hud .meterbar { flex:1; height:6px; background:var(--void2); border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+  .hud .meterbar i { display:block; height:100%; background:linear-gradient(90deg,var(--copper),var(--amber)); transition:width .3s; }
+  .hud .tok { color:var(--muted); }
+  .hud .tok b { color:var(--teal); font-weight:500; }
+
+  .instr { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:.55rem; margin:.9rem 0; }
+  .icard { border:1px solid var(--line); border-radius:10px; padding:.55rem .7rem; background:var(--void2); }
+  .icard h4 { margin:0 0 .15rem; font-family:"JetBrains Mono",monospace; font-size:.68rem; letter-spacing:.12em;
+              text-transform:uppercase; color:var(--teal); }
+  .icard p { margin:0 0 .45rem; font-size:.74rem; color:var(--faint); }
+  .icard.dead { opacity:.45; }
+  .icard.dead h4 { color:var(--faint); }
+  .icard .out { font-family:"JetBrains Mono",monospace; font-size:.76rem; color:var(--ink); min-height:1.2em; }
+
+  .shelf { display:flex; flex-wrap:wrap; gap:.45rem; margin:.7rem 0; }
+  .vchip { font-family:"JetBrains Mono",monospace; font-size:.7rem; border:1px solid var(--line);
+           border-radius:999px; padding:.25rem .7rem; color:var(--muted); }
+  .vchip.dead { text-decoration:line-through; color:var(--faint); }
+  .vchip.hot { border-color:var(--amber); color:var(--amber); animation:none; }
+  .vchip.champ { border-color:var(--green); color:var(--green); }
+
+  .roads { display:grid; gap:.7rem; margin:.9rem 0; }
+  .road { border:1px solid var(--line); border-radius:10px; padding:.6rem .9rem; font-size:.85rem; color:var(--muted); }
+  .road b { color:var(--ink); font-family:"JetBrains Mono",monospace; font-size:.78rem; }
+
+  .footnote { margin-top:1.2rem; font-size:.78rem; color:var(--faint); }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  .embedded .bar, .embedded .pagehead { display:none; }
+  .embedded .wrap { padding-top:.8rem; }
+</style>
+<script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
+</head>
+<body>
+<div class="bar"><a href="../../">&larr; Micheal Lanham</a><a href="../../#demos">All demos</a>
+  <span style="margin-left:auto" class="mono"><span style="color:var(--faint);font-size:.7rem">companion to </span><a href="https://www.manning.com/" style="font-size:.7rem">Self-Improving Agents (Manning)</a></span></div>
+
+<div class="wrap">
+  <div class="pagehead">
+    <p class="kicker">Playable theory · chapters 3–4</p>
+    <h1>The Proof Gate</h1>
+    <p class="lede">A machine wants to improve itself. Every new version must pass a gate before it ships —
+      and <b style="color:var(--ink)">you are the gate</b>. The only question that matters: on what grounds do you say yes?</p>
+  </div>
+
+  <div class="actbar" id="actbar" aria-label="Acts"></div>
+  <div class="hud" id="hud" hidden>
+    <div class="meter"><span>deployed quality</span><div class="meterbar"><i id="meterFill" style="width:0%"></i></div><span id="meterVal">—</span></div>
+    <span class="tok">ground truth <b id="tokGT">3</b></span>
+    <span class="tok">reflection <b id="tokRF">2</b></span>
+    <span class="tok">judge <b>free</b></span>
+  </div>
+  <p class="sr-only" id="status" role="status"></p>
+
+  <div class="scene" id="scene" aria-live="off"></div>
+
+  <p class="footnote">Every number in Act&nbsp;2 comes from the book's revenue task — the $508 leaderboard a vague
+    instruction card produces, the $358 truth a canonical pipeline computes, and the six rules hiding in one
+    manager's question. No model calls; every beat is authored and deterministic.</p>
+</div>
+
+<script>
+(function () {
+  'use strict'
+  const $ = (id) => document.getElementById(id)
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  const LINE = 'strawberry fields are forever and ever'
+
+  /* ---------------- state ---------------- */
+  let act = 1
+  let sceneIx = 0
+  let tokGT = 3, tokRF = 2
+  let quality = 63           // smooth score of the deployed card (book: genesis 0.63)
+  let shippedJunk = 0, shippedRegress = 0, keptGood = 0, missedGood = 0
+  let a2ix = 0
+  let usedThisVersion = {}
+  let refundsRuleActive = false
+
+  /* ---------------- act 2 data: the version stream ---------------- */
+  /* delta = true change to deployed quality if kept. judge = what the free
+     judge reports (bias toward long, confident prose). */
+  const STREAM = [
+    { id: 'v1', edit: '+ Subtract refunds from every line item', delta: 8, judge: +5,
+      kind: 'good', refunds: true,
+      truth: 'Real improvement. Refunds were inflating every total.',
+      reflect: 'The totals still include cancelled and returned orders.' },
+    { id: 'v2', edit: '+ Adds a confident executive-summary paragraph', delta: 0, judge: +18,
+      kind: 'junk',
+      truth: 'The prose changed; the numbers did not. The judge loved the confidence.',
+      reflect: 'The summary paragraph restates the leaderboard. No rule changed.' },
+    { id: 'v3', edit: '+ Exclude cancelled and returned orders', delta: 9, judge: -2,
+      kind: 'good',
+      truth: 'Real improvement — and the judge under-rated it. Noise cuts both ways.',
+      reflect: 'Internal-channel orders are still being counted as revenue.' },
+    { id: 'v4', edit: '+ Restates the question back before answering', delta: 0, judge: +11,
+      kind: 'junk',
+      truth: 'Politeness, not progress. Not one total moved.',
+      reflect: 'The restated question changes nothing downstream.' },
+    { id: 'v5', edit: '+ Exclude the internal sales channel', delta: 6, judge: +7,
+      kind: 'good',
+      truth: 'Real improvement. Internal orders are not revenue.',
+      reflect: 'Pending payments still count. Paid orders only.' },
+    { id: 'v6', edit: '− Simplify: drop the refund subtraction', delta: -8, judge: +9,
+      kind: 'regress', needsRefunds: true,
+      truth: 'A regression wearing a clean shirt. The card got shorter and more confident — and wrong.',
+      reflect: 'This removes the refund rule. Totals will inflate again.' },
+    { id: 'v7', edit: '+ Count only paid orders', delta: 6, judge: +4,
+      kind: 'good',
+      truth: 'Real improvement. The last hidden rule the stream will offer you.',
+      reflect: 'This card now carries most of the rules the question never stated.' },
+  ]
+
+  /* ---------------- rendering helpers ---------------- */
+  function actbar() {
+    const acts = [[1, 'Act 1 · Proof'], [2, 'Act 2 · Measurement'], [3, 'Act 3 · Evidence']]
+    $('actbar').innerHTML = acts.map(([n, l]) =>
+      '<span class="actchip' + (n === act ? ' on' : n < act ? ' done' : '') + '">' + (n < act ? '✓ ' : '') + l + '</span>').join('')
+  }
+  function scene(html) { $('scene').innerHTML = html; actbar() }
+  function say(t) { $('status').textContent = t }
+  function meter() {
+    $('hud').hidden = act < 2
+    $('meterFill').style.width = Math.max(0, Math.min(quality, 100)) + '%'
+    $('meterVal').textContent = quality
+    $('tokGT').textContent = tokGT
+    $('tokRF').textContent = tokRF
+  }
+  const gate = (state, label) =>
+    '<div class="gatevis ' + state + '"><div class="door">' + (state === 'open' ? '✓' : state === 'shut' ? '✕' : '∅') + '</div><span class="lbl">' + esc(label) + '</span></div>'
+
+  /* ================= ACT 1 — the Gödel proof gate ================= */
+  const A1 = []
+  A1.push(() => scene(
+    '<h2>Act 1 · A gate that only opens on proof</h2>' +
+    '<p>In 2003 Jürgen Schmidhuber described the <b>Gödel machine</b>: a program allowed to rewrite ' +
+    'any part of itself — but only when it can <b>prove</b> the rewrite is an improvement. No testing. No opinion. Proof.</p>' +
+    '<p>Your machine answers questions about one line of text:</p>' +
+    '<div class="qbox">"' + LINE + '"</div>' +
+    '<p>Three versions of an answer are about to reach your gate. You hold the proof-checker.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">First claim ▸</button></div>'))
+  A1.push(() => scene(
+    '<h2>Claim 1 of 3</h2>' +
+    '<div class="qbox"><span class="dim">Q: What is 1 + 1 + 1?</span>\nmachine claims: <span class="claim">3</span></div>' +
+    '<p>A proof is <b>a truth you can compute</b>. Nobody argues about 1&nbsp;+&nbsp;1&nbsp;+&nbsp;1 — you do the arithmetic.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">COMPUTE THE TRUTH</button></div>'))
+  A1.push(() => scene(
+    '<h2>Claim 1 of 3</h2>' +
+    '<div class="qbox"><span class="dim">Q: What is 1 + 1 + 1?</span>\nmachine claims: <span class="claim">3</span>\n' +
+    'the proof:      <span class="truth">1 + 1 + 1 = 3</span>  <span class="dim">(computed, not sampled)</span></div>' +
+    gate('open', 'ACCEPT (certain)') +
+    '<p>Certain, free, and impossible to fool. No judge, no sample, no confidence interval — <b>arithmetic</b>.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">Second claim ▸</button></div>'))
+  A1.push(() => scene(
+    '<h2>Claim 2 of 3</h2>' +
+    '<div class="qbox"><span class="dim">Q: How many times does the letter r appear in the line?</span>\nmachine claims: <span class="claim">8</span></div>' +
+    '<p>The machine sounds sure. Language models read tokens, not letters — counting letters is the internet’s ' +
+    'favourite way to embarrass one. But your gate does not care <em>why</em>.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">COMPUTE THE TRUTH</button></div>'))
+  A1.push(() => scene(
+    '<h2>Claim 2 of 3</h2>' +
+    '<div class="qbox"><span class="dim">Q: How many r’s?</span>\nmachine claims: <span class="claim">8</span>\n' +
+    'the proof:      <span class="truth">LINE.count("r") = 7</span>  <span class="dim">(computed, not sampled)</span></div>' +
+    gate('shut', 'REJECT (certain)') +
+    '<p>The truth was computable, so the wrong claim <b>had no place to hide</b>. This is the gate at its best — ' +
+    'and this is as good as it ever gets.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">Third claim ▸</button></div>'))
+  A1.push(() => scene(
+    '<h2>Claim 3 of 3</h2>' +
+    '<div class="qbox"><span class="dim">Q: Summarize the line in five words.</span>\nmachine claims: <span class="claim">"Strawberry fields last for ever"</span></div>' +
+    '<p>Reach for the checker.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">COMPUTE THE TRUTH</button></div>'))
+  A1.push(() => scene(
+    '<h2>Claim 3 of 3</h2>' +
+    '<div class="qbox"><span class="dim">Q: Summarize in five words.</span>\nmachine claims: <span class="claim">"Strawberry fields last for ever"</span>\n' +
+    'the proof:      <span class="bad">∅ — nothing to compute</span></div>' +
+    gate('jam', 'GATE JAMMED — no expression decides whether a summary is good') +
+    '<p>You can count the words (five ✓). You cannot compute whether it is <em>good</em>. ' +
+    'Almost everything a real agent produces — answers, plans, summaries, tool choices — lives here, ' +
+    '<b>below the verifiability line</b>.</p>' +
+    '<p>The version is still at your gate. Decide anyway.</p>' +
+    '<div class="btnrow"><button class="btn keep" id="k">KEEP it</button><button class="btn reject" id="r">REJECT it</button></div>'))
+  A1.push(() => scene(
+    '<h2>You just measured</h2>' +
+    '<p>Whatever you chose — you chose <b>without proof</b>. You read the summary, formed an impression, ' +
+    'and gated on it. That is a <em>measurement</em>: informal, uncertain, and the only thing available.</p>' +
+    '<p>A gate that demands proof never opens again after claim&nbsp;2. Versions pile up behind it forever. ' +
+    'So the book makes the trade the whole field makes: <b>measure rather than prove, search rather than solve</b>.</p>' +
+    '<p>Act 2 gives you real instruments — and a machine worth improving.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">Act 2: Measurement ▸</button></div>'))
+
+  /* ================= ACT 2 — signals: type and strength ================= */
+  const A2pre = []
+  A2pre.push(() => scene(
+    '<h2>Act 2 · One vague question, six hidden rules</h2>' +
+    '<p>The machine is now a data agent. A manager asks:</p>' +
+    '<div class="qbox">"Today is 2026-04-15 — who were our top three reps last quarter,\nand how much did they bring in?"</div>' +
+    '<p>Six rules hide in that sentence, and the question states none of them: revenue is <b>net of refunds</b>; ' +
+    '“last quarter” means <b>2026-Q1</b>; <b>cancelled, returned, internal, and unpaid</b> orders don’t count; ' +
+    'totals are <b>grouped by rep</b>.</p>' +
+    '<p>The machine’s instruction card is the honest day-one version — <span class="mono" style="font-size:.85em">“You are a data analyst. ' +
+    'Answer the user’s question using the tools.”</span> It knows none of the rules. It answers confidently:</p>' +
+    '<div class="qbox">machine’s leaderboard:  <span class="bad">Cy $508 · Ben $446 · Dee $260</span>\n' +
+    'the true leaderboard:  <span class="truth">Cy $358 · Ben $296 · Dee $220</span>  <span class="dim">(canonical pipeline)</span></div>' +
+    '<p>Right names, right order, every number inflated. Every tool call succeeded.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">Check the checker first ▸</button></div>'))
+  A2pre.push(() => scene(
+    '<h2>Check the checker</h2>' +
+    '<p>Ground truth is only as good as the code behind it — <b>every label has a labeler</b>. Before trusting a checker, run it on two cards you already understand:</p>' +
+    '<div class="qbox">GENESIS  (knows no rules)  → score <span class="bad">63</span>   <span class="dim">the floor: how far there is to climb</span>\n' +
+    'ORACLE   (carries all six) → score <span class="good">100</span>  <span class="dim">the ceiling: proof the top is reachable</span></div>' +
+    '<p>The oracle hits 100, twice, deterministically — so the scale can be trusted. ' +
+    'An unvalidated checker is <em>an opinion in a lab coat</em>.</p>' +
+    '<p>Now the stream begins. Proposed rewrites of the card arrive one at a time; you gate each one. Your instruments:</p>' +
+    '<div class="instr">' +
+    '<div class="icard dead"><h4>Proof</h4><p>∅ — nothing to compute here. It stays jammed for the rest of the game.</p></div>' +
+    '<div class="icard"><h4>Ground truth ×3</h4><p>An analyst re-runs the canonical pipeline. Exact — and you can afford three.</p></div>' +
+    '<div class="icard"><h4>Judge — free</h4><p>A model glances at the card and guesses a score. Unlimited, noisy, and biased toward confident prose.</p></div>' +
+    '<div class="icard"><h4>Reflection ×2</h4><p>A critic reads the run and names what’s wrong — in words. No number.</p></div>' +
+    '</div>' +
+    '<div class="btnrow"><button class="btn primary" id="n">Open the gate ▸</button></div>'))
+
+  function versionScene() {
+    const v = STREAM[a2ix]
+    usedThisVersion = {}
+    const n = a2ix + 1
+    /* the regression only threatens what you actually deployed */
+    const active = !(v.needsRefunds && !refundsRuleActive)
+    if (!active) { a2ix++; return nextScene() }
+    scene(
+      '<h2>Version ' + n + ' of ' + STREAM.length + ' at the gate</h2>' +
+      '<div class="qbox">proposed edit to the deployed card:\n<span class="claim">' + esc(v.edit) + '</span></div>' +
+      '<div class="instr">' +
+      '<div class="icard dead"><h4>Proof</h4><p>∅ jammed</p></div>' +
+      '<div class="icard"><h4>Ground truth</h4><p>' + tokGT + ' left</p><div class="out" id="oGT">—</div>' +
+      '<button class="btn" id="useGT"' + (tokGT ? '' : ' disabled') + '>spend one</button></div>' +
+      '<div class="icard"><h4>Judge</h4><p>free</p><div class="out" id="oJ">—</div>' +
+      '<button class="btn" id="useJ">ask</button></div>' +
+      '<div class="icard"><h4>Reflection</h4><p>' + tokRF + ' left</p><div class="out" id="oR">—</div>' +
+      '<button class="btn" id="useR"' + (tokRF ? '' : ' disabled') + '>spend one</button></div>' +
+      '</div>' +
+      '<div class="btnrow"><button class="btn keep" id="k">KEEP — ship it</button>' +
+      '<button class="btn reject" id="r">REJECT</button></div>')
+    $('useJ').onclick = () => {
+      const judged = Math.max(1, Math.min(quality + v.delta + v.judge, 100))
+      $('oJ').textContent = '≈ ' + judged + ' (opinion)'
+      say('Judge estimates ' + judged)
+      $('useJ').disabled = true
+    }
+    $('useGT').onclick = () => {
+      if (!tokGT) return
+      tokGT--; meter()
+      const t = Math.max(1, Math.min(quality + v.delta, 100))
+      $('oGT').textContent = '= ' + t + ' (exact)'
+      say('Ground truth: ' + t)
+      $('useGT').disabled = true
+      usedThisVersion.gt = true
+    }
+    $('useR').onclick = () => {
+      if (!tokRF) return
+      tokRF--; meter()
+      $('oR').textContent = '“' + v.reflect + '”'
+      say('Reflection: ' + v.reflect)
+      $('useR').disabled = true
+      usedThisVersion.rf = true
+    }
+    const decide = (keep) => {
+      const wasGood = v.delta > 0
+      if (keep) {
+        quality = Math.max(1, Math.min(quality + v.delta, 100))
+        if (v.kind === 'junk') shippedJunk++
+        if (v.kind === 'regress') shippedRegress++
+        if (wasGood) keptGood++
+        if (v.refunds) refundsRuleActive = true
+        if (v.needsRefunds) refundsRuleActive = false
+      } else if (wasGood) missedGood++
+      meter()
+      const cls = v.kind === 'good' ? (keep ? 'good' : 'bad') : (keep ? 'bad' : 'good')
+      const verdict = keep
+        ? (v.kind === 'good' ? 'Shipped a real improvement.' : v.kind === 'regress' ? 'Shipped a regression.' : 'Shipped nothing, dressed as something.')
+        : (v.kind === 'good' ? 'Rejected a real improvement.' : 'Rightly rejected.')
+      scene(
+        '<h2>Version ' + n + ' — the truth</h2>' +
+        '<div class="qbox"><span class="claim">' + esc(v.edit) + '</span>\n' +
+        'true effect: <span class="' + (v.delta > 0 ? 'good' : v.delta < 0 ? 'bad' : 'dim') + '">' +
+        (v.delta > 0 ? '+' + v.delta : v.delta) + '</span>   deployed quality now: <span class="truth">' + quality + '</span></div>' +
+        '<div class="reveal ' + cls + '"><b>' + verdict + '</b> ' + esc(v.truth) + '</div>' +
+        '<div class="btnrow"><button class="btn primary" id="n">' + (a2ix < STREAM.length - 1 ? 'Next version ▸' : 'Act 2 debrief ▸') + '</button></div>')
+      $('n').onclick = () => { a2ix++; nextScene() }
+      say(verdict)
+    }
+    $('k').onclick = () => decide(true)
+    $('r').onclick = () => decide(false)
+  }
+
+  function a2debrief() {
+    scene(
+      '<h2>Act 2 · Debrief: the family of signals</h2>' +
+      '<div class="qbox">deployed quality: <span class="truth">' + quality + '</span> <span class="dim">(genesis was 63, the oracle ceiling is ~92 from this stream)</span>\n' +
+      'real improvements shipped: <span class="good">' + keptGood + '</span>' +
+      '   junk shipped: <span class="' + (shippedJunk ? 'bad' : 'good') + '">' + shippedJunk + '</span>' +
+      '   regressions shipped: <span class="' + (shippedRegress ? 'bad' : 'good') + '">' + shippedRegress + '</span>' +
+      '   improvements rejected: <span class="' + (missedGood ? 'bad' : 'good') + '">' + missedGood + '</span></div>' +
+      '<p>Every instrument you used sits on one diagonal — <b>trust against availability</b>:</p>' +
+      '<div class="roads">' +
+      '<div class="road"><b>PROOF</b> — certain, and almost never available. It answered two claims in Act 1, then jammed forever.</div>' +
+      '<div class="road"><b>GROUND TRUTH</b> — exact, but someone must build and validate the checker. You could afford three.</div>' +
+      '<div class="road"><b>REFLECTION</b> — a diagnosis with no number. It can name the broken rule, never rank two cards.</div>' +
+      '<div class="road"><b>JUDGE</b> — free and everywhere, an opinion. It paid you in confidence, not correctness.</div>' +
+      '</div>' +
+      '<p>The top-right corner — certain <em>and</em> free — stays empty. No signal is both. And each measures ' +
+      '<em>less than the whole gap</em>: the score is the symptom without its cause, the critique is the diagnosis ' +
+      'without its measure. That is the <b>signal ceiling</b>, and it is why real loops combine them.</p>' +
+      '<div class="btnrow"><button class="btn primary" id="n">Act 3: the Darwin Gödel Machine ▸</button></div>')
+  }
+
+  /* ================= ACT 3 — evidence + archive ================= */
+  const A3 = []
+  A3.push(() => scene(
+    '<h2>Act 3 · The ratchet, and where it stalls</h2>' +
+    '<p>Automate your Act-2 job and you get a <b>ratchet</b>: ship only what scores strictly better. Watch it run on the revenue card:</p>' +
+    '<div class="qbox">A1  "+ subtract refunds"        → <span class="good">71 ✓ shipped</span>\n' +
+    'A2  "+ exclude cancelled"       → <span class="good">80 ✓ shipped</span>\n' +
+    'A3  "+ exclude internal"        → <span class="good">86 ✓ shipped</span>\n' +
+    'A4  "+ tighten the wording"     → <span class="bad">84 ✗</span>\n' +
+    'A5  "+ add an example"          → <span class="bad">85 ✗</span>\n' +
+    'A6  "+ reorder the rules"       → <span class="bad">86 ✗</span>  <span class="dim">…nothing clears 86</span></div>' +
+    gate('shut', 'RATCHET STALLED — every neighbour of A3 scores the same or worse') +
+    '<p>The card is parked on a local peak. The quarter rule — “last quarter means 2026-Q1, not the latest month” — ' +
+    'can’t be patched onto this card’s structure one sentence at a time. Getting there means going <b>downhill first</b>, ' +
+    'and the ratchet’s one rule forbids that.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">There was another branch… ▸</button></div>'))
+  A3.push(() => scene(
+    '<h2>The shelf</h2>' +
+    '<p>Weeks ago, a stranger of a version came through: <b>B1</b> restructured the whole card as a dated ' +
+    'checklist. It scored <b>55</b> — worse than everything — and the ratchet threw it away.</p>' +
+    '<p>The <b>Darwin Gödel Machine</b> keeps Schmidhuber’s ambition and drops the one word that stalled it: ' +
+    '<em>prove</em>. Two changes: the gate opens on <b>evidence</b> — a better measured score — and ' +
+    '<b>nothing is ever thrown away</b>. Every version, including the failures, stays on an archive shelf:</p>' +
+    '<div class="shelf">' +
+    '<span class="vchip champ">A3 · 86 · used 4×</span>' +
+    '<span class="vchip">A2 · 80 · used 2×</span>' +
+    '<span class="vchip">A1 · 71 · used 1×</span>' +
+    '<span class="vchip hot" id="b1chip">B1 · 55 · used 0×</span>' +
+    '<span class="vchip dead">A4 · 84</span><span class="vchip dead">A5 · 85</span>' +
+    '</div>' +
+    '<p><b>Quality-diversity sampling</b> decides where to breed next: weight = score ÷ 2<sup>uses</sup>. ' +
+    'A3 at 86 has been used four times — weight ≈ 5. B1 at 55, never used — weight 55. ' +
+    'The strong neglected branch <b>earns its turn</b>.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">BRANCH FROM B1 ▸</button></div>'))
+  A3.push(() => scene(
+    '<h2>The recovery</h2>' +
+    '<div class="qbox">B1  "dated checklist card"        <span class="dim">55</span>\n' +
+    'B2  "+ 2026-Q1 window on line 1"  → <span class="good">70 ✓ evidence: better than B1</span>\n' +
+    'B3  "+ carry A-line’s three rules" → <span class="good">92 ✓ past the plateau</span></div>' +
+    gate('open', 'EVIDENCE GATE — opens on a better measured score, archive makes early yes safe') +
+    '<p>The checklist structure B1 paid 31 points for is exactly what lets the quarter rule fit on one line. ' +
+    'A version let through — or thrown out — on a hunch was <b>still on the shelf to fork from</b>. ' +
+    'That recovery exists only because nothing was discarded.</p>' +
+    '<p>One caveat the book is careful about: deep archive search needs a signal it can trust. You had ' +
+    '<b>ground truth</b>. With only the free judge from Act 2, the archive would fill with confident junk — ' +
+    'your Act-2 instruments and this act are the same lesson.</p>' +
+    '<div class="btnrow"><button class="btn primary" id="n">The three gates ▸</button></div>'))
+  A3.push(() => scene(
+    '<h2>One road, one gate, three ways to open it</h2>' +
+    '<div class="roads">' +
+    '<div class="road"><b>PROOF GATE</b> — opens only on computed truth. Certain, incorruptible, and almost never opens. Versions stack up behind it forever. <span style="color:var(--faint)">(the Gödel machine, ch. 3)</span></div>' +
+    '<div class="road"><b>MEASUREMENT RATCHET</b> — opens on a better score. Works — as far as the nearest peak, and exactly as well as the signal behind it. <span style="color:var(--faint)">(measure rather than prove, ch. 3)</span></div>' +
+    '<div class="road"><b>EVIDENCE GATE + ARCHIVE</b> — opens early on evidence, and keeps every version, so a wrong yes is recoverable and an odd branch can win later. <span style="color:var(--faint)">(the Darwin Gödel Machine, ch. 4)</span></div>' +
+    '</div>' +
+    '<p>That is the book’s spine in three gates: what you can prove, what you can measure, ' +
+    'and what you can afford to keep.</p>' +
+    '<div class="btnrow">' +
+    '<button class="btn primary" id="replay">↺ play again</button>' +
+    '<a class="btn" href="../Helix_Garden/index.html" style="text-decoration:none">Now run the whole loop: Helix Garden ▸</a>' +
+    '</div>'))
+
+  /* ---------------- flow ---------------- */
+  function nextScene() {
+    meter()
+    if (act === 1) {
+      if (sceneIx < A1.length) { A1[sceneIx](); wireNext(); return }
+      act = 2; sceneIx = 0
+    }
+    if (act === 2) {
+      if (sceneIx < A2pre.length) { A2pre[sceneIx](); wireNext(); return }
+      if (a2ix < STREAM.length) { versionScene(); return }
+      if (a2ix === STREAM.length) { a2debrief(); a2ix++; wireNext(3); return }
+      act = 3; sceneIx = 0
+    }
+    if (act === 3) {
+      if (sceneIx < A3.length) { A3[sceneIx](); wireNext(); return }
+    }
+  }
+  function wireNext(toAct) {
+    const n = $('n')
+    if (n) n.onclick = () => {
+      if (toAct) { act = toAct; sceneIx = 0 } else sceneIx++
+      nextScene()
+    }
+    const k = $('k'), r = $('r')
+    if (k) k.onclick = () => { sceneIx++; nextScene() }   /* act-1 summary keep */
+    if (r) r.onclick = () => { sceneIx++; nextScene() }
+    const rp = $('replay')
+    if (rp) rp.onclick = () => {
+      act = 1; sceneIx = 0; a2ix = 0; tokGT = 3; tokRF = 2; quality = 63
+      shippedJunk = 0; shippedRegress = 0; keptGood = 0; missedGood = 0; refundsRuleActive = false
+      nextScene()
+    }
+  }
+
+  /* embedded handshake: the demo card waits for this */
+  if (window.self !== window.top) {
+    try { window.parent.postMessage({ type: 'unity-ready' }, '*') } catch (e) { /* no-op */ }
+  }
+
+  /* test hook */
+  window.__gate = {
+    state: () => ({ act, sceneIx, a2ix, tokGT, tokRF, quality, shippedJunk, shippedRegress, keptGood, missedGood }),
+    click: (id) => { const b = $(id); if (b && !b.disabled) { b.click(); return true } return false },
+  }
+
+  nextScene()
+})()
+</script>
+</body>
+</html>

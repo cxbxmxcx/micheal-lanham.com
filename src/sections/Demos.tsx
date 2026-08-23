@@ -5,8 +5,18 @@ import type { DemoSpec } from '@/components/demos/DemoCard'
 
 const DEMOS: DemoSpec[] = [
   {
-    id: 'helix-garden',
+    id: 'proof-gate',
     index: '01',
+    title: 'The Proof Gate',
+    description:
+      'You are the gate on a self-improving machine. Three short acts from chapters 3–4: the Gödel proof gate that almost never opens, gating on signals with a budget, and the Darwin Gödel Machine’s archive. Five minutes, no reading required.',
+    poster: '/demo-proof-gate.webp',
+    src: '/demos/Proof_Gate/',
+    chips: ['Story · new', '5 min'],
+  },
+  {
+    id: 'helix-garden',
+    index: '02',
     title: 'Helix Garden',
     description:
       'A playable self-improving agent harness — starts with a 90-second guided intro, no reading required. Creatures run a sense-plan-act-learn loop; you run the improvement loop around them and gate what ships. Companion to Self-Improving Agents.',
@@ -16,7 +26,7 @@ const DEMOS: DemoSpec[] = [
   },
   {
     id: 'perceptron',
-    index: '02',
+    index: '03',
     title: 'The Perceptron Game',
     description:
       'Set weights by hand and watch a single perceptron fit data — the simplest possible neural network, made visible.',
@@ -26,7 +36,7 @@ const DEMOS: DemoSpec[] = [
   },
   {
     id: 'mlp',
-    index: '03',
+    index: '04',
     title: 'The Multilayer Perceptron Game',
     description:
       'Add hidden layers and see how MLPs solve problems a single perceptron cannot.',
@@ -36,7 +46,7 @@ const DEMOS: DemoSpec[] = [
   },
   {
     id: 'autoencoder',
-    index: '04',
+    index: '05',
     title: 'The Autoencoder Game',
     description:
       'Encode and reconstruct — watch an encoder/decoder pair learn a compressed representation.',
@@ -67,7 +77,7 @@ export default function Demos() {
           Don&rsquo;t read about neural nets. <span className="text-gradient">Operate</span> one.
         </>
       }
-      lede="Four interactive demos: a playable self-improving agent harness built for this site, and three Unity WebGL neural-network games. Desktop browser recommended."
+      lede="Five interactive demos: two playable companions to Self-Improving Agents — a story game about the three gates, and a full evolution sandbox — plus three Unity WebGL neural-network games."
       className="overflow-hidden bg-void-2/50"
     >
       {/* scoped section styles — scan sweep, border spin, glitch, code rain, bloom drift */}
@@ -138,7 +148,7 @@ export default function Demos() {
         {/* inline mono chips for the hard facts */}
         <div className="-mt-8 mb-10 flex flex-wrap gap-2">
           <span className="rounded-full border border-amber/40 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.15em] text-amber">
-            4 playable demos
+            5 playable demos
           </span>
           <span className="rounded-full border border-teal/40 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.15em] text-teal">
             Desktop browser
