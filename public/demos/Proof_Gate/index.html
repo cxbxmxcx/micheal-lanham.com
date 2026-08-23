@@ -120,9 +120,10 @@
 
 <div class="wrap">
   <div class="pagehead">
-    <p class="kicker">Playable theory · chapters 3–4</p>
+    <p class="kicker">Playable theory · Self-Improving Agents, chapters 3–4</p>
     <h1>The Proof Gate</h1>
-    <p class="lede">A machine wants to improve itself. Every new version must pass a gate before it ships —
+    <p class="lede">The story at the heart of <em style="color:var(--ink)">Self-Improving Agents</em> (Micheal Lanham, Manning):
+      a machine wants to improve itself, every new version must pass a gate before it ships —
       and <b style="color:var(--ink)">you are the gate</b>. The only question that matters: on what grounds do you say yes?</p>
   </div>
 
@@ -137,7 +138,7 @@
 
   <div class="scene" id="scene" aria-live="off"></div>
 
-  <p class="footnote">Every number in Act&nbsp;2 comes from the book's revenue task — the $508 leaderboard a vague
+  <p class="footnote">Every number in Act&nbsp;2 comes from the revenue task in <em>Self-Improving Agents</em> (ch.&nbsp;3) — the $508 leaderboard a vague
     instruction card produces, the $358 truth a canonical pipeline computes, and the six rules hiding in one
     manager's question. No model calls; every beat is authored and deterministic.</p>
 </div>
@@ -215,7 +216,7 @@
   const A1 = []
   A1.push(() => scene(
     '<h2>Act 1 · A gate that only opens on proof</h2>' +
-    '<p>In 2003 Jürgen Schmidhuber described the <b>Gödel machine</b>: a program allowed to rewrite ' +
+    '<p>This is chapter 3 of <em>Self-Improving Agents</em>, played rather than read. In 2003 Jürgen Schmidhuber described the <b>Gödel machine</b>: a program allowed to rewrite ' +
     'any part of itself — but only when it can <b>prove</b> the rewrite is an improvement. No testing. No opinion. Proof.</p>' +
     '<p>Your machine answers questions about one line of text:</p>' +
     '<div class="qbox">"' + LINE + '"</div>' +
@@ -450,8 +451,8 @@
     '<div class="road"><b>MEASUREMENT RATCHET</b> — opens on a better score. Works — as far as the nearest peak, and exactly as well as the signal behind it. <span style="color:var(--faint)">(measure rather than prove, ch. 3)</span></div>' +
     '<div class="road"><b>EVIDENCE GATE + ARCHIVE</b> — opens early on evidence, and keeps every version, so a wrong yes is recoverable and an odd branch can win later. <span style="color:var(--faint)">(the Darwin Gödel Machine, ch. 4)</span></div>' +
     '</div>' +
-    '<p>That is the book’s spine in three gates: what you can prove, what you can measure, ' +
-    'and what you can afford to keep.</p>' +
+    '<p>That is the spine of <em>Self-Improving Agents</em> in three gates: what you can prove, what you can measure, ' +
+    'and what you can afford to keep. Chapters 3 and 4 build each one for real, in code.</p>' +
     '<div class="btnrow">' +
     '<button class="btn primary" id="replay">↺ play again</button>' +
     '<a class="btn" href="../Helix_Garden/index.html" style="text-decoration:none">Now run the whole loop: Helix Garden ▸</a>' +

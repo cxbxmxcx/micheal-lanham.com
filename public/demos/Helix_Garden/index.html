@@ -162,14 +162,15 @@
 
 <div class="wrap">
   <div class="pagehead">
-    <p class="kicker">Playable theory · self-improving agents</p>
+    <p class="kicker">Playable theory · a companion to Self-Improving Agents (Manning)</p>
     <h1>Helix Garden</h1>
     <p class="lede">
       The creatures never get smarter — their <strong style="color:var(--ink)">policy cards</strong> do.
       Each forager runs a fixed <span class="mono" style="font-size:.85em">SENSE→PLAN→ACT→LEARN</span> loop;
       its behaviour comes entirely from a readable <em>policy card</em>. Around the population, the improvement
       loop — <span class="mono" style="font-size:.85em">ACT→SIGNAL→SEARCH→APPLY</span> — evolves those cards.
-      You are the harness engineer: set the dials, gate what ships.
+      You are the harness engineer: set the dials, gate what ships. The loop, the dials, and every term on
+      this page are from <em style="color:var(--ink)">Self-Improving Agents</em> by Micheal Lanham (Manning).
     </p>
   </div>
 
@@ -262,7 +263,7 @@
   </div>
 
   <details class="explain">
-    <summary>How this maps to the book</summary>
+    <summary>How this maps to Self-Improving Agents (the book)</summary>
     <div class="body">
       <h4>Two nested loops</h4>
       <p>Inside each creature: <strong>sense → plan → act → learn</strong>, every tick. The code that runs that loop — the
@@ -908,7 +909,7 @@
       guideCard('done', 'That was the whole idea',
         '<p><b>ACT</b> (live the lives) → <b>SIGNAL</b> (score them) → <b>SEARCH</b> (breed new cards) → <b>APPLY</b> (you gate what ships). ' +
         'The creature never got smarter. The card did.</p>' +
-        '<p>The full garden is this loop with more cards per generation, three kinds of signal, three kinds of search, and three trials ' +
+        '<p>You just ran the improvement loop from <em>Self-Improving Agents</em> (Micheal Lanham, Manning). The full garden is this loop with more cards per generation, three kinds of signal, three kinds of search, and three trials ' +
         'built to break each search in an instructive way. The narrator line above the world follows along the whole time.</p>',
         '<button class="tbtn primary" id="gDone">Open the full garden ▸</button>')
       $('gDone').onclick = endGuide
