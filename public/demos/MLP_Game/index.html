@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Perceptron Game — Micheal Lanham</title>
-<meta name="description" content="Set the weights by hand and watch a single perceptron try to fit the data. The simplest possible neural network, made visible.">
+<title>The Multilayer Perceptron Game — Micheal Lanham</title>
+<meta name="description" content="Add hidden layers and see how a multilayer network solves problems a single perceptron cannot.">
 <link rel="shortcut icon" href="TemplateData/favicon.ico">
 <link rel="stylesheet" href="TemplateData/style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,26 +35,41 @@
   .webgl-content .footer { width:auto !important; }
   .webgl-content h1 { display:none; }               /* original in-canvas heading, replaced above */
   .footer { margin-top:.6rem; }
-  .note { margin-top:2rem; font-size:.85rem; color:#6F675C; border-top:1px solid var(--border); padding-top:1.2rem; }
+  .note { margin-top:2rem; font-size:.85rem; color:#8A8271; border-top:1px solid var(--border); padding-top:1.2rem; }
+  /* Embedded in the site's demo card: drop the page chrome, centre the canvas */
+  .embedded .bar, .embedded .shell h1, .embedded .desc, .embedded .note { display:none; }
+  .embedded .shell { padding:0; max-width:none; }
+  .embedded .stage { display:flex; justify-content:center; }
+  .embedded .footer { display:none; }
+  button.fullscreen { border:0; padding:0; cursor:pointer; }
 </style>
+<script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
 <script src="TemplateData/UnityProgress.js"></script>
 <script src="Build/UnityLoader.js"></script>
 <script>
-  var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Web.json", {onProgress: UnityProgress});
+  var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Web.json", {
+    onProgress: function (instance, progress) {
+      UnityProgress(instance, progress);
+      // tell the embedding site the build is actually ready (progress 1 = loaded)
+      if (progress === 1 && window.parent !== window) {
+        window.parent.postMessage({ type: 'unity-ready' }, '*');
+      }
+    }
+  });
 </script>
 </head>
 <body>
   <div class="bar"><a href="../../">&larr; Micheal Lanham</a><a href="../../#demos">All demos</a></div>
   <div class="shell">
-    <h1>The Perceptron Game</h1>
-    <p class="desc">Set the weights by hand and watch a single perceptron try to fit the data. The simplest possible neural network, made visible.</p>
+    <h1>The Multilayer Perceptron Game</h1>
+    <p class="desc">Add hidden layers and see how a multilayer network solves problems a single perceptron cannot.</p>
     <div class="stage">
       <div class="webgl-content">
         <div id="unityContainer" style="width:1050px;height:600px"></div>
         <div class="footer">
           <div class="webgl-logo"></div>
-          <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-          <div class="title">The Perceptron Game</div>
+          <button type="button" class="fullscreen" aria-label="Fullscreen" onclick="unityInstance.SetFullscreen(1)"></button>
+          <div class="title">The Multilayer Perceptron Game</div>
         </div>
       </div>
     </div>

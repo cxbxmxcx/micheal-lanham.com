@@ -1,26 +1,47 @@
 # micheal-lanham.com
 
 Personal site for Micheal Lanham — author, AI agents and evolutionary computation.
+Live at https://micheal-lanham.com/ on GitHub Pages.
 
-## Structure
+## Stack
 
-- `index.html` — the entire site. Self-contained: CSS and JS are inline, Google Fonts is
-  the only external dependency. No build step.
-- `demos/` — three interactive Unity WebGL teaching games, migrated from
-  `cxbxmxcx.github.io`: the Perceptron, Multilayer Perceptron, and Autoencoder games.
-- `.nojekyll` — serve files as-is, skip Jekyll processing.
-- `CNAME` — custom domain for GitHub Pages (added at DNS cutover).
+Vite 7 · React 19 · TypeScript · Tailwind 3 · Framer Motion · GSAP · Lenis.
+Single page, sections in `src/sections/`, shared pieces in `src/components/`.
 
-## Editing
+## Editing content
 
-Open `index.html` and edit. To preview locally:
+- **Books** — `src/components/books/booksData.ts`. Every title, subtitle, year, ISBN
+  and URL was checked against the publisher listing; look a book up before editing.
+- **Consulting copy** — `src/sections/Work.tsx` and `src/components/work/ProcessStrip.tsx`.
+- **Bio / facts** — `src/sections/About.tsx`, `src/sections/Hero.tsx`.
+- **Contact address** — `src/components/contact/TransmissionPanel.tsx`,
+  `src/components/work/ServicePanel.tsx`, `src/components/Footer.tsx`.
+- **Page title / description / social card** — `index.html`.
 
-    python -m http.server 8765
+## Running locally
 
-then visit http://127.0.0.1:8765/
+    npm ci
+    npm run dev        # http://localhost:3000
+    npm run build      # production build into dist/
+    npm run preview    # serve dist/ locally
 
-Paths are relative throughout, so the site works both at a GitHub project URL and at
-the apex domain.
+## Deploying
+
+Push to `main`. `.github/workflows/deploy.yml` builds and publishes `dist/` to
+GitHub Pages; the site is live about a minute later.
+
+## Static assets (`public/`)
+
+- `demos/` — three Unity WebGL teaching games (Perceptron, Multilayer Perceptron,
+  Autoencoder), migrated from the 2020 site at `cxbxmxcx.github.io`. Each has a themed
+  wrapper page that hides its own chrome when embedded in the site's demo cards.
+- `CNAME` — custom domain. `404.html` — sends unknown paths home.
+- Images are WebP; `og-image.png` stays PNG for social crawlers.
+
+## History
+
+The first version of this site (August 2026) was a single hand-written `index.html`;
+it is in git history at commit `7bb898d` if ever needed.
 
 ## Licence
 
