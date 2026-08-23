@@ -314,7 +314,7 @@ function NeuralSwarm() {
 /* ------------------------------------------------------------------ */
 
 const STATS: { value: number; suffix?: string; label: string }[] = [
-  { value: 13, label: 'BOOKS PUBLISHED' },
+  { value: 12, label: 'BOOKS PUBLISHED' },
   { value: 5, label: 'PUBLISHERS' },
   { value: 3, label: 'IN DEVELOPMENT' },
   { value: 20, suffix: '+', label: 'YEARS IN INDUSTRY' },
@@ -541,7 +541,7 @@ export default function Hero() {
 
           <p ref={ledeRef} className="mt-8 max-w-[620px] text-lg leading-[1.7] text-muted">
             Micheal Lanham is a software and technology innovator with 20+ years across games, graphics, and
-            machine intelligence — author of 13 books on AI, machine learning, and game development for Manning,
+            machine intelligence — author of 12 books on AI, machine learning, and game development for Manning,
             O'Reilly, Apress, Packt, and BPB, most recently on AI agents, evolutionary deep learning, and
             generative systems, with three more in development. He works with teams on agent architecture
             reviews and AI agent training workshops.

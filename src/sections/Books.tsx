@@ -9,7 +9,7 @@ import { DEV_BOOKS } from '@/components/books/booksData'
  * Books — "The Library" (#books).
  * Section header with D5 dendrite growth canvas behind it, the 3
  * in-development "growing specimen" cards beside the dendrite-books still
- * life, and all 13 published works on a scroll-drawn dendrite timeline
+ * life, and all 12 published works on a scroll-drawn dendrite timeline
  * grouped by publisher.
  *
  * Header markup mirrors the shared SectionShell pattern (same kicker / H2 /
@@ -48,7 +48,7 @@ export default function Books() {
             Words that grew into <span className="text-gradient">networks.</span>
           </h2>
           <p className="mt-5 max-w-[640px] text-base leading-relaxed text-muted">
-            Thirteen published books on AI, machine learning, and game development — for Manning,
+            Twelve published books on AI, machine learning, and game development — for Manning,
             O&rsquo;Reilly, Apress, Packt, and BPB — most recently on AI agents, evolutionary deep learning,
             and generative systems. Three more currently in development.
           </p>
