@@ -9,7 +9,7 @@ const DEMOS: DemoSpec[] = [
     index: '01',
     title: 'Helix Garden',
     description:
-      'A playable self-improving agent harness. Creatures run a sense-plan-act-learn loop; you run the improvement loop around them — set the signal, pick the search, gate what ships. Companion to Self-Improving Agents.',
+      'A playable self-improving agent harness — starts with a 90-second guided intro, no reading required. Creatures run a sense-plan-act-learn loop; you run the improvement loop around them and gate what ships. Companion to Self-Improving Agents.',
     poster: '/demo-helix-garden.webp',
     src: '/demos/Helix_Garden/',
     chips: ['Canvas · new', '0.03 MB'],

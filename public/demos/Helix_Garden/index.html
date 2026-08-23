@@ -113,6 +113,42 @@
   details.explain p, details.explain li { font-size:.85rem; color:var(--muted); }
   .footnote { margin-top:1.1rem; font-size:.78rem; color:var(--faint); }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  /* narrator: one plain sentence about what is happening right now */
+  .narrator { display:flex; gap:.6rem; align-items:baseline; border:1px solid var(--line);
+              border-bottom:0; border-radius:12px 12px 0 0; background:var(--panel);
+              padding:.55rem .9rem; font-size:.86rem; color:var(--ink); }
+  .narrator .tag { font-family:"JetBrains Mono",monospace; font-size:.62rem; letter-spacing:.14em;
+                   color:var(--amber); text-transform:uppercase; flex:none; }
+  .narrator span:last-child { color:var(--muted); }
+  .worldbox { border-radius:0 0 12px 12px; }
+
+  /* guided intro card */
+  .guidecard { border:1px solid rgba(224,155,74,.5); background:rgba(224,155,74,.06);
+               border-radius:12px; padding:1rem 1.2rem; margin:0 0 1rem; }
+  .guidecard .step { font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.15em;
+                     text-transform:uppercase; color:var(--amber); margin:0 0 .35rem; }
+  .guidecard h2 { font-family:"Space Grotesk",Inter,sans-serif; font-size:1.15rem; margin:0 0 .4rem; color:var(--ink); }
+  .guidecard p { margin:.3rem 0; font-size:.92rem; color:var(--muted); max-width:60rem; }
+  .guidecard p b, .guidecard p strong { color:var(--ink); }
+  .guidecard .mono-hint { font-family:"JetBrains Mono",monospace; font-size:.74rem; color:var(--teal); }
+  .guidecard .actions { margin-top:.7rem; display:flex; gap:.6rem; flex-wrap:wrap; }
+  .guidecard .cardpeek { font-family:"JetBrains Mono",monospace; font-size:.72rem; line-height:1.8;
+                         color:var(--muted); background:var(--void2); border:1px solid var(--line);
+                         border-radius:8px; padding:.5rem .7rem; margin:.5rem 0; white-space:pre-wrap; }
+  .guidecard .cardpeek .chg { color:var(--amber); }
+
+  /* while guiding: hide everything the current stage has not earned yet */
+  body.guiding .topbar, body.guiding .goalline { display:none; }
+  body.guiding.gstage-0 .inspect, body.guiding.gstage-0 aside { display:none; }
+  body.guiding.gstage-1 aside, body.guiding.gstage-2 aside { display:none; }
+  body.guiding.gstage-3 aside, body.guiding.gstage-4 aside { display:none; }
+  body.guiding .stage { grid-template-columns:1fr; }
+
+  /* plain-language sublabels on the loop chips */
+  .loop span { display:flex; flex-direction:column; gap:.1rem; padding:.32rem 0 .38rem; }
+  .loop span i { font-style:normal; font-size:.56rem; letter-spacing:.02em; color:var(--faint); text-transform:none; }
+  .loop span.hot i { color:var(--copper); }
+
   .embedded .bar, .embedded .pagehead { display:none; }
   .embedded .wrap { padding-top:.7rem; }
   @media (prefers-reduced-motion: reduce) { .loop span { transition:none; } }
@@ -144,12 +180,15 @@
       <button class="tbtn" id="btnSpeed" title="cycle speed">1×</button>
       <button class="tbtn primary" id="btnSkip">skip generation <span aria-hidden="true">▸▸</span></button>
       <button class="tbtn" id="btnRestart" title="fresh run, same dials">↺ restart</button>
+      <button class="tbtn" id="btnGuide" title="replay the guided intro">? intro</button>
     </div>
   </div>
   <p class="goalline" id="goalline" role="status"></p>
 
   <div class="stage">
     <div>
+      <div id="guide"></div>
+      <div class="narrator"><span class="tag">Now</span><span id="narrator" role="status">Loading the garden…</span></div>
       <div class="worldbox">
         <canvas id="world" width="960" height="560" tabindex="0" role="img" aria-label="The garden: foraging creatures, food, and hazards. Click a creature — or focus the canvas and use the arrow keys — to select one; the inspector below shows its sense-plan-act-learn loop as text."></canvas>
       </div>
@@ -167,7 +206,7 @@
       <div class="panel">
         <h2>The improvement loop <span class="chref">ch. 1</span></h2>
         <div class="loop" id="loopSteps">
-          <span data-step="act">ACT</span><span data-step="signal">SIGNAL</span><span data-step="search">SEARCH</span><span data-step="apply">APPLY</span>
+          <span data-step="act">ACT<i>live the lives</i></span><span data-step="signal">SIGNAL<i>score them</i></span><span data-step="search">SEARCH<i>breed new cards</i></span><span data-step="apply">APPLY<i>ship the winner</i></span>
         </div>
         <p class="loop-note" id="loopNote">Generation 0 — the genesis card is deployed.</p>
       </div>
@@ -176,16 +215,16 @@
         <h2>The dials <span class="chref">ch. 1–4</span></h2>
         <div class="dial"><label for="selSignal">Signal</label>
           <select id="selSignal" aria-describedby="noteSignal">
-            <option value="both">LLM-as-Judge + ground-truth top-4</option>
-            <option value="judge">LLM-as-Judge only (noisy, biased)</option>
-            <option value="gt">Ground truth only (precise, costly)</option>
+            <option value="both">Judge every life, verify the top 4</option>
+            <option value="judge">Cheap noisy judge only</option>
+            <option value="gt">Exact count only (costly: 6 cards/gen)</option>
           </select></div>
         <p class="dialnote" id="noteSignal"></p>
         <div class="dial"><label for="selSearch">Search</label>
           <select id="selSearch" aria-describedby="noteSearch">
-            <option value="hill">Hill-climb — the ratchet (ch. 3)</option>
-            <option value="pop">Population — GEPA-style (ch. 4)</option>
-            <option value="archive">Archive + QD — DGM-style (ch. 4)</option>
+            <option value="hill">Tweak the best card, keep-if-better</option>
+            <option value="pop">Breed the top four together</option>
+            <option value="archive">Never throw any card away</option>
           </select></div>
         <p class="dialnote" id="noteSearch"></p>
         <div class="dial"><span class="dlabel">Artifact</span>
@@ -309,6 +348,14 @@
     drawChart(); drawLineage()
   }
 
+  /* ---------- narrator: one plain sentence about right now ---------- */
+  function say(text) {
+    const n = $('narrator')
+    if (n.textContent !== text) n.textContent = text
+  }
+  const SEARCH_PLAIN = { hill: 'small edits of the champion', pop: 'breeding the top four', archive: 'branches from the archive' }
+  const SIGNAL_PLAIN = { both: 'judge (top 4 verified)', judge: 'noisy judge', gt: 'exact count' }
+
   /* ---------- generation lifecycle ---------- */
   function startGeneration() {
     const { candidates: cs, lifeSeed } = S.beginGeneration(H)
@@ -318,6 +365,7 @@
     phase = 'living'
     selected = Math.min(selected, agents.length - 1)
     setLoopStep('act')
+    say('Generation ' + H.gen + ': ' + agents.length + ' cards made by ' + SEARCH_PLAIN[H.search] + ' are living the same life. Click any creature to inspect it.')
   }
 
   function stepLives(n) {
@@ -339,12 +387,19 @@
     setLoopStep('search')
     phase = H.pending && !H.autoGate ? 'gate' : 'idle'
     if (phase === 'gate') setLoopStep('apply')
+    const bt = Math.round(h100(H.history[H.history.length - 1].bestTrue))
+    const ch = Math.round(H.champion.trueScore)
+    if (phase === 'gate') say('The ' + SIGNAL_PLAIN[H.signal] + ' ranked the lives: best new card #' + H.pending.id + ' beat the champion (' + Math.round(H.pending.signalScore) + ' vs ' + Math.round(H.champion.signalScore ?? ch) + '). Gate open — review the change in the promote() panel and decide.')
+    else if (H.autoGate) say('Generation ' + H.gen + ' scored. Champion now #' + H.champion.id + ' at ' + ch + ' (auto-apply is on — nothing waits for you).')
+    else say('Generation ' + H.gen + ' scored: best new life reached ' + bt + ', champion #' + H.champion.id + ' holds ' + ch + '. No card beat the champion, so nothing ships.')
     checkGoal()
     syncUI(); drawChart(); drawLineage()
   }
+  const h100 = (v) => v
 
   function doPromote() {
     S.promote(H)
+    say('Shipped. Card #' + H.champion.id + ' is now the deployed champion — every next generation starts from it.')
     checkGoal()
     phase = 'idle'
     setLoopStep(null)
@@ -362,6 +417,12 @@
   /* ---------- main loop ---------- */
   let fastForward = false
   function frame() {
+    if (guiding) {
+      guideTick()
+      if (dirty) { drawWorld(); updateInspector(); dirty = false }
+      requestAnimationFrame(frame)
+      return
+    }
     if (fastForward) {
       /* finish the generation in ~12ms slices so the page never janks */
       const t0 = performance.now()
@@ -578,7 +639,7 @@
     if (a.memory.cluster) chips += '<span class="chip">★ cluster</span>'
     $('iLearn').innerHTML = '<p class="big">' + esc((l && l.note) || 'observing') + '</p>' + (chips || '<p>no entries yet</p>')
     const cand = candidates[selected]
-    const txt = cardText(a.genome, cand ? cand.id : '?') + (cand ? '\n# ' + cand.note : '')
+    const txt = cardText(a.genome, cand ? cand.id : (guiding ? 'genesis' : '?')) + (cand ? '\n# ' + cand.note : '')
     $('iCard').innerHTML = txt.split('\n').map((ln, i) => (i === 0 ? '<span class="hd">' + esc(ln) + '</span>' : esc(ln))).join('\n')
   }
 
@@ -612,7 +673,7 @@
         '<div class="gate-actions"><button class="tbtn primary" id="btnPromote">promote()</button>' +
         '<button class="tbtn" id="btnReject">reject</button></div></div>'
       $('btnPromote').onclick = () => { doPromote(); $('btnSkip').focus() }
-      $('btnReject').onclick = () => { S.rejectPending(H); phase = 'idle'; setLoopStep(null); syncUI(); $('btnSkip').focus() }
+      $('btnReject').onclick = () => { S.rejectPending(H); say('Rejected. The champion stays — the loop simply tries again next generation.'); phase = 'idle'; setLoopStep(null); syncUI(); $('btnSkip').focus() }
     } else {
       gb.innerHTML = '<p class="gate-idle">' + (H.autoGate
         ? 'Auto-apply is on — improvements ship live, unreviewed. This is the online loop.'
@@ -636,9 +697,9 @@
     if (gl.dataset.last !== glHtml) { gl.innerHTML = glHtml; gl.dataset.last = glHtml }
     /* dial notes */
     $('noteSignal').textContent = {
-      both: 'Judge everything (cheap), ground-truth the shortlist. Precision where it matters.',
-      judge: 'Available everywhere, noisy, and biased toward busy-looking lives. Watch the ceiling.',
-      gt: 'Exact — but expensive: the harness can only afford 6 candidates per generation.',
+      both: "The book's LLM-as-Judge plus a ground-truthed shortlist — precision where it matters.",
+      judge: 'LLM-as-Judge: a guess about each life — always available, noisy, biased toward busy-looking lives.',
+      gt: 'Ground truth: counts the food exactly, but costs so much you can only afford half the candidates.',
     }[H.signal]
     $('lineageNote').textContent = {
       hill: 'Every card keeps its parent pointer. Amber = deployed line. Faint = discarded candidates — one lineage survives.',
@@ -646,9 +707,9 @@
       archive: 'Every card keeps its parent pointer. Amber = deployed line. Faint = the archive nothing forgets.',
     }[H.search]
     $('noteSearch').textContent = {
-      hill: 'One lineage, keep-if-better. Cheap. Parks on the first peak it finds.',
-      pop: 'Top four breed with crossover; reflection reads each life. Crosses valleys.',
-      archive: 'Never discards. QD sampling taxes reuse so neglected branches earn turns.',
+      hill: "The book's hill-climbing ratchet (ch. 3): one lineage, cheap, parks on the first peak it finds.",
+      pop: 'GEPA-style population (ch. 4): the top four breed with crossover, and reflection reads each life first.',
+      archive: 'DGM-style archive (ch. 4): quality-diversity sampling taxes reuse, so neglected branches earn turns.',
     }[H.search]
     $('loopNote').textContent = phase === 'living'
       ? 'Generation ' + H.gen + ': ' + agents.filter((x) => x.alive).length + ' of ' + agents.length + ' candidates still alive.'
@@ -731,11 +792,218 @@
     dirty = true
   })
 
+  /* ---------- guided intro ----------
+     The "simple version" of the game IS the intro: one creature, one concept
+     at a time, self-paced, then the full garden unlocks. Uses the same sim
+     primitives; nothing here is mocked. */
+  let guiding = false
+  let gstage = -1
+  let guideAgent = null
+  let guideRes = null
+  let guideTrio = null          // [{id, genome, res, editDesc}]
+
+  const seenGuide = () => { try { return localStorage.getItem('helixGuideDone') === '1' } catch (e) { return true } }
+  const markGuide = () => { try { localStorage.setItem('helixGuideDone', '1') } catch (e) { /* fine */ } }
+
+  function describeEdit(a, b) {
+    const out = []
+    const walk = (pa, pb, path) => {
+      for (const k of Object.keys(pa)) {
+        const va = pa[k], vb = pb[k]
+        if (typeof va === 'object') walk(va, vb, path.concat(k))
+        else if (va !== vb) {
+          const name = path.concat(k).join('.')
+            .replace('rules.', '').replace('traits.', '')
+            .replace('.w', ' weight').replace('.thr', ' threshold').replace('.on', '').replace('.bias', ' bias')
+          if (typeof va === 'boolean') out.push(name + (vb ? ' rule switched ON' : ' rule switched OFF'))
+          else out.push(name + ' ' + (+va).toFixed(2) + ' → ' + (+vb).toFixed(2))
+        }
+      }
+    }
+    walk(a, b, [])
+    return out.slice(0, 3).join(', ') || 'no visible change'
+  }
+
+  function setStage(n) {
+    gstage = n
+    document.body.classList.toggle('guiding', guiding)
+    document.body.className = document.body.className.replace(/\bgstage-\d\b/g, '').trim()
+    if (guiding) document.body.classList.add('gstage-' + n)
+    renderGuide()
+  }
+
+  function guideCard(step, title, bodyHtml, actions) {
+    $('guide').innerHTML =
+      '<div class="guidecard" role="group" aria-label="Guided intro"><p class="step">Guided intro · ' + step + '</p>' +
+      '<h2>' + title + '</h2>' + bodyHtml +
+      '<div class="actions">' + actions + '</div></div>'
+  }
+
+  function startGuide() {
+    guiding = true
+    paused = true
+    /* a private meadow with a single genesis creature */
+    H = S.makeHarness('meadow', {})
+    hazardLayer = null
+    candidates = []
+    guideAgent = S.makeAgent(S.genesisGenome(), H.world, H.opts.seed * 1013 + 77)
+    agents = [guideAgent]
+    tick = 0
+    phase = 'idle'
+    selected = 0
+    dirty = true
+    setStage(0)
+    say('Guided intro — nothing runs until you press the button.')
+  }
+
+  function renderGuide() {
+    if (!guiding) { $('guide').innerHTML = ''; return }
+    if (gstage === 0) {
+      guideCard('1 of 5', 'Meet a creature that will never get smarter',
+        '<p>This is a tiny world: <b style="color:var(--amber)">food</b>, and one creature. The creature is not intelligent ' +
+        'and never will be — its brain is frozen. Everything it does comes from a little instruction card, shown under the world.</p>' +
+        '<p>Every tick of its life it runs the same four steps: <span class="mono-hint">SENSE → PLAN → ACT → LEARN</span>. Watch the four boxes under the world while it lives.</p>',
+        '<button class="tbtn primary" id="gNext">Let it live one life ▸</button>' + skipBtn())
+      $('gNext').onclick = () => { setStage(1); runGuideLife() }
+    } else if (gstage === 1) {
+      guideCard('2 of 5', 'One life, four steps, forever',
+        '<p><b>SENSE</b>: it only knows what is inside its sense ring. <b>PLAN</b>: the card&#39;s rules vote on a direction. ' +
+        '<b>ACT</b>: it turns and moves — nothing more. <b>LEARN</b>: it remembers food spots and hazards, <em>for this life only</em>.</p>' +
+        '<p id="gLive" class="mono-hint">life in progress…</p>',
+        '<button class="tbtn primary" id="gNext" disabled>Life over ▸</button>' + skipBtn())
+      $('gNext').onclick = () => setStage(2)
+    } else if (gstage === 2) {
+      const t = Math.round(guideRes.trueScore)
+      const jr = S.rng(4242)
+      const judged = Math.round(S.SIGNALS.judge.score(guideRes, jr))
+      guideCard('3 of 5', 'It scored ' + t + '. Is that good?',
+        '<p>You cannot improve what you cannot measure. A <b>signal</b> puts a number on a life.</p>' +
+        '<p><b>Ground truth</b> counts the food exactly: <span class="mono-hint">' + t + '</span>. ' +
+        'An <b>LLM-as-Judge</b> glances at the life and guesses: <span class="mono-hint">' + judged + '</span> — cheap, always available, ' +
+        'and fooled by busy-looking behaviour. Which signal you trust decides everything that follows.</p>',
+        '<button class="tbtn primary" id="gNext">Try to beat ' + t + ' ▸</button>' + skipBtn())
+      $('gNext').onclick = () => { setStage(3); runGuideTrio() }
+      say('A signal turns a life into a number you can compare.')
+    } else if (gstage === 3) {
+      guideCard('4 of 5', 'Search: three copies, three small edits, same life',
+        '<p>The creature cannot learn across lives — but its <b>card</b> can be copied and edited. ' +
+        'Three copies now live the <em>exact same life</em> (same world, same dice), so their scores compare fairly.</p>' +
+        '<p id="gLive" class="mono-hint">lives in progress…</p><div id="gTrio"></div>',
+        '<button class="tbtn primary" id="gNext" disabled>One of them is better ▸</button>' + skipBtn())
+      $('gNext').onclick = () => setStage(4)
+    } else if (gstage === 4) {
+      const best = guideTrio.reduce((a, b) => (b.res.trueScore > a.res.trueScore ? b : a))
+      const base = Math.round(guideRes.trueScore)
+      guideCard('5 of 5', 'Apply: you are the deploy gate',
+        '<p>Card <b>#' + best.id + '</b> scored <span class="mono-hint">' + Math.round(best.res.trueScore) + '</span> against the original&#39;s ' +
+        '<span class="mono-hint">' + base + '</span>. Its edit: ' + esc(best.editDesc) + '.</p>' +
+        '<div class="cardpeek">' + diffCards(cardText(guideAgent.genome, 0), cardText(best.genome, best.id)) + '</div>' +
+        '<p>Nothing ships without a decision — in the book this gate is <span class="mono-hint">promote()</span>. Ship it?</p>',
+        '<button class="tbtn primary" id="gPromote">promote() — ship the better card</button>' + skipBtn())
+      $('gPromote').onclick = () => setStage(5)
+      say('One card beat the original. The gate is yours.')
+    } else if (gstage === 5) {
+      guideCard('done', 'That was the whole idea',
+        '<p><b>ACT</b> (live the lives) → <b>SIGNAL</b> (score them) → <b>SEARCH</b> (breed new cards) → <b>APPLY</b> (you gate what ships). ' +
+        'The creature never got smarter. The card did.</p>' +
+        '<p>The full garden is this loop with more cards per generation, three kinds of signal, three kinds of search, and three trials ' +
+        'built to break each search in an instructive way. The narrator line above the world follows along the whole time.</p>',
+        '<button class="tbtn primary" id="gDone">Open the full garden ▸</button>')
+      $('gDone').onclick = endGuide
+      say('Shipped. The card improved; the creature never did.')
+    }
+    dirty = true
+  }
+  function skipBtn() { return '<button class="tbtn" id="gSkip">skip intro</button>' }
+
+  function runGuideLife() {
+    guideAgent = S.makeAgent(S.genesisGenome(), H.world, H.opts.seed * 1013 + 77)
+    agents = [guideAgent]
+    tick = 0
+    phase = 'living'
+    if (reduce) {
+      /* reduced motion: no animation — compute the life and show the result */
+      guideRes = S.evaluate(guideAgent.genome, H.world, H.opts.seed * 1013 + 77)
+      finishGuideLife()
+    }
+  }
+  function finishGuideLife() {
+    phase = 'idle'
+    const g = $('gLive'), n = $('gNext')
+    if (g) g.textContent = 'Life over. It ate ' + Math.round(guideRes.trueScore) + ' food before ' + (guideRes.survived ? 'time ran out' : 'it starved') + '.'
+    if (n) n.disabled = false
+    say('The life ended with a score of ' + Math.round(guideRes.trueScore) + '.')
+  }
+
+  function runGuideTrio() {
+    const lifeSeed = H.opts.seed * 1013 + 77
+    const base = S.genesisGenome()
+    /* deterministic trio; nudge the seed until at least one edit is an improvement,
+       which is literally what a search does: propose until something is better */
+    let trio = null
+    for (let seed = 900; seed < 940 && !trio; seed++) {
+      const cand = [1, 2, 3].map((i) => {
+        const genome = S.mutate(base, S.rng(seed + i * 7), null)
+        return { id: i, genome, res: S.evaluate(genome, H.world, lifeSeed), editDesc: describeEdit(base, genome) }
+      })
+      if (cand.some((c) => c.res.trueScore > guideRes.trueScore)) trio = cand
+    }
+    guideTrio = trio
+    agents = trio.map((c) => S.makeAgent(c.genome, H.world, lifeSeed))
+    tick = 0
+    phase = reduce ? 'idle' : 'living'
+    if (reduce) finishGuideTrio()
+  }
+  function finishGuideTrio() {
+    phase = 'idle'
+    const g = $('gLive'), n = $('gNext'), box = $('gTrio')
+    if (g) g.textContent = 'All three lives are over.'
+    if (box) box.innerHTML = guideTrio.map((c) =>
+      '<p style="margin:.2rem 0"><span class="mono-hint">card #' + c.id + ' → ' + Math.round(c.res.trueScore) + '</span> ' +
+      '<span style="font-size:.82rem;color:var(--faint)">(' + esc(c.editDesc) + ')</span></p>').join('')
+    if (n) n.disabled = false
+    say('Three edited cards, three scores — on the identical life.')
+  }
+
+  function guideTick() {
+    if (phase !== 'living') return
+    const mult = 3
+    for (let k = 0; k < mult && phase === 'living'; k++) {
+      let anyAlive = false
+      for (const a of agents) { S.agentStep(a, H.world, tick); if (a.alive) anyAlive = true }
+      tick++
+      if (tick >= S.LIFE_TICKS || !anyAlive) {
+        if (gstage === 1) { guideRes = { trueScore: guideAgent.score, telem: guideAgent.telem, survived: guideAgent.alive }; finishGuideLife() }
+        else if (gstage === 3) { guideTrio.forEach((c, i) => { c.res = { trueScore: agents[i].score, telem: agents[i].telem, survived: agents[i].alive } }); finishGuideTrio() }
+      }
+    }
+    dirty = true
+  }
+
+  function endGuide() {
+    guiding = false
+    markGuide()
+    document.body.classList.remove('guiding')
+    document.body.className = document.body.className.replace(/\bgstage-\d\b/g, '').trim()
+    $('guide').innerHTML = ''
+    paused = reduce
+    setPauseLabel()
+    trialKey = 'meadow'
+    newHarness()
+    renderTabs()
+    say('Trial 1: reach a score of ' + S.TRIALS.meadow.goal + '. Press ▶ run, or "skip generation" to jump ahead — and mind the promote() gate when it opens.')
+  }
+  document.addEventListener('click', (e) => { if (e.target && e.target.id === 'gSkip') endGuide() })
+
   /* test hook for automation (harmless in production) */
   window.__helix = {
     get harness() { return H },
     skipGen: () => { if (phase === 'gate') { S.promote(H); phase = 'idle' } if (phase === 'idle') startGeneration(); stepLives(S.LIFE_TICKS + 5); dirty = true; return H.gen },
     stepTicks: (n) => { if (phase === 'gate') { S.promote(H); phase = 'idle' } if (phase === 'idle') startGeneration(); stepLives(n); drawWorld(); updateInspector(); return tick },
+    guide: () => ({ guiding, gstage, phase }),
+    guideNext: () => { const b = $('gNext') || $('gPromote') || $('gDone'); if (b && !b.disabled) b.click(); return { guiding, gstage } },
+    guideFinishScene: () => { let n = 0; while (guiding && phase === 'living' && n++ < 3000) guideTick(); return { guiding, gstage, phase } },
+    startGuide,
     state: () => ({ gen: H.gen, phase, champion: Math.round(H.champion.trueScore), pending: !!H.pending }),
   }
 
@@ -752,8 +1020,15 @@
     $('goalline').after(note)
   }
 
+  $('btnGuide').onclick = () => { if (!guiding) startGuide() }
+
   renderTabs()
-  newHarness()
+  if (!seenGuide()) {
+    startGuide()
+  } else {
+    newHarness()
+    say(S.TRIALS[trialKey].name + ' loaded. Press ▶ run or "skip generation" — the narrator here follows along. New? Press "? intro".')
+  }
   requestAnimationFrame(frame)
 })()
 </script>
