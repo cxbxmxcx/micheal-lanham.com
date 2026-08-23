@@ -13,8 +13,10 @@ export interface DemoSpec {
   title: string
   description: string
   poster: string
-  /** directory of the Unity WebGL build, root-relative (served from public/demos) */
+  /** directory of the demo build, root-relative (served from public/demos) */
   src: string
+  /** tech + size chips, per demo (Unity builds vs native canvas) */
+  chips: string[]
 }
 
 const BOOT_LINES: { text: string; tone: 'info' | 'ok' }[] = [
@@ -210,7 +212,7 @@ export default function DemoCard({ spec, side, order, active, onLaunch, onClose 
   return (
     <motion.article
       layout
-      className={cn(active && 'md:order-first md:col-span-3')}
+      className={cn(active && 'md:order-first md:col-span-2')}
       initial={
         reduce
           ? { opacity: 0 }
@@ -389,12 +391,11 @@ export default function DemoCard({ spec, side, order, active, onLaunch, onClose 
             </h3>
             <p className="text-[0.9rem] leading-relaxed text-muted">{spec.description}</p>
             <p className="mt-auto flex flex-wrap items-center gap-2 pt-2">
-              <span className="rounded-full border border-faint/50 px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.1em] text-faint">
-                Unity WebGL
-              </span>
-              <span className="rounded-full border border-faint/50 px-2.5 py-0.5 font-mono text-[0.65rem] tracking-[0.1em] text-faint">
-                ~5 MB
-              </span>
+              {spec.chips.map((chip) => (
+                <span key={chip} className="rounded-full border border-faint/50 px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.1em] text-faint">
+                  {chip}
+                </span>
+              ))}
               <a
                 href={standaloneHref}
                 target="_blank"

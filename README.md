@@ -32,9 +32,13 @@ GitHub Pages; the site is live about a minute later.
 
 ## Static assets (`public/`)
 
-- `demos/` — three Unity WebGL teaching games (Perceptron, Multilayer Perceptron,
-  Autoencoder), migrated from the 2020 site at `cxbxmxcx.github.io`. Each has a themed
-  wrapper page that hides its own chrome when embedded in the site's demo cards.
+- `demos/` — four playable demos. `Helix_Garden/` is a native canvas game: a
+  self-improving agent harness (companion to *Self-Improving Agents*, Manning) —
+  simulation core in `sim.js` (also runs headless in Node), UI in `index.html`;
+  `node scripts/helix-garden-regression.mjs` guards its canonical trial results.
+  The other three are Unity WebGL teaching games (Perceptron, Multilayer
+  Perceptron, Autoencoder) migrated from the 2020 site at `cxbxmxcx.github.io`.
+  Every demo page hides its own chrome when embedded in the site's demo cards.
 - `CNAME` — custom domain. `404.html` — sends unknown paths home.
 - Images are WebP; `og-image.png` stays PNG for social crawlers.
 

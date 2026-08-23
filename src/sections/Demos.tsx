@@ -5,31 +5,44 @@ import type { DemoSpec } from '@/components/demos/DemoCard'
 
 const DEMOS: DemoSpec[] = [
   {
-    id: 'perceptron',
+    id: 'helix-garden',
     index: '01',
+    title: 'Helix Garden',
+    description:
+      'A playable self-improving agent harness. Creatures run a sense-plan-act-learn loop; you run the improvement loop around them — set the signal, pick the search, gate what ships. Companion to Self-Improving Agents.',
+    poster: '/demo-helix-garden.webp',
+    src: '/demos/Helix_Garden/',
+    chips: ['Canvas · new', '0.03 MB'],
+  },
+  {
+    id: 'perceptron',
+    index: '02',
     title: 'The Perceptron Game',
     description:
       'Set weights by hand and watch a single perceptron fit data — the simplest possible neural network, made visible.',
     poster: '/demo-perceptron.webp',
     src: '/demos/Perceptron_Game/',
+    chips: ['Unity WebGL', '~5 MB'],
   },
   {
     id: 'mlp',
-    index: '02',
+    index: '03',
     title: 'The Multilayer Perceptron Game',
     description:
       'Add hidden layers and see how MLPs solve problems a single perceptron cannot.',
     poster: '/demo-mlp.webp',
     src: '/demos/MLP_Game/',
+    chips: ['Unity WebGL', '~5 MB'],
   },
   {
     id: 'autoencoder',
-    index: '03',
+    index: '04',
     title: 'The Autoencoder Game',
     description:
       'Encode and reconstruct — watch an encoder/decoder pair learn a compressed representation.',
     poster: '/demo-autoencoder.webp',
     src: '/demos/Autoencoder_Game/',
+    chips: ['Unity WebGL', '~5 MB'],
   },
 ]
 
@@ -54,7 +67,7 @@ export default function Demos() {
           Don&rsquo;t read about neural nets. <span className="text-gradient">Operate</span> one.
         </>
       }
-      lede="Three interactive WebGL demos built in Unity. Desktop browser recommended — each build is roughly 5 MB and loads only when you launch it."
+      lede="Four interactive demos: a playable self-improving agent harness built for this site, and three Unity WebGL neural-network games. Desktop browser recommended."
       className="overflow-hidden bg-void-2/50"
     >
       {/* scoped section styles — scan sweep, border spin, glitch, code rain, bloom drift */}
@@ -125,7 +138,7 @@ export default function Demos() {
         {/* inline mono chips for the hard facts */}
         <div className="-mt-8 mb-10 flex flex-wrap gap-2">
           <span className="rounded-full border border-amber/40 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.15em] text-amber">
-            ~5 MB each
+            4 playable demos
           </span>
           <span className="rounded-full border border-teal/40 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.15em] text-teal">
             Desktop browser
@@ -134,7 +147,7 @@ export default function Demos() {
 
         {/* shallow 3D perspective field — cards converge to flat on scroll-in */}
         <div
-          className="grid grid-cols-1 gap-6 md:grid-cols-3"
+          className="grid grid-cols-1 gap-6 md:grid-cols-2"
           style={{ perspective: '1200px' }}
           data-active={activeId ?? undefined}
         >
@@ -152,8 +165,8 @@ export default function Demos() {
         </div>
 
         <p className="mt-8 font-mono text-[0.75rem] tracking-[0.04em] text-faint">
-          Desktop browser with WebGL required. Each build is around 5 MB and opens at full width when launched;
-          use &ldquo;Open full size&rdquo; for a dedicated tab.
+          Demos open at full width when launched; use &ldquo;Open full size&rdquo; for a dedicated tab.
+          The Unity builds are ~5 MB each and need WebGL.
         </p>
       </div>
     </SectionShell>
