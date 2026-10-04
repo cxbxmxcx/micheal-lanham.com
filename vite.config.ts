@@ -19,12 +19,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Split the stable vendor libraries out of the app chunk so a content
-        // edit doesn't invalidate the whole 600 KB download for returning visitors.
+        // Cache the framework independently of content updates.
         manualChunks: {
           react: ['react', 'react-dom', 'react-router'],
-          motion: ['framer-motion'],
-          gsap: ['gsap', 'gsap/ScrollTrigger', 'lenis'],
         },
       },
     },

@@ -1,52 +1,51 @@
 # micheal-lanham.com
 
-Personal site for Micheal Lanham — author, AI agents and evolutionary computation.
+Personal website for Micheal Lanham: books, interactive AI demos, architecture reviews, and training workshops.
+
 Live at https://micheal-lanham.com/ on GitHub Pages.
 
-## Stack
+## Stack and structure
 
-Vite 7 · React 19 · TypeScript · Tailwind 3 · Framer Motion · GSAP · Lenis.
-Single page, sections in `src/sections/`, shared pieces in `src/components/`.
+Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a curated overview; books, services, and demos have collection and detail pages. A small canvas animation is decorative and respects reduced-motion preferences.
+
+`scripts/prerender.mjs` uses `src/entry-server.tsx` to generate HTML for every content route, plus a 404 page, sitemap, and robots.txt. The browser hydrates the same route tree. Keep `PAGE_PATHS` in `src/lib/metadata.ts` aligned with the data and router when adding page types.
 
 ## Editing content
 
-- **Books** — `src/components/books/booksData.ts`. Every title, subtitle, year, ISBN
-  and URL was checked against the publisher listing; look a book up before editing.
-- **Consulting copy** — `src/sections/Work.tsx` and `src/components/work/ProcessStrip.tsx`.
-- **Bio / facts** — `src/sections/About.tsx`, `src/sections/Hero.tsx`.
-- **Contact address** — `src/components/contact/TransmissionPanel.tsx`,
-  `src/components/work/ServicePanel.tsx`, `src/components/Footer.tsx`.
-- **Page title / description / social card** — `index.html`.
+- **Book bibliography:** `src/components/books/booksData.ts`. Verify titles, dates, ISBNs, and destinations against publisher listings before editing.
+- **Book discovery, audiences, early access, covers:** `src/data/books.ts`.
+- **Services and inquiry prompts:** `src/data/services.ts`. Scope and schedule are agreed per engagement; do not add unconfirmed promises.
+- **Demos:** `src/data/demos.ts`. Original standalone game URLs are preserved under `public/demos/`.
+- **Biography and homepage copy:** `src/sections/`.
+- **Email address:** `src/data/contact.ts`.
+- **Page metadata:** `src/lib/metadata.ts`; shared social artwork and font loading: `index.html`.
+- **Image sources:** `public/asset-sources.txt` documents the publisher-sourced author photograph and book covers.
 
-## Running locally
+## Run and verify
 
-    npm ci
-    npm run dev        # http://localhost:3000
-    npm run build      # production build into dist/
-    npm run preview    # serve dist/ locally
+```sh
+npm ci
+npm run dev
+npm run lint
+npm test
+npm run build
+npm run preview -- --port 4173
+```
 
-## Deploying
+Browser tests use installed Google Chrome locally. Against a running production preview, set `SITE_URL=http://127.0.0.1:4173` and `STATIC_CHECK=1`, then run `npm run test:browser`. Without these variables, tests target the development server on port 3000 and skip the static HTML check. CI installs Chromium and starts its own production preview.
 
-Push to `main`. `.github/workflows/deploy.yml` builds and publishes `dist/` to
-GitHub Pages; the site is live about a minute later.
+Tests cover narrow layouts, keyboard focus, book filters, direct shared links, demo loading/recovery, reduced motion, automated accessibility, and HTML without JavaScript. `npm test` runs the canonical Helix Garden simulation regression.
 
-## Static assets (`public/`)
+## Publish
 
-- `demos/` — four playable demos. `Helix_Garden/` is a native canvas game: a
-  self-improving agent harness (companion to *Self-Improving Agents*, Manning) —
-  simulation core in `sim.js` (also runs headless in Node), UI in `index.html`;
-  `node scripts/helix-garden-regression.mjs` guards its canonical trial results.
-  The other three are Unity WebGL teaching games (Perceptron, Multilayer
-  Perceptron, Autoencoder) migrated from the 2020 site at `cxbxmxcx.github.io`.
-  Every demo page hides its own chrome when embedded in the site's demo cards.
-- `CNAME` — custom domain. `404.html` — sends unknown paths home.
-- Images are WebP; `og-image.png` stays PNG for social crawlers.
+Push to `main`. `.github/workflows/deploy.yml` installs dependencies, lints, runs the simulation checks, builds all static pages, runs browser checks, and publishes `dist/` to GitHub Pages. Verify the workflow succeeds and inspect the live site after deployment.
 
-## History
+Do not hand-edit `dist/`. GitHub Pages serves the generated `index.html` files at nested routes and the generated `404.html` for missing pages. The original game folders, CNAME, and social assets are copied from `public/`.
 
-The first version of this site (August 2026) was a single hand-written `index.html`;
-it is in git history at commit `7bb898d` if ever needed.
+## Demos
 
-## Licence
+The Proof Gate and Helix Garden are native browser companions to *Self-Improving Agents*. The Perceptron, Multilayer Perceptron, and Autoencoder games are the original Unity WebGL teaching builds. Phones open dedicated game pages; desktop visitors may also choose an embedded player.
 
-GPL-3.0, carried over from the original repository.
+## History and licence
+
+The first version (August 2026) was a single handwritten `index.html`, retained in git history at `7bb898d`. The repository uses GPL-3.0. Publisher names and book cover artwork remain the property of their respective owners.

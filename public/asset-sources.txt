@@ -1,0 +1,11 @@
+Images used to identify Micheal Lanham and his own books. Retrieved 2026-10-03.
+
+Author photograph: https://www.manning.com/authors/micheal-lanham
+Original: https://drek4537l1klr.cloudfront.net/lanham2/Figures/Lanham2.png
+
+Self-Improving Agents cover: https://www.manning.com/books/self-improving-agents
+AI Agents in Action, Second Edition cover: https://www.manning.com/books/ai-agents-in-action-second-edition
+AI Agents in Action cover: https://www.manning.com/books/ai-agents-in-action
+Evolutionary Deep Learning cover: https://www.manning.com/books/evolutionary-deep-learning
+
+Publisher names and cover artwork remain the property of their respective owners.

@@ -27,7 +27,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run lint
+      - run: npm test
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+        env:
+          SITE_URL: http://127.0.0.1:4173
+          STATIC_CHECK: '1'
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'public']),
+  globalIgnores(['dist', 'public', '.preview', 'self-improving-agents', 'Kimi_Agent_Interactive Trip Planner']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -19,5 +19,10 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+  },
+  {
+    files: ['src/entry-server.tsx'],
+    // This build-only module exports a renderer, not a hot-reloaded component.
+    rules: { 'react-refresh/only-export-components': 'off' },
   },
 ])
