@@ -18,3 +18,12 @@ export function getMetadata(path: string) {
   if (!PAGE_PATHS.includes(normalized)) { title = 'Page not found'; description = 'Explore books, interactive AI demos, and ways to work with Micheal Lanham.' }
   return { title: normalized === '/' ? title : `${title} — Micheal Lanham`, description, canonical: ORIGIN + normalized, noindex: !PAGE_PATHS.includes(normalized) }
 }
+
+export function getStructuredData(path: string) {
+  const normalized = path.endsWith('/') ? path : `${path}/`
+  const book = BOOKS.find(item => normalized === `/books/${item.slug}/`)
+  const person = { '@type': 'Person', name: 'Micheal Lanham', url: `${ORIGIN}/`, image: `${ORIGIN}/micheal-lanham.png`, sameAs: ['https://github.com/cxbxmxcx', 'https://www.manning.com/authors/micheal-lanham'] }
+  return book
+    ? { '@context': 'https://schema.org', '@type': 'Book', name: book.title, author: person, isbn: book.isbn || undefined, url: getMetadata(path).canonical, image: book.cover ? `${ORIGIN}${book.cover}` : undefined, publisher: { '@type': 'Organization', name: book.publisher } }
+    : { '@context': 'https://schema.org', ...person }
+}

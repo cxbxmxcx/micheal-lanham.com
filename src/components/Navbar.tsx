@@ -34,9 +34,15 @@ export default function Navbar() {
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
     }
+    const onHistory = () => {
+      restoreFocus.current = false
+      setOpen(false)
+    }
     document.addEventListener('keydown', onKey)
+    window.addEventListener('popstate', onHistory)
     return () => {
       document.removeEventListener('keydown', onKey)
+      window.removeEventListener('popstate', onHistory)
       document.documentElement.style.overflow = priorOverflow
       main.inert = footer.inert = header.inert = false
       if (restoreFocus.current) trigger?.focus()

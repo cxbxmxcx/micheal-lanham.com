@@ -49,7 +49,7 @@ Files: `src/entry-server.tsx`, `src/main.tsx`, `src/lib/metadata.ts`, `scripts/p
 
 ## Task 4: Review and publish
 
-- [ ] Fresh code review of the whole change, resolve material findings and rerun affected checks.
+- [x] Fresh code review of the whole change, resolve material findings and rerun affected checks.
 - [ ] Commit only task files, integrate to main and push through the existing deployment workflow.
 - [ ] Verify Actions success, live route HTML, assets and key interactions. Report the published URL and verification result.
 
@@ -63,3 +63,6 @@ Files: `src/entry-server.tsx`, `src/main.tsx`, `src/lib/metadata.ts`, `scripts/p
 - Removed replaced animation components and their unused dependencies. Scoped ESLint to this site, excluding unrelated nested project copies whose baseline errors do not belong to this change.
 - Dependency maintenance applied compatible updates. Production dependency audit is clean; five dev-only Tailwind 3 transitive advisory entries remain because the proposed fix is a breaking Tailwind 4 upgrade, outside this visual/content change.
 - Tasks 1–3 complete: 14 production browser tests pass, including automated WCAG checks and static HTML with JavaScript disabled. Build, lint and six Helix simulation assertions pass. Visual inspection covered 320, 390, 768 and 1440px, with all images loaded, no overflow and no browser errors. The deployment workflow now runs the same build and checks before publishing.
+- Fresh review identified lost library scroll position on Back, a mobile menu left open by history navigation, and stale structured data after client navigation. Three new regressions reproduced these failures. Entry-specific scroll restoration, history-driven menu dismissal, and shared schema generation fix all three; all 17 production browser checks now pass alongside build, lint, and the simulation regression.
+- Reviewer scope rulings: standalone game internals remain unchanged and are outside this site redesign; their five entry URLs pass the internal-link audit and the Helix simulation checks pass. External publisher availability is outside our control; content and new image/link sources were verified against public primary pages. Actual deployment remains part of Task 4 and will be checked after publication.
+- Static audit: all 26 content pages return readable HTML, one main heading, matching canonical metadata, and valid structured data without JavaScript. All 47 internal link/asset destinations checked successfully.

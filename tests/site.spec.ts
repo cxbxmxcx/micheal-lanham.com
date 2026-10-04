@@ -52,6 +52,48 @@ test('book topic filters keep matching books and open a detail page', async ({ p
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Find your next book.')
 })
 
+test('Back restores the reading position after opening a book near the library bottom', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/books/')
+  const book = page.getByRole('link', { name: 'About Game Audio Development with Unity 5.X', exact: true })
+  await book.scrollIntoViewIfNeeded()
+  const position = await page.evaluate(() => window.scrollY)
+  expect(position).toBeGreaterThan(1000)
+  await book.click()
+  await expect(page).toHaveURL(/\/books\/game-audio-development\/$/)
+  await page.goBack()
+  await expect(page).toHaveURL(/\/books\/$/)
+  await expect.poll(async () => Math.abs(await page.evaluate(() => window.scrollY) - position)).toBeLessThan(10)
+  await expect(page.locator('main')).toBeFocused()
+})
+
+test('Back and Forward close the mobile menu and focus the destination', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const toggle = page.getByRole('button', { name: 'Open menu', exact: true })
+  await toggle.click()
+  await page.getByRole('dialog').getByRole('link', { name: 'Contact', exact: true }).click()
+  await expect(page.locator('#contact')).toBeFocused()
+  await toggle.click()
+  await page.goBack()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page.locator('main')).toBeFocused()
+  await toggle.click()
+  await page.goForward()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page.locator('#contact')).toBeFocused()
+  expect(await page.locator('main').evaluate(element => element.inert)).toBe(false)
+})
+
+test('structured data follows client navigation between books', async ({ page }) => {
+  await page.goto('/books/ai-agents-in-action/')
+  await page.getByRole('link', { name: 'Looking for the latest material? Explore the second edition' }).click()
+  await expect(page).toHaveURL(/\/books\/ai-agents-in-action-second-edition\/$/)
+  const schema = page.locator('script[type="application/ld+json"]')
+  await expect.poll(async () => JSON.parse(await schema.textContent() || '{}').isbn).toBe('9781633434530')
+  await expect.poll(async () => JSON.parse(await schema.textContent() || '{}').url).toBe('https://micheal-lanham.com/books/ai-agents-in-action-second-edition/')
+})
+
 test('early access has a real publisher destination', async ({ page }) => {
   await page.goto('/books/self-improving-agents/')
   await expect(page.getByRole('link', { name: 'Read early chapters at Manning' })).toHaveAttribute('href', 'https://www.manning.com/books/self-improving-agents')
