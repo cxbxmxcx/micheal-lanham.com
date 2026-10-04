@@ -1,14 +1,41 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-test('hero interaction does not stop its canvas with an invalid radius', async ({ page }) => {
+test('agent learning loop responds to keyboard selection with reduced motion', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
-  await expect(page.locator('h1')).toBeVisible()
-  for (let i = 0; i < 30; i++) await page.mouse.click(1000, 240 + i)
-  await page.waitForTimeout(200)
+  const loop = page.getByRole('group', { name: 'Explore the agent learning loop' })
+  await expect(loop).toBeVisible()
+  const evaluate = loop.getByRole('button', { name: 'Evaluate', exact: true })
+  await evaluate.focus()
+  await page.keyboard.press('Enter')
+  await expect(evaluate).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('#agent-step')).toContainText('evidence')
+  await expect(evaluate).toBeFocused()
+  await page.keyboard.press('Tab')
+  const improve = loop.getByRole('button', { name: 'Improve', exact: true })
+  await expect(improve).toBeFocused()
+  await page.keyboard.press('Space')
+  await expect(improve).toHaveAttribute('aria-pressed', 'true')
+  await expect(evaluate).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.locator('#agent-step')).toContainText('change')
   expect(errors).toEqual([])
+})
+
+test('each agent step can be selected directly without overlapping controls', async ({ page }) => {
+  for (const width of [320, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    const loop = page.getByRole('group', { name: 'Explore the agent learning loop' })
+    for (const name of ['Observe', 'Act', 'Evaluate', 'Improve']) {
+      const button = loop.getByRole('button', { name, exact: true })
+      await button.click({ timeout: 2000 })
+      await expect(button).toHaveAttribute('aria-pressed', 'true')
+    }
+  }
 })
 
 test('phone layout stays inside the viewport before scroll reveals', async ({ page }) => {

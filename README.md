@@ -6,7 +6,7 @@ Live at https://micheal-lanham.com/ on GitHub Pages.
 
 ## Stack and structure
 
-Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a curated overview; books, services, and demos have collection and detail pages. A small canvas animation is decorative and respects reduced-motion preferences.
+Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a curated overview; books, services, and demos have collection and detail pages. A light palette, cobalt accents, and an interactive agent learning loop introduce the work. Diagram motion is brief and respects reduced-motion preferences. All 12 published books have verified cover artwork.
 
 `scripts/prerender.mjs` uses `src/entry-server.tsx` to generate HTML for every content route, plus a 404 page, sitemap, and robots.txt. The browser hydrates the same route tree. Keep `PAGE_PATHS` in `src/lib/metadata.ts` aligned with the data and router when adding page types.
 

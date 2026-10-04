@@ -1,22 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <defs>
-    <radialGradient id="core" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#E09B4A"/>
-      <stop offset="45%" stop-color="#C2703C"/>
-      <stop offset="100%" stop-color="#C2703C" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="fil" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#E09B4A"/>
-      <stop offset="100%" stop-color="#C2703C"/>
-    </linearGradient>
-  </defs>
-  <!-- dendrite filaments -->
-  <path d="M32 32 C24 24 18 20 10 14" stroke="url(#fil)" stroke-width="2.4" stroke-linecap="round"/>
-  <path d="M32 32 C42 26 48 24 56 16" stroke="url(#fil)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M32 32 C34 42 32 48 36 56" stroke="url(#fil)" stroke-width="1.8" stroke-linecap="round"/>
-  <!-- tiny teal satellite dot on one filament -->
-  <circle cx="47" cy="22.5" r="2.4" fill="#3E9E96"/>
-  <!-- glowing core -->
-  <circle cx="32" cy="32" r="10" fill="url(#core)" opacity="0.55"/>
-  <circle cx="32" cy="32" r="3.2" fill="#E09B4A"/>
+  <rect x="2" y="2" width="60" height="60" rx="18" fill="#2457E5"/>
+  <path d="M18 19L32 32L47 17M32 32L45 47M32 32L17 46" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="7" fill="#FFF"/>
+  <circle cx="18" cy="19" r="4" fill="#FFF"/>
+  <circle cx="47" cy="17" r="4" fill="#9CE5D9"/>
+  <circle cx="45" cy="47" r="4" fill="#FFF"/>
+  <circle cx="17" cy="46" r="4" fill="#9CE5D9"/>
 </svg>

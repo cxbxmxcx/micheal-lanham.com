@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { EMAIL } from '@/data/contact'
 
 export default function Footer() {
-  return <footer className="border-t border-panel-line py-10">
+  return <footer className="border-t border-line py-10">
     <div className="container-x flex flex-col justify-between gap-7 md:flex-row md:items-start">
       <div><Link to="/" className="font-display text-lg font-semibold">Micheal Lanham</Link><p className="mt-2 text-sm text-muted">Author &amp; AI practitioner · Calgary, Canada</p></div>
       <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-6 gap-y-3 text-sm">

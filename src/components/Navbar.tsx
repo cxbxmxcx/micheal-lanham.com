@@ -60,11 +60,11 @@ export default function Navbar() {
       <nav aria-label="Main navigation" className="container-x flex h-20 items-center justify-between gap-5">
         <Link to="/" className="flex shrink-0 items-center gap-3" aria-label="Micheal Lanham — home">
           <img src="/logo.svg" width="32" height="32" alt="" />
-          <span className="font-mono text-sm font-medium tracking-[0.12em]">MICHEAL LANHAM</span>
+          <span className="font-display text-lg font-semibold tracking-tight">Micheal Lanham</span>
         </Link>
         <div className="hidden items-center gap-7 lg:flex">
           {LINKS.map(link => <Link key={link.to} to={link.to} aria-current={!link.to.includes('#') && location.pathname.startsWith(link.to) ? 'page' : undefined} className="nav-link">{link.label}</Link>)}
-          <Link to="/work/" className="btn-amber">Work with me</Link>
+          <Link to="/work/" className="btn-primary">Work with me</Link>
         </div>
         <button ref={toggle} type="button" className="menu-toggle lg:hidden" aria-label="Open menu" aria-expanded={open} aria-controls={open ? 'site-menu' : undefined} onClick={() => { restoreFocus.current = true; setOpen(true) }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" /></svg>
@@ -76,7 +76,7 @@ export default function Navbar() {
       <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
         <Link to="/" onClick={followLink}>Home</Link>
         {LINKS.map(link => <Link key={link.to} to={link.to} onClick={followLink}>{link.label}</Link>)}
-        <Link to="/work/" onClick={followLink} className="text-amber">Work with me</Link>
+        <Link to="/work/" onClick={followLink} className="text-accent">Work with me</Link>
       </nav>
     </div>}
   </>

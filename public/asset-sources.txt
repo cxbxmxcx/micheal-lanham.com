@@ -9,3 +9,50 @@ AI Agents in Action cover: https://www.manning.com/books/ai-agents-in-action
 Evolutionary Deep Learning cover: https://www.manning.com/books/evolutionary-deep-learning
 
 Publisher names and cover artwork remain the property of their respective owners.
+
+Additional published covers, retrieved and visually checked 2026-10-04:
+
+Practical AI on the Google Cloud Platform (9781492075813)
+Publisher listing: https://www.oreilly.com/library/view/practical-ai-on/9781492075806/
+Cover image: https://learning.oreilly.com/covers/urn:orm:book:9781492075806/400w/
+Local file: /books/practical-ai-google-cloud.jpg
+
+Generating a New Reality (9781484270912)
+Publisher listing: https://link.springer.com/book/10.1007/978-1-4842-7092-9
+Cover image: https://media.springernature.com/full/springer-static/cover-hires/book/978-1-4842-7092-9
+Local file: /books/generating-a-new-reality.jpg
+
+Hands-On Reinforcement Learning for Games (9781839214936)
+Publisher listing: https://www.packtpub.com/en-us/product/hands-on-reinforcement-learning-for-games-9781839214936
+Cover image: https://learning.oreilly.com/covers/urn:orm:book:9781839214936/400w/
+Local file: /books/reinforcement-learning-for-games.jpg
+
+Hands-On Deep Learning for Games (9781788994071)
+Publisher listing: https://www.packtpub.com/en-us/product/hands-on-deep-learning-for-games-9781788994071
+Cover image: https://learning.oreilly.com/covers/urn:orm:book:9781788994071/400w/
+Local file: /books/deep-learning-for-games.jpg
+
+Learn Unity ML-Agents — Fundamentals of Unity Machine Learning (9781789138139)
+Publisher listing: https://www.packtpub.com/en-us/product/learn-unity-ml-agents-fundamentals-of-unity-machine-learning-9781789138139
+Cover image: https://learning.oreilly.com/covers/urn:orm:book:9781789138139/400w/
+Local file: /books/learn-unity-ml-agents.jpg
+
+Learn ARCore — Fundamentals of Google ARCore (9781788830409)
+Publisher listing: https://www.packtpub.com/en-us/product/learn-arcore-fundamentals-of-google-arcore-9781788830409
+Cover image: https://learning.oreilly.com/covers/urn:orm:book:9781788830409/400w/
+Local file: /books/learn-arcore.jpg
+
+Augmented Reality Game Development (9781787122888)
+Publisher listing: https://www.packtpub.com/en-us/product/augmented-reality-game-development-9781787122888
+Cover image: https://learning.oreilly.com/covers/urn:orm:book:9781787122888/400w/
+Local file: /books/augmented-reality-game-development.jpg
+
+Game Audio Development with Unity 5.X (9781787286450)
+Publisher listing: https://www.packtpub.com/en-us/product/game-audio-development-with-unity-5x-9781787286450
+Cover image: https://learning.oreilly.com/covers/urn:orm:book:9781787286450/400w/
+Local file: /books/game-audio-development.jpg
+
+Learn Python Game Development with ChatGPT (9789355516435)
+Publisher listing: https://bpbonline.com/products/learn-python-game-development-with-chatgpt
+Cover image: https://bpbonline.com/cdn/shop/files/2085_Epub_e4cab2b5-b26a-4d91-8bfa-10d347496dd7.jpg?v=1755669533
+Local file: /books/python-game-development-chatgpt.jpg
