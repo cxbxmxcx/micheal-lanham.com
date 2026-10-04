@@ -50,8 +50,8 @@ Files: `src/entry-server.tsx`, `src/main.tsx`, `src/lib/metadata.ts`, `scripts/p
 ## Task 4: Review and publish
 
 - [x] Fresh code review of the whole change, resolve material findings and rerun affected checks.
-- [ ] Commit only task files, integrate to main and push through the existing deployment workflow.
-- [ ] Verify Actions success, live route HTML, assets and key interactions. Report the published URL and verification result.
+- [x] Commit only task files, integrate to main and push through the existing deployment workflow.
+- [x] Verify Actions success, live route HTML, assets and key interactions. Report the published URL and verification result.
 
 ## Execution ledger
 
@@ -66,3 +66,4 @@ Files: `src/entry-server.tsx`, `src/main.tsx`, `src/lib/metadata.ts`, `scripts/p
 - Fresh review identified lost library scroll position on Back, a mobile menu left open by history navigation, and stale structured data after client navigation. Three new regressions reproduced these failures. Entry-specific scroll restoration, history-driven menu dismissal, and shared schema generation fix all three; all 17 production browser checks now pass alongside build, lint, and the simulation regression.
 - Reviewer scope rulings: standalone game internals remain unchanged and are outside this site redesign; their five entry URLs pass the internal-link audit and the Helix simulation checks pass. External publisher availability is outside our control; content and new image/link sources were verified against public primary pages. Actual deployment remains part of Task 4 and will be checked after publication.
 - Static audit: all 26 content pages return readable HTML, one main heading, matching canonical metadata, and valid structured data without JavaScript. All 47 internal link/asset destinations checked successfully.
+- Published application commit `7d4dd71f96cd8a9c10015f9af0691bc9d5372bb4` through [successful Actions run 37170834980](https://github.com/cxbxmxcx/micheal-lanham.com/actions/runs/37170834980). All 17 browser checks passed again against https://micheal-lanham.com/, and the live audit passed all 26 pages and 47 internal destinations. An unknown live URL returns HTTP 404 with noindex, no hydration errors, and a working home link. The pre-existing `.gitignore` modification remains untouched and uncommitted.
