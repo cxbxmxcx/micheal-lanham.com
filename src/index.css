@@ -147,6 +147,7 @@
   .loop-explanation { min-height: 135px; }
   .book-art { height: 300px; }
   .book-art img { max-height: 244px; }
+  .book-art-large { height: auto; }
   .book-art-large img { max-height: 320px; }
 }
 @media (prefers-reduced-motion: reduce) {

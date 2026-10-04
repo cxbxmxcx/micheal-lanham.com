@@ -127,12 +127,16 @@ test('early access has a real publisher destination', async ({ page }) => {
 })
 
 test('book covers stay inside the artwork area and clear the text', async ({ page }) => {
-  await page.goto('/books/')
-  const cover = page.locator('.book-preview .book-art img').first()
-  await cover.scrollIntoViewIfNeeded()
-  await expect(cover).toBeVisible()
-  const bounds = await cover.evaluate(image => ({ image: image.getBoundingClientRect().bottom, frame: image.parentElement!.getBoundingClientRect().bottom }))
-  expect(bounds.image).toBeLessThanOrEqual(bounds.frame)
+  await page.setViewportSize({ width: 390, height: 844 })
+  for (const path of ['/books/', '/books/self-improving-agents/', '/books/practical-ai-google-cloud/']) {
+    await page.goto(path)
+    const cover = page.locator('.book-art img').first()
+    await cover.scrollIntoViewIfNeeded()
+    await cover.evaluate(image => (image as HTMLImageElement).decode())
+    await expect(cover).toBeVisible()
+    const bounds = await cover.evaluate(image => ({ image: image.getBoundingClientRect().bottom, frame: image.parentElement!.getBoundingClientRect().bottom }))
+    expect(bounds.image, path).toBeLessThanOrEqual(bounds.frame)
+  }
 })
 
 test('a shared topic link hydrates without errors and preserves keyboard focus when filtering', async ({ page }) => {
