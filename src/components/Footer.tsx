@@ -10,6 +10,6 @@ export default function Footer() {
       </nav>
       <a className="break-all text-sm text-teal" href={`mailto:${EMAIL}`}>{EMAIL}</a>
     </div>
-    <p className="container-x mt-8 text-sm text-muted">© {new Date().getFullYear()} Micheal Lanham</p>
+    <p className="container-x mt-8 text-sm text-muted">© {__BUILD_YEAR__} Micheal Lanham</p>
   </footer>
 }

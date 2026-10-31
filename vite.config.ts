@@ -8,6 +8,11 @@ export default defineConfig({
   // favicon/OG paths and the root-absolute asset paths in src consistent.
   base: '/',
   plugins: [react()],
+  define: {
+    // Fixed when the site is built, so the prerendered footer and the hydrated
+    // page agree even after a visitor's clock reaches a new year.
+    __BUILD_YEAR__: JSON.stringify(String(new Date().getFullYear())),
+  },
   server: {
     port: 3000,
   },

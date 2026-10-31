@@ -204,6 +204,22 @@ test('key pages have no automated WCAG A/AA violations', async ({ page }) => {
   }
 })
 
+test('pages hydrate without errors after the year changes', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  page.on('console', message => { if (message.type() === 'error' && /react|hydrat|#4\d\d/i.test(message.text())) errors.push(message.text()) })
+  // The prerendered footer carries the build year. A visitor whose clock has
+  // reached a later year must still hydrate the same markup (React error #418).
+  await page.clock.setFixedTime(new Date('2027-01-02T09:00:00Z'))
+  for (const url of ['/', '/books/', '/work/architecture-reviews/', '/demos/']) {
+    await page.goto(url)
+    await expect(page.locator('h1')).toBeVisible()
+    // Layout's first effect runs only once hydration has committed.
+    await expect.poll(() => page.evaluate(() => window.history.scrollRestoration), { message: url }).toBe('manual')
+  }
+  expect(errors).toEqual([])
+})
+
 test('prerendered detail content and metadata work without JavaScript', async ({ browser }) => {
   test.skip(!process.env.STATIC_CHECK, 'Runs against the production build')
   const context = await browser.newContext({ javaScriptEnabled: false })
