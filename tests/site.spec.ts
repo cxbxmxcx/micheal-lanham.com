@@ -67,6 +67,27 @@ test('service scope is visible immediately without typing delays', async ({ page
   await expect(mail).toHaveAttribute('href', /mailto:.*subject=.*body=/)
 })
 
+test('service inquiries start in the first phone screen, with a copy-email fallback', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.setViewportSize({ width: 390, height: 844 })
+  for (const [url, cta] of [['/work/architecture-reviews/', 'Request an architecture review'], ['/work/workshops/', 'Discuss a team workshop']]) {
+    await page.goto(url)
+    const link = page.getByRole('link', { name: cta, exact: true }).first()
+    await expect(link).toBeVisible()
+    expect((await link.boundingBox())!.y, url).toBeLessThan(844)
+  }
+  await page.getByRole('button', { name: 'Copy email address', exact: true }).first().click()
+  await expect(page.getByRole('status').filter({ hasText: 'Email address copied.' })).toHaveCount(1)
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('cxbxmxcx@micheal-lanham.com')
+})
+
+test('the Work with me button marks the current section', async ({ page }) => {
+  await page.goto('/work/workshops/')
+  await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Work with me', exact: true })).toHaveAttribute('aria-current', 'page')
+  await page.goto('/books/')
+  await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Work with me', exact: true })).not.toHaveAttribute('aria-current')
+})
+
 test('book topic filters keep matching books and open a detail page', async ({ page }) => {
   await page.goto('/books/')
   await page.getByRole('button', { name: 'AI agents', exact: true }).click()

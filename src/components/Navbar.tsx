@@ -14,6 +14,7 @@ export default function Navbar() {
   const dialog = useRef<HTMLDivElement>(null)
   const restoreFocus = useRef(true)
   const location = useLocation()
+  const current = (to: string) => !to.includes('#') && location.pathname.startsWith(to) ? 'page' : undefined
 
   useEffect(() => {
     if (!open) return
@@ -63,8 +64,8 @@ export default function Navbar() {
           <span className="font-display text-lg font-semibold tracking-tight">Micheal Lanham</span>
         </Link>
         <div className="hidden items-center gap-7 lg:flex">
-          {LINKS.map(link => <Link key={link.to} to={link.to} aria-current={!link.to.includes('#') && location.pathname.startsWith(link.to) ? 'page' : undefined} className="nav-link">{link.label}</Link>)}
-          <Link to="/work/" className="btn-primary">Work with me</Link>
+          {LINKS.map(link => <Link key={link.to} to={link.to} aria-current={current(link.to)} className="nav-link">{link.label}</Link>)}
+          <Link to="/work/" aria-current={current('/work/')} className="btn-primary">Work with me</Link>
         </div>
         <button ref={toggle} type="button" className="menu-toggle lg:hidden" aria-label="Open menu" aria-expanded={open} aria-controls={open ? 'site-menu' : undefined} onClick={() => { restoreFocus.current = true; setOpen(true) }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" /></svg>
@@ -75,8 +76,8 @@ export default function Navbar() {
       <button type="button" className="menu-close" onClick={() => setOpen(false)}>Close menu <span aria-hidden="true">×</span></button>
       <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
         <Link to="/" onClick={followLink}>Home</Link>
-        {LINKS.map(link => <Link key={link.to} to={link.to} onClick={followLink}>{link.label}</Link>)}
-        <Link to="/work/" onClick={followLink} className="text-accent">Work with me</Link>
+        {LINKS.map(link => <Link key={link.to} to={link.to} aria-current={current(link.to)} onClick={followLink}>{link.label}</Link>)}
+        <Link to="/work/" aria-current={current('/work/')} onClick={followLink} className="text-accent">Work with me</Link>
       </nav>
     </div>}
   </>

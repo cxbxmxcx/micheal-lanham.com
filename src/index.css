@@ -40,6 +40,7 @@
   .mobile-menu { position: fixed; inset: 0; z-index: 100; background: var(--surface); padding: 1.25rem; overflow-y: auto; }
   .mobile-menu nav { margin: 3rem auto 0; max-width: 36rem; }
   .mobile-menu nav a { padding: .6rem; font: 600 1.8rem/1.25 'Space Grotesk', sans-serif; }
+  .mobile-menu nav a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 8px; }
   .menu-close { @apply ml-auto flex min-h-11 items-center gap-5 rounded-btn border border-line px-5; }
   .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 200; padding: .8rem 1.2rem; background: var(--accent); color: white; border-radius: 8px; }
   .skip-link:focus { top: 1rem; }
@@ -47,6 +48,7 @@
   .btn-primary, .btn-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-btn px-5 py-3 text-sm font-semibold; text-align: center; line-height: 1.45; transition: background-color .15s, color .15s, border-color .15s; }
   .btn-primary { background: var(--accent); color: white; border: 1px solid transparent; box-shadow: 0 3px 8px #2457e518; }
   .btn-primary:hover { background: #1944BE; }
+  .btn-primary[aria-current='page'] { background: #1944BE; box-shadow: 0 0 0 3px #C9D7FA; }
   .btn-secondary { color: var(--ink); background: var(--surface); border: 1px solid #BFCBDF; }
   .btn-secondary:hover { border-color: var(--accent); background: #F0F5FF; }
   .text-link { @apply inline-flex min-h-11 items-center gap-2 text-sm font-medium text-teal; }
