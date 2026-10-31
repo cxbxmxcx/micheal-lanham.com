@@ -37,7 +37,11 @@
   /* Embedded in the site's demo card: drop the page chrome, centre the canvas */
   .embedded .bar, .embedded .shell h1, .embedded .desc, .embedded .note { display:none; }
   .embedded .shell { padding:0; max-width:none; }
-  .embedded .stage { display:flex; justify-content:center; }
+  /* Centre with auto margins: in an iframe narrower than the 1,050 px canvas
+     they collapse to zero and the overflow goes right, where .stage scrolls.
+     justify-content:center pushed it past the left edge, out of reach. */
+  .embedded .stage { display:flex; }
+  .embedded .webgl-content { margin:0 auto !important; }
   .embedded .footer { display:none; }
   button.fullscreen { border:0; padding:0; cursor:pointer; }
 </style>

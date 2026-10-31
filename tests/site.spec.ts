@@ -230,6 +230,24 @@ test('mobile demos use the full page instead of a tiny iframe', async ({ page })
   await expect(page.locator('iframe')).toHaveCount(0)
 })
 
+test('an embedded Unity game at 1,024 px keeps its left edge and can scroll to its right edge', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 900 })
+  await page.goto('/demos/perceptron/')
+  await page.getByRole('button', { name: 'Play here', exact: true }).click()
+  const game = page.frameLocator('iframe[title="The Perceptron Game"]').locator('#unityContainer')
+  await expect(game).toBeAttached()
+  // The 1,050 px canvas is wider than the iframe here; none of it may be out of reach.
+  const box = await game.evaluate(element => {
+    const stage = element.closest('.stage')!
+    const start = element.getBoundingClientRect(), view = stage.getBoundingClientRect()
+    stage.scrollLeft = stage.scrollWidth
+    return { left: start.left - view.left, right: element.getBoundingClientRect().right - view.right, overflow: stage.scrollWidth - stage.clientWidth }
+  })
+  expect(box.left, 'left edge hidden').toBeGreaterThanOrEqual(0)
+  expect(box.right, 'right edge out of reach').toBeLessThanOrEqual(1)
+  expect(box.overflow).toBeGreaterThan(0)
+})
+
 test('desktop demo can start and close, with honest failure recovery', async ({ page }) => {
   await page.goto('/demos/proof-gate/')
   await page.getByRole('button', { name: 'Play here', exact: true }).click()
