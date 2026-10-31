@@ -72,10 +72,11 @@
   .hero-art::before { content: ''; position: absolute; inset: 20% 22% 4% 0; border-radius: 28px; background: radial-gradient(#C3D2EE 1.2px, transparent 1.3px) 0 0 / 18px 18px, linear-gradient(165deg, #E4ECFC, #F3F6FC); }
   .hero-portrait { position: absolute; top: 0; right: 0; width: 59%; height: auto; border: 6px solid var(--surface); border-radius: 26px; box-shadow: 0 26px 60px #17305a24, 0 4px 12px #17305a12; }
   .hero-covers { margin: 0; padding: 0; list-style: none; }
-  .hero-covers li { position: absolute; transform-origin: 50% 100%; }
-  .hero-covers li:nth-child(1) { z-index: 3; left: 30%; bottom: 0; width: 35%; transform: rotate(5deg); }
-  .hero-covers li:nth-child(2) { z-index: 2; left: 14%; bottom: 3%; width: 31%; transform: rotate(-4deg); }
-  .hero-covers li:nth-child(3) { z-index: 1; left: 1%; bottom: 8%; width: 28%; transform: rotate(-11deg); }
+  /* The covers fan out from a stack on first paint; reduced motion shows the fan at rest. */
+  .hero-covers li { position: absolute; transform: rotate(var(--fan, 0deg)); transform-origin: 50% 100%; animation: cover-fan .9s cubic-bezier(.2, .75, .25, 1) .15s both; }
+  .hero-covers li:nth-child(1) { --fan: 5deg; z-index: 3; left: 30%; bottom: 0; width: 35%; }
+  .hero-covers li:nth-child(2) { --fan: -4deg; z-index: 2; left: 14%; bottom: 3%; width: 31%; animation-delay: .22s; }
+  .hero-covers li:nth-child(3) { --fan: -11deg; z-index: 1; left: 1%; bottom: 8%; width: 28%; animation-delay: .29s; }
   .hero-covers a { display: block; border-radius: 4px; transition: transform .2s ease; }
   .hero-covers a:hover { transform: translateY(-6px); }
   .hero-covers img { display: block; width: 100%; height: auto; border-radius: 2px 5px 5px 2px; box-shadow: 0 18px 34px #10203c3d, 0 3px 8px #10203c24; }
@@ -87,6 +88,26 @@
   .hero-publishers > p { @apply font-mono text-xs font-medium uppercase text-muted; letter-spacing: .12em; }
   .hero-publishers ul { display: flex; flex-wrap: wrap; gap: 4px 26px; margin-top: 8px; }
   .hero-publishers li { font: 600 1.2rem/1.5 'Space Grotesk', sans-serif; letter-spacing: -.01em; color: var(--ink); }
+  /* Home bookshelf: every cover, newest first, standing on a shelf line. */
+  .shelf { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px 20px; margin: 4px 0 0; padding: 0; list-style: none; }
+  .shelf li { flex: 0 0 calc((100% - 6 * 20px) / 7); min-width: 0; }
+  .shelf a { display: flex; flex-direction: column; gap: 12px; border-radius: 4px; }
+  .shelf-cover { position: relative; display: block; aspect-ratio: 4 / 5; }
+  .shelf-cover::after { content: ''; position: absolute; left: -10px; right: -10px; bottom: -7px; height: 7px; border-radius: 2px; background: linear-gradient(#E2E9F4, #C9D4E6); box-shadow: 0 9px 14px -8px #284A834D; }
+  .shelf-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(3px 6px 6px #172A4038); transition: transform .2s ease; }
+  .shelf a:hover img, .shelf a:focus-visible img { transform: translateY(-8px); }
+  .shelf-year { padding-top: 4px; text-align: center; font: 500 .75rem/1.4 'JetBrains Mono', monospace; letter-spacing: .06em; color: var(--muted); }
+  /* The home page closes on a cobalt band; /work/ keeps its light contact section. */
+  #about + #contact { position: relative; overflow: clip; border-top-color: transparent; color: #FFF; background: radial-gradient(ellipse at 92% -20%, #3563EC 0, transparent 50%), linear-gradient(165deg, #2457E5, #1C45C6); }
+  #about + #contact::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(#FFFFFF2E 1.2px, transparent 1.3px) 0 0 / 18px 18px; -webkit-mask-image: linear-gradient(100deg, transparent 45%, #000 95%); mask-image: linear-gradient(100deg, transparent 45%, #000 95%); }
+  #about + #contact > * { position: relative; }
+  #about + #contact .kicker, #about + #contact .section-lede { color: #E6EDFF; }
+  #about + #contact .btn-primary { background: #FFF; color: #1C45C6; box-shadow: 0 8px 20px #0B1F6633; }
+  #about + #contact .btn-primary:hover { background: #EDF2FF; }
+  #about + #contact .btn-secondary { background: transparent; color: #FFF; border-color: #FFFFFF99; }
+  #about + #contact .btn-secondary:hover { background: #FFFFFF1A; border-color: #FFF; }
+  #about + #contact a:not([class*='btn']), #about + #contact [role='status'] { color: #FFF; text-decoration-color: #FFFFFF99; }
+  #about + #contact :focus-visible { outline-color: #FFF; }
   /* The agent loop, now its own home-page section. */
   .loop-section { background: var(--surface); border-top: 1px solid var(--line); }
   .loop-layout { display: grid; gap: 8px 32px; align-items: center; }
@@ -189,6 +210,7 @@
 }
 
 @keyframes flow-step { from { stroke-dashoffset: 33; } to { stroke-dashoffset: 0; } }
+@keyframes cover-fan { from { transform: translateY(14px) rotate(0deg); } to { transform: rotate(var(--fan, 0deg)); } }
 @media (min-width: 1024px) {
   .menu-toggle { display: none; }
   .hero-grid { grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto 1fr; grid-template-areas: '. art' 'intro art' 'actions art' '. art'; gap: 0 clamp(40px, 5vw, 80px); }
@@ -210,6 +232,7 @@
 @media (min-width: 640px) and (max-width: 1023px) {
   .agent-loop { max-width: 580px; width: 100%; margin-inline: auto; }
   .hero-art { max-width: 480px; }
+  .shelf li { flex-basis: calc((100% - 4 * 20px) / 5); }
 }
 /* Keep the book title on one line on phones wide enough to hold it. */
 @media (min-width: 360px) and (max-width: 639px) {
@@ -224,7 +247,7 @@
   .hero-portrait { width: 50%; border-width: 4px; border-radius: 20px; }
   .hero-covers li:nth-child(1) { left: 35%; width: 30%; }
   .hero-covers li:nth-child(2) { left: 19%; width: 27%; }
-  .hero-covers li:nth-child(3) { left: 5%; width: 24%; transform: rotate(-8deg); }
+  .hero-covers li:nth-child(3) { --fan: -8deg; left: 5%; width: 24%; }
   .hero-facts { gap: 12px; }
   .hero-facts dt { font-size: .8rem; line-height: 1.35; }
   .hero-publishers li { font-size: 1.05rem; }
@@ -232,6 +255,12 @@
   .lab-tiles { gap: 12px; }
   .lab-tiles a { padding: 8px 8px 12px; }
   .lab-tile-title { font-size: .92rem; }
+  /* Home shelf on phones: one row that scrolls sideways, with the next cover peeking in. */
+  .shelf { flex-wrap: nowrap; justify-content: flex-start; gap: 18px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: clamp(20px, 5vw, 48px); margin-inline: calc(-1 * clamp(20px, 5vw, 48px)); padding: 14px clamp(20px, 5vw, 48px) 16px; scrollbar-width: none; }
+  .shelf::-webkit-scrollbar { display: none; }
+  .shelf li { flex: 0 0 27%; scroll-snap-align: start; }
+  .shelf-cover::after { left: -9px; right: -9px; }
+  .shelf-year { letter-spacing: 0; white-space: nowrap; }
   /* Library on phones: chips scroll sideways, covers sit two to a row. */
   .filter-row { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * clamp(20px, 5vw, 48px)); padding: 2px clamp(20px, 5vw, 48px) 8px; scrollbar-width: none; }
   .filter-row::-webkit-scrollbar { display: none; }

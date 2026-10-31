@@ -26,6 +26,22 @@ test('the home page leads with the author, his books and his credentials', async
   expect(credentials!.y).toBeLessThan(loop!.y)
 })
 
+test('the home bookshelf shows every book newest first, and only the home page closes on a cobalt band', async ({ page }) => {
+  await page.goto('/')
+  const shelf = page.getByRole('list', { name: 'Books by Micheal Lanham, newest first' })
+  const links = shelf.getByRole('link')
+  expect(await links.count()).toBeGreaterThanOrEqual(13)
+  await expect(links.first()).toHaveAttribute('href', '/books/self-improving-agents/')
+  await expect(links.first()).toContainText('Early access')
+  const years = (await shelf.locator('.shelf-year').allTextContents()).filter(text => /^\d{4}$/.test(text)).map(Number)
+  expect(years).toEqual([...years].sort((a, b) => b - a))
+  for (const href of await links.evaluateAll(anchors => anchors.map(anchor => anchor.getAttribute('href')))) expect(href).toMatch(/^\/books\/[a-z0-9-]+\/$/)
+  expect(await page.locator('#contact').evaluate(element => getComputedStyle(element).backgroundImage)).toContain('gradient')
+
+  await page.goto('/work/')
+  expect(await page.locator('#contact').evaluate(element => getComputedStyle(element).backgroundImage)).toBe('none')
+})
+
 test('the dark lab band leads into all five demos', async ({ page }) => {
   await page.goto('/')
   const lab = page.locator('#demos')
