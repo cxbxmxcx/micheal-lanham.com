@@ -15,7 +15,7 @@ Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a cu
 - **Book bibliography:** `src/components/books/booksData.ts`. Verify titles, dates, ISBNs, and destinations against publisher listings before editing.
 - **Book discovery, audiences, early access, covers:** `src/data/books.ts`.
 - **Services and inquiry prompts:** `src/data/services.ts`. Scope and schedule are agreed per engagement; do not add unconfirmed promises.
-- **Demos:** `src/data/demos.ts`. Original standalone game URLs are preserved under `public/demos/`.
+- **Demos:** `src/data/demos.ts`, including `UNITY_GUIDES` (How to play and a text description for the Unity games, repeated in each game's `index.html`; a test keeps the two identical). Original standalone game URLs are preserved under `public/demos/`.
 - **Biography and homepage copy:** `src/sections/`.
 - **Email address:** `src/data/contact.ts`.
 - **Page metadata:** `src/lib/metadata.ts`; shared social artwork and font preloads: `index.html`.
@@ -35,7 +35,7 @@ npm run preview -- --port 4173
 
 Browser tests use installed Google Chrome locally. Against a running production preview, set `SITE_URL=http://127.0.0.1:4173` and `STATIC_CHECK=1`, then run `npm run test:browser`. Without these variables, tests target the development server on port 3000 and skip the static HTML check. CI installs Chromium and starts its own production preview.
 
-Tests cover narrow layouts, keyboard focus, book filters, direct shared links, demo loading/recovery, reduced motion, automated accessibility, and HTML without JavaScript. `npm test` runs the canonical Helix Garden simulation regression.
+Tests cover narrow layouts, keyboard focus, book filters, direct shared links and `index.html` aliases, hydration after the year changes, the 404 metadata, service inquiries, demo loading/recovery (including the Unity phone notice, standalone errors and the embed at 1,024 px), every Proof Gate scene, reduced motion, automated accessibility (WCAG tags plus heading order and label-in-name), self-hosted fonts with no third-party requests, and HTML without JavaScript. `npm test` runs the canonical Helix Garden simulation regression and checks that the responsive images are current.
 
 ## Publish
 
@@ -45,7 +45,7 @@ Do not hand-edit `dist/`. GitHub Pages serves the generated `index.html` files a
 
 ## Demos
 
-The Proof Gate and Helix Garden are native browser companions to *Self-Improving Agents*. The Perceptron, Multilayer Perceptron, and Autoencoder games are the original Unity WebGL teaching builds. Phones open dedicated game pages; desktop visitors may also choose an embedded player.
+The Proof Gate and Helix Garden are native browser companions to *Self-Improving Agents*. The Perceptron, Multilayer Perceptron, and Autoencoder games are the original Unity WebGL teaching builds. They share one copy of the Unity 2019.3 engine in `public/demos/unity-2019.3/`, where `unity-player.js` starts each game with a status line, in-page errors with Try again, and a desktop-required notice on phones (skipped with `?device=any`). Desktop visitors may also choose an embedded player.
 
 ## History and licence
 
