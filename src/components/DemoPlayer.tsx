@@ -30,7 +30,7 @@ export default function DemoPlayer({ demo }: { demo: Demo }) {
   const close = () => { setActive(false); requestAnimationFrame(() => start.current?.focus()) }
   return <div className="mt-8">
     <div className="flex flex-wrap items-center gap-4">
-      <a className="btn-primary" href={demo.playUrl}>Play {demo.title} <span aria-hidden="true">↗</span></a>
+      <a className="btn-primary" href={demo.playUrl}>Play {demo.title} <span aria-hidden="true">→</span></a>
       {!active && <button ref={start} type="button" className="btn-secondary hidden md:inline-flex" onClick={() => { setStatus('loading'); setActive(true) }}>Play here</button>}
     </div>
     <p className="mt-4 text-sm text-muted">{demo.device}. Opens on its own page for more room to explore.</p>

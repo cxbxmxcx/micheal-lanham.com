@@ -80,9 +80,9 @@
   .loop-flow.is-selected { color: var(--accent); stroke-width: 2.5; stroke-dasharray: 6 5; animation: flow-step 1.1s ease-out 1; }
   .loop-core { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; width: 30%; aspect-ratio: 1; border: 1px solid #C6D6F4; border-radius: 50%; background: #F0F5FF; }
   .loop-core > span { font: 600 1.35rem/1 'Space Grotesk', sans-serif; color: var(--accent); }
-  .loop-core small { font-size: .6rem; color: var(--muted); text-align: center; }
+  .loop-core small { font-size: .75rem; line-height: 1.25; color: var(--muted); text-align: center; }
   .loop-node { position: absolute; width: 31%; height: 20%; min-height: 48px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px; padding: 8px 14px; background: var(--surface); border: 1px solid #BCCAE0; border-radius: 10px; font-size: .9rem; font-weight: 600; box-shadow: 0 3px 10px #284a8308; }
-  .loop-node > span { font: 500 .6rem/1.1 'JetBrains Mono', monospace; color: var(--muted); }
+  .loop-node > span { font: 500 .75rem/1.1 'JetBrains Mono', monospace; color: var(--muted); }
   .loop-node[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: white; }
   .loop-node[aria-pressed='true'] > span { color: white; }
   .loop-node:hover { border-color: var(--accent); }
@@ -114,11 +114,13 @@
   .reading-copy h2:first-child { margin-top: 0; }
   .reading-copy h3 { @apply font-display text-xl font-semibold; }
   .reading-copy p { @apply mt-4 leading-relaxed text-muted; }
+  .reading-copy > :is(p, ul, ol):not(.notice) { max-width: 68ch; }
   .reading-copy ul, .reading-copy ol { @apply my-4 space-y-3 pl-5 leading-relaxed text-muted; }
   .reading-copy ul { list-style: disc; }
   .reading-copy ol { list-style: decimal; }
   .reading-copy li::marker { color: var(--teal); }
   .notice { @apply rounded-card border border-line bg-surface p-5 text-sm leading-relaxed text-muted; }
+  .notice :is(h2, h3) { color: var(--ink); }
   .book-details { @apply mt-8 grid grid-cols-2 gap-5 border-t border-line pt-6 text-sm; }
   .book-details dt { @apply mb-1 text-muted; }
   .book-details dd { overflow-wrap: anywhere; }
@@ -148,7 +150,7 @@
   .agent-loop { padding: 16px; border-radius: 18px; }
   .loop-node { padding: 6px 10px; font-size: .8rem; }
   .loop-core > span { font-size: 1.05rem; }
-  .loop-core small { max-width: 65px; font-size: .55rem; }
+  .loop-core small { max-width: 72px; }
   .loop-explanation { min-height: 135px; }
   .book-art { height: 300px; }
   .book-art img { max-height: 244px; }
