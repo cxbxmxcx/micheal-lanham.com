@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router'
+import { EMAIL } from '@/data/contact'
 
 const LINKS = [
   { label: 'Books', to: '/books/' },
@@ -10,6 +11,7 @@ const LINKS = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [copyMessage, setCopyMessage] = useState('')
   const toggle = useRef<HTMLButtonElement>(null)
   const dialog = useRef<HTMLDivElement>(null)
   const restoreFocus = useRef(true)
@@ -54,6 +56,10 @@ export default function Navbar() {
     setOpen(false)
     requestAnimationFrame(() => document.getElementById(window.location.hash.slice(1) || 'main')?.focus())
   }
+  const copyEmail = async () => {
+    try { await navigator.clipboard.writeText(EMAIL); setCopyMessage('Email address copied.') }
+    catch { setCopyMessage('Copy was unavailable. Select the email address above to copy it.') }
+  }
 
   return <>
     <header className="site-header">
@@ -66,18 +72,27 @@ export default function Navbar() {
           {LINKS.map(link => <Link key={link.to} to={link.to} aria-current={!link.to.includes('#') && location.pathname.startsWith(link.to) ? 'page' : undefined} className="nav-link">{link.label}</Link>)}
           <Link to="/work/" className="btn-primary">Work with me</Link>
         </div>
-        <button ref={toggle} type="button" className="menu-toggle lg:hidden" aria-label="Open menu" aria-expanded={open} aria-controls={open ? 'site-menu' : undefined} onClick={() => { restoreFocus.current = true; setOpen(true) }}>
+        <button ref={toggle} type="button" className="menu-toggle lg:hidden" aria-label="Open menu" aria-expanded={open} aria-controls={open ? 'site-menu' : undefined} onClick={() => { restoreFocus.current = true; setCopyMessage(''); setOpen(true) }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" /></svg>
         </button>
       </nav>
     </header>
     {open && <div ref={dialog} id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" className="mobile-menu">
-      <button type="button" className="menu-close" onClick={() => setOpen(false)}>Close menu <span aria-hidden="true">×</span></button>
+      <div className="menu-top">
+        <span className="menu-brand"><img src="/logo.svg" width="32" height="32" alt="" />Micheal Lanham</span>
+        <button type="button" className="menu-close" onClick={() => setOpen(false)}>Close menu <span aria-hidden="true">×</span></button>
+      </div>
       <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
         <Link to="/" onClick={followLink}>Home</Link>
         {LINKS.map(link => <Link key={link.to} to={link.to} onClick={followLink}>{link.label}</Link>)}
-        <Link to="/work/" onClick={followLink} className="text-accent">Work with me</Link>
+        <Link to="/work/" onClick={followLink} className="btn-primary menu-cta">Work with me</Link>
       </nav>
+      <div className="menu-contact">
+        <p>Prefer email?</p>
+        <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        <button type="button" className="btn-secondary" onClick={copyEmail}>Copy email address</button>
+        <p role="status" className="min-h-6 text-teal">{copyMessage}</p>
+      </div>
     </div>}
   </>
 }

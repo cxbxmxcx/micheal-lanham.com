@@ -1,27 +1,44 @@
 import { Link } from 'react-router'
-import AgentLoop from '@/components/AgentLoop'
-import { PUBLISHED_BOOKS, UPCOMING_BOOKS } from '@/data/books'
+import { BOOKS, PUBLISHED_BOOKS, UPCOMING_BOOKS } from '@/data/books'
+
+const PUBLISHERS = ['Manning', 'O’Reilly', 'Apress', 'Packt', 'BPB']
+// Listed front to back: the first cover sits on top of the fan.
+const COVERS = ['self-improving-agents', 'ai-agents-in-action-second-edition', 'evolutionary-deep-learning']
+  .map(slug => BOOKS.find(book => book.slug === slug)!)
 
 export default function Hero() {
   return <section id="top" className="hero-section">
     <div className="container-x">
-      <div className="hero-grid"><div className="hero-copy">
-      <p className="kicker">Micheal Lanham · Author &amp; AI practitioner</p>
-      <h1>Systems that<br /><span className="text-accent">learn, adapt,</span><br /> and improve.</h1>
-      <p className="hero-lede">I write books and build software around AI agents and evolutionary learning. I help teams design better agent systems through architecture reviews and hands-on training.</p>
-      <div className="mt-7 flex flex-wrap gap-3">
-        <Link className="btn-primary" to="/work/">Work with me <span aria-hidden="true">↗</span></Link>
-        <Link className="btn-secondary" to="/books/">Explore the books</Link>
+      <div className="hero-grid">
+        <div className="hero-intro">
+          <p className="kicker">Author &amp; AI practitioner</p>
+          <h1>Micheal Lanham,<br /> <span className="text-accent">author of <span className="hero-book">AI Agents in Action</span>.</span></h1>
+          <p className="hero-lede">My next Manning book, <span className="hero-title">Self-Improving Agents</span>, is in early access. I also help teams design better agent systems through architecture reviews and hands-on training.</p>
+        </div>
+        <div className="hero-art">
+          <img className="hero-portrait" src="/micheal-lanham.png" alt="Micheal Lanham" width="350" height="436" fetchPriority="high" />
+          <ul className="hero-covers" aria-label="Featured books">
+            {COVERS.map(book => <li key={book.slug}><Link to={`/books/${book.slug}/`}><img src={book.cover} alt={book.title} width="360" height="451" /></Link></li>)}
+          </ul>
+        </div>
+        <div className="hero-actions">
+          <div className="flex flex-wrap gap-3">
+            <Link className="btn-primary" to="/work/">Work with me <span aria-hidden="true">→</span></Link>
+            <Link className="btn-secondary" to="/books/">Browse the books</Link>
+          </div>
+          <Link to="/demos/proof-gate/" className="mt-5 inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">Learn by doing: play The Proof Gate <span className="ml-2 text-teal" aria-hidden="true">→</span></Link>
+        </div>
       </div>
-      <Link to="/demos/proof-gate/" className="mt-6 inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">Learn by doing: play The Proof Gate <span className="ml-2 text-teal" aria-hidden="true">→</span></Link>
-      </div><AgentLoop /></div>
-      <div className="hero-credentials">
-      <dl className="hero-facts">
-        <div><dt>Published books</dt><dd>{PUBLISHED_BOOKS.length}</dd></div>
-        <div><dt>Years in software</dt><dd>20+</dd></div>
-        <div><dt>Books in development</dt><dd>{UPCOMING_BOOKS.length}</dd></div>
-      </dl>
-      <p className="mt-4 text-sm text-muted">Published with Manning, O’Reilly, Apress, Packt, and BPB.</p>
+      <div className="hero-proof">
+        <dl className="hero-facts">
+          <div><dt>Published books</dt><dd>{PUBLISHED_BOOKS.length}</dd></div>
+          <div><dt>Years in software</dt><dd>20+</dd></div>
+          <div><dt>Books in development</dt><dd>{UPCOMING_BOOKS.length}</dd></div>
+        </dl>
+        <div className="hero-publishers">
+          <p>Published with</p>
+          <ul>{PUBLISHERS.map(name => <li key={name}>{name}</li>)}</ul>
+        </div>
       </div>
     </div>
   </section>
