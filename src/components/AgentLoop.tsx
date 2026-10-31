@@ -21,7 +21,7 @@ export default function AgentLoop() {
         {PATHS.map((path, index) => <path key={path} d={path} markerEnd="url(#loop-arrow)" className={`loop-flow ${index === selected ? 'is-selected' : ''}`} />)}
       </svg>
       <div className="loop-core" aria-hidden="true"><span>Agent</span><small>Context + memory</small></div>
-      {STEPS.map((item, index) => <button key={item.name} type="button" className="loop-node" data-step={index} aria-label={item.name} aria-pressed={index === selected} aria-controls="agent-step" onClick={() => setSelected(index)}><span aria-hidden="true">0{index + 1}</span>{item.name}</button>)}
+      {STEPS.map((item, index) => <button key={item.name} type="button" className="loop-node" data-step={index} aria-pressed={index === selected} aria-controls="agent-step" onClick={() => setSelected(index)}><span aria-hidden="true">0{index + 1}</span>{item.name}</button>)}
     </div>
     <div id="agent-step" className="loop-explanation" role="status" aria-live="polite" aria-atomic="true"><p className="font-display font-semibold">{step.label}</p><p>{step.description}</p></div>
     <p className="loop-hint">Select a step to explore.</p>

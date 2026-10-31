@@ -7,14 +7,16 @@ export function BookArtwork({ book, large = false }: { book: Book; large?: boole
   </div>
 }
 
-export default function BookPreview({ book }: { book: Book }) {
+// Cards sit under an h2 section heading on the homepage, and directly under
+// the page h1 in the library, so the caller picks the level.
+export default function BookPreview({ book, heading: Heading = 'h3' }: { book: Book; heading?: 'h2' | 'h3' }) {
   return <article className="book-preview">
     <Link to={`/books/${book.slug}/`} tabIndex={-1} aria-hidden="true"><BookArtwork book={book} /></Link>
     <div className="flex flex-1 flex-col p-6">
       <p className="mb-3 text-sm text-muted">{book.publisher} · {book.status === 'Published' ? book.year : book.status}</p>
-      <h3 className="font-display text-xl font-semibold leading-snug">{book.title}</h3>
+      <Heading className="font-display text-xl font-semibold leading-snug">{book.title}</Heading>
       <p className="mt-3 text-sm leading-relaxed text-muted">{book.audience}</p>
-      <Link className="text-link mt-auto pt-5" to={`/books/${book.slug}/`} aria-label={`About ${book.title}`}>Explore this book <span aria-hidden="true">→</span></Link>
+      <Link className="text-link mt-auto pt-5" to={`/books/${book.slug}/`}>Explore this book<span className="sr-only">: {book.title}</span> <span aria-hidden="true">→</span></Link>
     </div>
   </article>
 }

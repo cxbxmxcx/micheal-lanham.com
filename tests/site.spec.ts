@@ -72,7 +72,7 @@ test('book topic filters keep matching books and open a detail page', async ({ p
   await page.getByRole('button', { name: 'AI agents', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'AI Agents in Action, Second Edition', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Game Audio Development with Unity 5.X', exact: true })).toHaveCount(0)
-  await page.getByRole('link', { name: 'About AI Agents in Action, Second Edition', exact: true }).click()
+  await page.getByRole('link', { name: /^Explore this book\W+AI Agents in Action, Second Edition$/ }).click()
   await expect(page).toHaveURL(/\/books\/ai-agents-in-action-second-edition\/$/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('AI Agents in Action, Second Edition')
   await page.goBack()
@@ -82,7 +82,7 @@ test('book topic filters keep matching books and open a detail page', async ({ p
 test('Back restores the reading position after opening a book near the library bottom', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/books/')
-  const book = page.getByRole('link', { name: 'About Game Audio Development with Unity 5.X', exact: true })
+  const book = page.getByRole('link', { name: /^Explore this book\W+Game Audio Development with Unity 5\.X$/ })
   await book.scrollIntoViewIfNeeded()
   const position = await page.evaluate(() => window.scrollY)
   expect(position).toBeGreaterThan(1000)
@@ -200,6 +200,17 @@ test('key pages have no automated WCAG A/AA violations', async ({ page }) => {
     await page.goto(url)
     await expect(page.locator('h1')).toBeVisible()
     const report = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
+    expect(report.violations, url).toEqual([])
+  }
+})
+
+test('headings do not skip levels, and visible labels are part of accessible names', async ({ page }) => {
+  // Neither rule runs under the WCAG tags above: heading-order is a best
+  // practice and label-content-name-mismatch (WCAG 2.5.3) is experimental.
+  for (const url of ['/', '/books/', '/books/self-improving-agents/', '/work/', '/work/workshops/', '/demos/', '/demos/perceptron/', '/404.html']) {
+    await page.goto(url)
+    await expect(page.locator('h1')).toBeVisible()
+    const report = await new AxeBuilder({ page }).withRules(['heading-order', 'label-content-name-mismatch']).analyze()
     expect(report.violations, url).toEqual([])
   }
 })
