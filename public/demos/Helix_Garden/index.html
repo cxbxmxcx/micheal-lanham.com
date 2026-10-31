@@ -40,7 +40,7 @@
   .tab:hover { border-color:var(--amber); color:var(--amber); }
   .tab[aria-pressed="true"] { border-color:var(--amber); color:var(--amber); background:rgba(224,155,74,.08); }
   .tab .done { color:var(--green); }
-  .transport { margin-left:auto; display:flex; gap:.4rem; align-items:center; }
+  .transport { margin-left:auto; display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; }
   .tbtn { background:var(--panel); border:1px solid var(--line); color:var(--ink); border-radius:8px;
           padding:.4rem .75rem; font-family:"JetBrains Mono",monospace; font-size:.72rem; cursor:pointer; }
   .tbtn:hover { border-color:var(--amber); color:var(--amber); }
@@ -112,6 +112,7 @@
   details.explain h4 { margin:.8rem 0 .2rem; font-size:.85rem; color:var(--ink); }
   details.explain p, details.explain li { font-size:.85rem; color:var(--muted); }
   .footnote { margin-top:1.1rem; font-size:.78rem; color:var(--faint); }
+  .footnote a { text-decoration:underline; text-underline-offset:3px; }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
   /* narrator: one plain sentence about what is happening right now */
   .narrator { display:flex; gap:.6rem; align-items:baseline; border:1px solid var(--line);
@@ -128,6 +129,7 @@
   .guidecard .step { font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.15em;
                      text-transform:uppercase; color:var(--amber); margin:0 0 .35rem; }
   .guidecard h2 { font-family:"Space Grotesk",Inter,sans-serif; font-size:1.15rem; margin:0 0 .4rem; color:var(--ink); }
+  .guidecard h2:focus { outline:none; }
   .guidecard p { margin:.3rem 0; font-size:.92rem; color:var(--muted); max-width:60rem; }
   .guidecard p b, .guidecard p strong { color:var(--ink); }
   .guidecard .mono-hint { font-family:"JetBrains Mono",monospace; font-size:.74rem; color:var(--teal); }
@@ -836,10 +838,14 @@
   }
 
   function guideCard(step, title, bodyHtml, actions) {
-    $('guide').innerHTML =
+    /* If the button that advanced the intro had focus, move it to the new
+       card's heading rather than letting it fall back to the page. */
+    const box = $('guide'), hadFocus = box.contains(document.activeElement)
+    box.innerHTML =
       '<div class="guidecard" role="group" aria-label="Guided intro"><p class="step">Guided intro · ' + step + '</p>' +
-      '<h2>' + title + '</h2>' + bodyHtml +
+      '<h2 tabindex="-1">' + title + '</h2>' + bodyHtml +
       '<div class="actions">' + actions + '</div></div>'
+    if (hadFocus) box.querySelector('h2').focus()
   }
 
   function startGuide() {
@@ -984,6 +990,7 @@
   }
 
   function endGuide() {
+    const hadFocus = $('guide').contains(document.activeElement)
     guiding = false
     markGuide()
     document.body.classList.remove('guiding')
@@ -995,6 +1002,7 @@
     newHarness()
     renderTabs()
     say('Trial 1: reach a score of ' + S.TRIALS.meadow.goal + '. Press ▶ run, or "skip generation" to jump ahead — and mind the promote() gate when it opens.')
+    if (hadFocus) $('btnPause').focus()
   }
   document.addEventListener('click', (e) => { if (e.target && e.target.id === 'gSkip') endGuide() })
 

@@ -12,7 +12,7 @@
   :root {
     --void:#0A0908; --void2:#0F0E0C; --panel:#14110D; --line:#2A241B;
     --amber:#E09B4A; --copper:#C2703C; --teal:#3E9E96; --teal-dim:#1E5A55;
-    --green:#8FBF6A; --red:#C25B4A; --ink:#F2EDE4; --muted:#9A917F; --faint:#8A8271;
+    --green:#8FBF6A; --red:#D06656; --ink:#F2EDE4; --muted:#9A917F; --faint:#8A8271;
   }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--void); color:var(--ink);
@@ -40,6 +40,7 @@
 
   .scene { border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:1.3rem 1.5rem; }
   .scene h2 { font-family:"Space Grotesk",Inter,sans-serif; font-size:1.25rem; margin:0 0 .5rem; }
+  .scene h2:focus { outline:none; }
   .scene p { color:var(--muted); margin:.45rem 0; }
   .scene p b, .scene p strong { color:var(--ink); }
   .qbox { font-family:"JetBrains Mono",monospace; font-size:.85rem; color:var(--ink);
@@ -68,7 +69,7 @@
   .btn.primary:hover:not(:disabled) { background:var(--amber); color:var(--void); }
   .btn.keep { border-color:rgba(143,191,106,.6); color:var(--green); }
   .btn.keep:hover:not(:disabled) { background:var(--green); color:var(--void); }
-  .btn.reject { border-color:rgba(194,91,74,.6); color:var(--red); }
+  .btn.reject { border-color:rgba(208,102,86,.6); color:var(--red); }
   .btn.reject:hover:not(:disabled) { background:var(--red); color:var(--void); }
 
   .reveal { border-left:3px solid var(--teal); background:rgba(62,158,150,.06);
@@ -92,7 +93,7 @@
   .icard h4 { margin:0 0 .15rem; font-family:"JetBrains Mono",monospace; font-size:.68rem; letter-spacing:.12em;
               text-transform:uppercase; color:var(--teal); }
   .icard p { margin:0 0 .45rem; font-size:.74rem; color:var(--faint); }
-  .icard.dead { opacity:.45; }
+  .icard.dead { border-style:dashed; }
   .icard.dead h4 { color:var(--faint); }
   .icard .out { font-family:"JetBrains Mono",monospace; font-size:.76rem; color:var(--ink); min-height:1.2em; }
 
@@ -200,7 +201,15 @@
     $('actbar').innerHTML = acts.map(([n, l]) =>
       '<span class="actchip' + (n === act ? ' on' : n < act ? ' done' : '') + '">' + (n < act ? '✓ ' : '') + l + '</span>').join('')
   }
-  function scene(html) { $('scene').innerHTML = html; actbar() }
+  function scene(html) {
+    /* The button that advanced the story is about to be replaced. If it had
+       focus, move focus to the new scene's heading so keyboard and screen
+       reader users land on the new step instead of the top of the page. */
+    const box = $('scene'), hadFocus = box.contains(document.activeElement)
+    box.innerHTML = html; actbar()
+    const h = box.querySelector('h2')
+    if (hadFocus && h) { h.tabIndex = -1; h.focus() }
+  }
   function say(t) { $('status').textContent = t }
   function meter() {
     $('hud').hidden = act < 2

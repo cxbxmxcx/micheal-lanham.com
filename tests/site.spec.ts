@@ -187,6 +187,39 @@ test('a failed embedded demo offers recovery without claiming it is running', as
   await expect(page.locator('iframe')).toHaveCount(0)
 })
 
+test('every Proof Gate scene meets WCAG contrast, and advancing moves focus to the new scene', async ({ page }) => {
+  await page.goto('/demos/Proof_Gate/index.html')
+  await page.locator('#n').focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#scene h2')).toHaveText('Claim 1 of 3')
+  await expect(page.locator('#scene h2')).toBeFocused()
+  // Walk the whole story (keeping every version), checking each scene.
+  for (let step = 0; step < 40; step++) {
+    const report = await new AxeBuilder({ page }).include('#scene').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
+    expect(report.violations, JSON.stringify(await page.evaluate(() => (window as unknown as { __gate: { state(): unknown } }).__gate.state()))).toEqual([])
+    const next = page.locator('#n, #k').first()
+    if (!await next.count()) break
+    await next.click()
+  }
+  await expect(page.getByRole('button', { name: '↺ play again' })).toBeVisible()
+})
+
+test('Helix Garden keeps focus on the intro and fits a 320 px screen after it', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 320, height: 740 })
+  await page.goto('/demos/Helix_Garden/index.html')
+  await page.locator('#gNext').focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#guide h2')).toHaveText('One life, four steps, forever')
+  await expect(page.locator('#guide h2')).toBeFocused()
+  await page.locator('#gSkip').focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#btnPause')).toBeFocused()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+  const report = await new AxeBuilder({ page }).withRules(['link-in-text-block', 'color-contrast']).analyze()
+  expect(report.violations).toEqual([])
+})
+
 test('mobile demos use the full page instead of a tiny iframe', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/demos/proof-gate/')
