@@ -24,9 +24,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Cache the framework independently of content updates.
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-router'],
+        // Keep all third-party code (React, react-dom's client build, React
+        // Router) in one chunk so content edits do not invalidate it. The
+        // object form missed react-dom/client, which stayed in the app chunk.
+        manualChunks(id) {
+          if (id.includes('node_modules')) return 'vendor'
         },
       },
     },
