@@ -12,7 +12,7 @@ export default function BookDetail() {
   return <article className="container-x pb-20">
     <PageIntro back={{ to: '/books/', label: 'All books' }} kicker={`${book.publisher} · ${book.status}`} title={book.title}><p>{book.subtitle}</p></PageIntro>
     <div className="grid items-start gap-10 md:grid-cols-[minmax(200px,320px)_1fr] lg:gap-16">
-      <BookArtwork book={book} large />
+      <BookArtwork book={book} large priority="high" />
       <div className="reading-copy">
         <h2>Who this is for</h2><p>{book.audience}</p>
         <h2>{book.status === 'Published' ? 'Explore the book' : 'Follow the work'}</h2>

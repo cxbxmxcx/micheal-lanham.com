@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router'
 import { BOOKS, TOPICS, PUBLISHED_BOOKS, UPCOMING_BOOKS } from '@/data/books'
 import BookPreview from '@/components/BookPreview'
 import PageIntro from '@/components/PageIntro'
+import { listPriority } from '@/lib/images'
 
 const subscribe = () => () => {}
 
@@ -19,7 +20,7 @@ export default function BookLibrary() {
       {TOPICS.map(value => <button key={value} className="filter-chip" aria-pressed={value === topic} onClick={() => setParams(value === 'All topics' ? {} : { topic: value }, { preventScrollReset: true })}>{value}</button>)}
     </div>
     <p role="status" className="mb-6 text-sm text-muted">{books.length} {books.length === 1 ? 'book' : 'books'}{topic === 'All topics' ? ' across all topics' : ` in ${topic.toLowerCase()}`}</p>
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{books.map(book => <BookPreview key={book.slug} book={book} heading="h2" />)}</div>
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{books.map((book, index) => <BookPreview key={book.slug} book={book} heading="h2" priority={listPriority(index)} />)}</div>
     <p className="mt-10 max-w-3xl text-sm leading-relaxed text-muted">Early access means chapters are available through the Manning Early Access Program (MEAP) while a book is being written. Other development titles do not yet have a public release date. Earlier books remain useful references; their tooling reflects the edition’s publication date.</p>
   </div>
 }

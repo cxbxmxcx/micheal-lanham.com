@@ -1,9 +1,10 @@
 import { Link } from 'react-router'
 import type { Demo } from '@/data/demos'
+import { loadingProps, type ImagePriority } from '@/lib/images'
 
-export default function DemoPreview({ demo }: { demo: Demo }) {
+export default function DemoPreview({ demo, priority }: { demo: Demo; priority?: ImagePriority }) {
   return <article className="demo-preview">
-    <Link to={`/demos/${demo.slug}/`} tabIndex={-1} aria-hidden="true"><img src={demo.poster} alt="" width="960" height="600" loading="lazy" /></Link>
+    <Link to={`/demos/${demo.slug}/`} tabIndex={-1} aria-hidden="true"><img src={demo.poster} alt="" width="960" height="600" {...loadingProps(priority)} /></Link>
     <div className="flex flex-1 flex-col p-6">
       <p className="text-sm text-teal">{demo.duration}</p>
       <h2 className="mt-3 font-display text-2xl font-semibold">{demo.title}</h2>
