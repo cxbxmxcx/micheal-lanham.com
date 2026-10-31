@@ -1,0 +1,216 @@
+{
+  "/books/ai-agents-second.jpg": {
+    "sha1": "8fe001c1522c45e50bf2bc51882bd714ba0eb69f",
+    "width": 360,
+    "height": 451,
+    "variants": [
+      {
+        "src": "/img/books/ai-agents-second-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/ai-agents-second-360.webp",
+        "width": 360
+      }
+    ]
+  },
+  "/books/ai-agents.jpg": {
+    "sha1": "a4baf420b3b3a32a471b3ca9cc0c3268e42dbebc",
+    "width": 192,
+    "height": 241,
+    "variants": [
+      {
+        "src": "/img/books/ai-agents-192.webp",
+        "width": 192
+      }
+    ]
+  },
+  "/books/augmented-reality-game-development.jpg": {
+    "sha1": "14763456b3ac056d409c142e4f2440f5bb4ba809",
+    "width": 400,
+    "height": 494,
+    "variants": [
+      {
+        "src": "/img/books/augmented-reality-game-development-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/augmented-reality-game-development-400.webp",
+        "width": 400
+      }
+    ]
+  },
+  "/books/deep-learning-for-games.jpg": {
+    "sha1": "1c50c5faca6fa8502f952b5968041382b75d84af",
+    "width": 400,
+    "height": 493,
+    "variants": [
+      {
+        "src": "/img/books/deep-learning-for-games-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/deep-learning-for-games-400.webp",
+        "width": 400
+      }
+    ]
+  },
+  "/books/evolutionary-deep-learning.jpg": {
+    "sha1": "826ff78500eba3ce9593cdabdb7bcb2b463da537",
+    "width": 360,
+    "height": 451,
+    "variants": [
+      {
+        "src": "/img/books/evolutionary-deep-learning-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/evolutionary-deep-learning-360.webp",
+        "width": 360
+      }
+    ]
+  },
+  "/books/game-audio-development.jpg": {
+    "sha1": "c35b001328a1a133196c5c1dd08745e83ef1058c",
+    "width": 400,
+    "height": 494,
+    "variants": [
+      {
+        "src": "/img/books/game-audio-development-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/game-audio-development-400.webp",
+        "width": 400
+      }
+    ]
+  },
+  "/books/generating-a-new-reality.jpg": {
+    "sha1": "253720b253671841e75e2c5ac91a0e46622b7845",
+    "width": 827,
+    "height": 1180,
+    "variants": [
+      {
+        "src": "/img/books/generating-a-new-reality-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/generating-a-new-reality-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/books/generating-a-new-reality-720.webp",
+        "width": 720
+      }
+    ]
+  },
+  "/books/learn-arcore.jpg": {
+    "sha1": "e5a0a4dacfb616e7e06c9ca688517303da3632fc",
+    "width": 400,
+    "height": 494,
+    "variants": [
+      {
+        "src": "/img/books/learn-arcore-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/learn-arcore-400.webp",
+        "width": 400
+      }
+    ]
+  },
+  "/books/learn-unity-ml-agents.jpg": {
+    "sha1": "bef8864e43e3ceac1e8684a412c20c1203c08e77",
+    "width": 400,
+    "height": 494,
+    "variants": [
+      {
+        "src": "/img/books/learn-unity-ml-agents-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/learn-unity-ml-agents-400.webp",
+        "width": 400
+      }
+    ]
+  },
+  "/books/practical-ai-google-cloud.jpg": {
+    "sha1": "67b0017cf7f3e31d3ed3ae1eb497f3fa8cba06c4",
+    "width": 400,
+    "height": 525,
+    "variants": [
+      {
+        "src": "/img/books/practical-ai-google-cloud-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/practical-ai-google-cloud-400.webp",
+        "width": 400
+      }
+    ]
+  },
+  "/books/python-game-development-chatgpt.jpg": {
+    "sha1": "ac16aec3912e56cf3b513e380d67895f07a0500c",
+    "width": 600,
+    "height": 800,
+    "variants": [
+      {
+        "src": "/img/books/python-game-development-chatgpt-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/python-game-development-chatgpt-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/books/python-game-development-chatgpt-600.webp",
+        "width": 600
+      }
+    ]
+  },
+  "/books/reinforcement-learning-for-games.jpg": {
+    "sha1": "a6bf2a5fcf9cb5bff5cecffc2b002e735b7acb23",
+    "width": 400,
+    "height": 493,
+    "variants": [
+      {
+        "src": "/img/books/reinforcement-learning-for-games-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/reinforcement-learning-for-games-400.webp",
+        "width": 400
+      }
+    ]
+  },
+  "/books/self-improving-agents.jpg": {
+    "sha1": "e6f1e32d645220bb3a8a42e7ffb5f03969d68018",
+    "width": 360,
+    "height": 451,
+    "variants": [
+      {
+        "src": "/img/books/self-improving-agents-240.webp",
+        "width": 240
+      },
+      {
+        "src": "/img/books/self-improving-agents-360.webp",
+        "width": 360
+      }
+    ]
+  },
+  "/micheal-lanham.png": {
+    "sha1": "fe1eec1ec94a90d44bb164640b53f42feb8b45ba",
+    "width": 350,
+    "height": 436,
+    "variants": [
+      {
+        "src": "/img/micheal-lanham-220.webp",
+        "width": 220
+      },
+      {
+        "src": "/img/micheal-lanham-350.webp",
+        "width": 350
+      }
+    ]
+  }
+}

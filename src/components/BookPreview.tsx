@@ -1,10 +1,15 @@
 import { Link } from 'react-router'
 import type { Book } from '@/data/books'
-import { loadingProps, type ImagePriority } from '@/lib/images'
+import { loadingProps, responsiveImage, type ImagePriority } from '@/lib/images'
+
+// Rendered widths: card covers are 264 px tall; detail covers are at most
+// 300 px wide and 390 px tall, and are never enlarged past the original.
+const cardSizes = (aspect: number) => `${Math.ceil(264 * aspect)}px`
+const largeSizes = (aspect: number, width: number) => `${Math.ceil(Math.min(300, 390 * aspect, width))}px`
 
 export function BookArtwork({ book, large = false, priority }: { book: Book; large?: boolean; priority?: ImagePriority }) {
   return <div className={`book-art ${large ? 'book-art-large' : ''}`}>
-    {book.cover ? <img src={book.cover} alt={`${book.title} cover`} width="360" height="480" {...loadingProps(priority)} /> : <div className="book-type-cover" aria-hidden="true"><span>{book.publisher}</span><strong>{book.title}</strong><span>Micheal Lanham</span></div>}
+    {book.cover ? <img {...responsiveImage(book.cover, large ? largeSizes : cardSizes)} alt={`${book.title} cover`} {...loadingProps(priority)} /> : <div className="book-type-cover" aria-hidden="true"><span>{book.publisher}</span><strong>{book.title}</strong><span>Micheal Lanham</span></div>}
   </div>
 }
 

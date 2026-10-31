@@ -19,7 +19,7 @@ Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a cu
 - **Biography and homepage copy:** `src/sections/`.
 - **Email address:** `src/data/contact.ts`.
 - **Page metadata:** `src/lib/metadata.ts`; shared social artwork and font loading: `index.html`.
-- **Image sources:** `public/asset-sources.txt` documents the publisher-sourced author photograph and book covers.
+- **Image sources:** `public/asset-sources.txt` documents the publisher-sourced author photograph and book covers. After adding or replacing a cover in `public/books/` or the portrait, run `npm run images` to rebuild the responsive WebP files in `public/img/` and `src/data/images.json`; `npm test` fails until you do.
 
 ## Run and verify
 

@@ -20,9 +20,9 @@ export interface Book {
 
 type Guide = Pick<Book, 'slug' | 'topic' | 'audience' | 'cover' | 'code'>
 const GUIDES: Record<string, Guide> = {
-  '9781633434530': { slug: 'ai-agents-in-action-second-edition', topic: 'AI agents', audience: 'Python developers ready to build agents with tools, memory, evaluation, and multi-agent workflows.', cover: '/books/ai-agents-second.png', code: 'https://github.com/cxbxmxcx/AI-Agent-Workflows' },
-  '9781633436343': { slug: 'ai-agents-in-action', topic: 'AI agents', audience: 'Readers working through the first edition. For the updated material, start with the second edition.', cover: '/books/ai-agents.png' },
-  '9781617299520': { slug: 'evolutionary-deep-learning', topic: 'Machine learning', audience: 'Developers exploring how genetic algorithms can search, tune, and evolve neural networks.', cover: '/books/evolutionary-deep-learning.png' },
+  '9781633434530': { slug: 'ai-agents-in-action-second-edition', topic: 'AI agents', audience: 'Python developers ready to build agents with tools, memory, evaluation, and multi-agent workflows.', cover: '/books/ai-agents-second.jpg', code: 'https://github.com/cxbxmxcx/AI-Agent-Workflows' },
+  '9781633436343': { slug: 'ai-agents-in-action', topic: 'AI agents', audience: 'Readers working through the first edition. For the updated material, start with the second edition.', cover: '/books/ai-agents.jpg' },
+  '9781617299520': { slug: 'evolutionary-deep-learning', topic: 'Machine learning', audience: 'Developers exploring how genetic algorithms can search, tune, and evolve neural networks.', cover: '/books/evolutionary-deep-learning.jpg' },
   '9781492075813': { slug: 'practical-ai-google-cloud', cover: '/books/practical-ai-google-cloud.jpg', topic: 'Machine learning', audience: 'Developers exploring the foundations of managed AI services on Google Cloud.' },
   '9781484270912': { slug: 'generating-a-new-reality', cover: '/books/generating-a-new-reality.jpg', topic: 'Generative AI', audience: 'Readers interested in the foundations of autoencoders, adversarial networks, and synthetic media.' },
   '9781839214936': { slug: 'reinforcement-learning-for-games', cover: '/books/reinforcement-learning-for-games.jpg', topic: 'Machine learning', audience: 'Game developers exploring agents that learn through interaction and rewards.' },
@@ -43,7 +43,7 @@ export const PUBLISHED_BOOKS: Book[] = PUBLISHER_CLUSTERS.flatMap(cluster => clu
 })))
 
 export const UPCOMING_BOOKS: Book[] = [
-  { slug: 'self-improving-agents', title: 'Self-Improving Agents', subtitle: 'How to engineer adaptive harnesses', publisher: 'Manning', year: null, isbn: '9781633433182', url: 'https://www.manning.com/books/self-improving-agents', status: 'Early access', topic: 'AI agents', audience: 'Developers exploring how to measure, guide, and evaluate improvements to an agent system.', cover: '/books/self-improving-agents.png', code: 'https://github.com/cxbxmxcx/self-improving-agents' },
+  { slug: 'self-improving-agents', title: 'Self-Improving Agents', subtitle: 'How to engineer adaptive harnesses', publisher: 'Manning', year: null, isbn: '9781633433182', url: 'https://www.manning.com/books/self-improving-agents', status: 'Early access', topic: 'AI agents', audience: 'Developers exploring how to measure, guide, and evaluate improvements to an agent system.', cover: '/books/self-improving-agents.jpg', code: 'https://github.com/cxbxmxcx/self-improving-agents' },
   { slug: 'learn-ai-filmmaking', title: 'Learn AI Filmmaking', subtitle: 'Generative pipelines for cinematic craft.', publisher: 'BPB', year: null, isbn: null, url: null, status: 'In development', topic: 'Generative AI', audience: 'Filmmakers and creative technologists exploring generative tools in a filmmaking workflow.' },
   { slug: 'instinctual-learning-agent-harness', title: 'The Instinctual Learning Agent Harness', subtitle: 'Instincts, drives, and self-improving agents.', publisher: 'Packt', year: null, isbn: null, url: null, status: 'In development', topic: 'AI agents', audience: 'Agent builders exploring architectures shaped by instincts, drives, and learning.' },
 ]

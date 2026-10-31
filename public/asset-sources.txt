@@ -56,3 +56,8 @@ Learn Python Game Development with ChatGPT (9789355516435)
 Publisher listing: https://bpbonline.com/products/learn-python-game-development-with-chatgpt
 Cover image: https://bpbonline.com/cdn/shop/files/2085_Epub_e4cab2b5-b26a-4d91-8bfa-10d347496dd7.jpg?v=1755669533
 Local file: /books/python-game-development-chatgpt.jpg
+
+Responsive WebP versions of the covers and the author photograph (public/img/)
+are generated from the files above by scripts/build-images.mjs (npm run
+images). The originals stay in place for structured data. The Manning covers
+were renamed from .png to .jpg on 2026-10-31 because they are JPEG files.
