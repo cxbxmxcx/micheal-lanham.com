@@ -43,7 +43,8 @@
 </style>
 <script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
 <script src="TemplateData/UnityProgress.js"></script>
-<script src="Build/UnityLoader.js"></script>
+<!-- The three games share one copy of the Unity 2019.3 engine (../unity-2019.3/). -->
+<script src="../unity-2019.3/UnityLoader.js"></script>
 <script>
   var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Web.json", {
     onProgress: function (instance, progress) {
