@@ -269,6 +269,18 @@ test('headings do not skip levels, and visible labels are part of accessible nam
   }
 })
 
+test('pages and companion demos load their fonts from this site and contact no other origin', async ({ page, baseURL }) => {
+  const origin = new URL(baseURL!).origin
+  const external: string[] = []
+  page.on('request', request => { if (/^https?:/.test(request.url()) && !request.url().startsWith(origin)) external.push(request.url()) })
+  for (const url of ['/', '/books/self-improving-agents/', '/demos/Proof_Gate/index.html', '/demos/Helix_Garden/index.html']) {
+    await page.goto(url, { waitUntil: 'networkidle' })
+    const families = await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter(face => face.status === 'loaded').map(face => face.family) })
+    expect(families, url).toEqual(expect.arrayContaining(['Inter', 'Space Grotesk']))
+  }
+  expect(external).toEqual([])
+})
+
 test('pages hydrate without errors after the year changes', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))

@@ -18,7 +18,8 @@ Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a cu
 - **Demos:** `src/data/demos.ts`. Original standalone game URLs are preserved under `public/demos/`.
 - **Biography and homepage copy:** `src/sections/`.
 - **Email address:** `src/data/contact.ts`.
-- **Page metadata:** `src/lib/metadata.ts`; shared social artwork and font loading: `index.html`.
+- **Page metadata:** `src/lib/metadata.ts`; shared social artwork and font preloads: `index.html`.
+- **Fonts:** self-hosted subsets in `public/fonts/` (with their OFL licences), declared in `src/index.css` for the site and `public/fonts/fonts.css` for the demo pages. `scripts/subset-fonts.py` rebuilds them; it is needed only to change the character set or weights.
 - **Image sources:** `public/asset-sources.txt` documents the publisher-sourced author photograph and book covers. After adding or replacing a cover in `public/books/` or the portrait, run `npm run images` to rebuild the responsive WebP files in `public/img/` and `src/data/images.json`; `npm test` fails until you do.
 
 ## Run and verify
