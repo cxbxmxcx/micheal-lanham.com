@@ -220,6 +220,32 @@ test('pages hydrate without errors after the year changes', async ({ page }) => 
   expect(errors).toEqual([])
 })
 
+test('index.html aliases open the folder page instead of the 404 page', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  for (const [alias, route] of [['/index.html', '/'], ['/books/index.html?topic=AI+agents', '/books/?topic=AI+agents'], ['/books/self-improving-agents/index.html', '/books/self-improving-agents/'], ['/work/index.html#contact', '/work/#contact']]) {
+    await page.goto(alias)
+    await expect(page, alias).toHaveURL(route)
+    await expect(page.locator('h1')).toBeVisible()
+    await expect(page.getByText('This page isn’t here.')).toHaveCount(0)
+    await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://micheal-lanham.com${route.replace(/[?#].*/, '')}`)
+  }
+  expect(errors).toEqual([])
+})
+
+test('the 404 page has no canonical, and leaving it restores one', async ({ page }) => {
+  await page.goto('/404.html')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page isn’t here.')
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex')
+  await expect(page.locator('link[rel="canonical"], meta[property="og:url"]')).toHaveCount(0)
+  await page.getByRole('link', { name: 'Browse books', exact: true }).click()
+  await expect(page).toHaveURL(/\/books\/$/)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://micheal-lanham.com/books/')
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://micheal-lanham.com/books/')
+  await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
+})
+
 test('prerendered detail content and metadata work without JavaScript', async ({ browser }) => {
   test.skip(!process.env.STATIC_CHECK, 'Runs against the production build')
   const context = await browser.newContext({ javaScriptEnabled: false })

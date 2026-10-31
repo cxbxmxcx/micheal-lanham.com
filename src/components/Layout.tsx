@@ -19,10 +19,18 @@ export default function Layout({ children }: { children: ReactNode }) {
     const meta = getMetadata(location.pathname)
     document.title = meta.title
     document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description)
-    document.querySelector('link[rel="canonical"]')?.setAttribute('href', meta.canonical)
-    for (const [property, value] of Object.entries({ 'og:title': meta.title, 'og:description': meta.description, 'og:url': meta.canonical })) {
+    for (const [property, value] of Object.entries({ 'og:title': meta.title, 'og:description': meta.description })) {
       document.querySelector(`meta[property="${property}"]`)?.setAttribute('content', value)
     }
+    // Missing pages carry no canonical or og:url; restore both when leaving one.
+    let canonical = document.querySelector('link[rel="canonical"]')
+    let ogUrl = document.querySelector('meta[property="og:url"]')
+    if (meta.canonical) {
+      if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical) }
+      if (!ogUrl) { ogUrl = document.createElement('meta'); ogUrl.setAttribute('property', 'og:url'); document.head.appendChild(ogUrl) }
+      canonical.setAttribute('href', meta.canonical)
+      ogUrl.setAttribute('content', meta.canonical)
+    } else { canonical?.remove(); ogUrl?.remove() }
     document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', meta.title)
     document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', meta.description)
     let schema = document.getElementById('page-schema')

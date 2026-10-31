@@ -14,10 +14,11 @@ try {
     for (const [name, value] of Object.entries({ description: meta.description, 'twitter:title': meta.title, 'twitter:description': meta.description })) {
       output = output.replace(new RegExp(`<meta\\s+name="${name}"\\s+content="[^"]*"\\s*\\/?>`), () => `<meta name="${name}" content="${escape(value)}" />`)
     }
+    // A noindex page (the 404) has no canonical address, so it also drops og:url.
     for (const [property, value] of Object.entries({ 'og:title': meta.title, 'og:description': meta.description, 'og:url': meta.canonical })) {
-      output = output.replace(new RegExp(`<meta\\s+property="${property}"\\s+content="[^"]*"\\s*\\/?>`), () => `<meta property="${property}" content="${escape(value)}" />`)
+      output = output.replace(new RegExp(`<meta\\s+property="${property}"\\s+content="[^"]*"\\s*\\/?>`), () => value === undefined ? '' : `<meta property="${property}" content="${escape(value)}" />`)
     }
-    output = output.replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, () => `<link rel="canonical" href="${escape(meta.canonical)}" />`)
+    output = output.replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, () => meta.canonical ? `<link rel="canonical" href="${escape(meta.canonical)}" />` : '')
     output = output.replace('</head>', () => `${meta.noindex ? '<meta name="robots" content="noindex" />' : ''}<script id="page-schema" type="application/ld+json">${JSON.stringify(schema).replaceAll('<', '\\u003c')}</script></head>`)
     const file = route === '/404/' ? 'dist/404.html' : path.join('dist', route.slice(1), 'index.html')
     await mkdir(path.dirname(file), { recursive: true })

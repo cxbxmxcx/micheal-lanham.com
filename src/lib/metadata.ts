@@ -15,8 +15,10 @@ export function getMetadata(path: string) {
   else if (normalized.startsWith('/books/')) { const book = BOOKS.find(item => normalized === `/books/${item.slug}/`); if (book) { title = book.title; description = `${book.title} by Micheal Lanham. ${book.audience}` } }
   else if (normalized.startsWith('/work/')) { const service = SERVICES.find(item => normalized === `/work/${item.slug}/`); if (service) { title = service.title; description = service.summary } }
   else if (normalized.startsWith('/demos/')) { const demo = DEMOS.find(item => normalized === `/demos/${item.slug}/`); if (demo) { title = demo.title; description = `${demo.description} ${demo.outcome}` } }
-  if (!PAGE_PATHS.includes(normalized)) { title = 'Page not found'; description = 'Explore books, interactive AI demos, and ways to work with Micheal Lanham.' }
-  return { title: normalized === '/' ? title : `${title} — Micheal Lanham`, description, canonical: ORIGIN + normalized, noindex: !PAGE_PATHS.includes(normalized) }
+  const noindex = !PAGE_PATHS.includes(normalized)
+  if (noindex) { title = 'Page not found'; description = 'Explore books, interactive AI demos, and ways to work with Micheal Lanham.' }
+  // A page that asks not to be indexed has no canonical address to point to.
+  return { title: normalized === '/' ? title : `${title} — Micheal Lanham`, description, canonical: noindex ? undefined : ORIGIN + normalized, noindex }
 }
 
 export function getStructuredData(path: string) {
