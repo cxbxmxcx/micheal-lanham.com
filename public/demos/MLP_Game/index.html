@@ -47,19 +47,11 @@
 </style>
 <script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
 <script src="TemplateData/UnityProgress.js"></script>
-<!-- The three games share one copy of the Unity 2019.3 engine (../unity-2019.3/). -->
+<!-- The three games share one copy of the Unity 2019.3 engine (../unity-2019.3/).
+     unity-player.js starts the game: phone notice, status, errors and retry. -->
 <script src="../unity-2019.3/UnityLoader.js"></script>
-<script>
-  var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Web.json", {
-    onProgress: function (instance, progress) {
-      UnityProgress(instance, progress);
-      // tell the embedding site the build is actually ready (progress 1 = loaded)
-      if (progress === 1 && window.parent !== window) {
-        window.parent.postMessage({ type: 'unity-ready' }, '*');
-      }
-    }
-  });
-</script>
+<link rel="stylesheet" href="../unity-2019.3/unity-player.css">
+<script defer src="../unity-2019.3/unity-player.js" data-title="The Multilayer Perceptron Game" data-page="/demos/multilayer-perceptron/"></script>
 </head>
 <body>
   <div class="bar"><a href="../../">&larr; Micheal Lanham</a><a href="../../#demos">All demos</a></div>
@@ -71,11 +63,24 @@
         <div id="unityContainer" style="width:1050px;height:600px"></div>
         <div class="footer">
           <div class="webgl-logo"></div>
-          <button type="button" class="fullscreen" aria-label="Fullscreen" onclick="unityInstance.SetFullscreen(1)"></button>
+          <button type="button" class="fullscreen" aria-label="Fullscreen" onclick="window.unityInstance && unityInstance.SetFullscreen(1)"></button>
           <div class="title">The Multilayer Perceptron Game</div>
         </div>
       </div>
     </div>
+    <!-- How to play and a text description of the game. The same text is in
+         UNITY_GUIDES in src/data/demos.ts; keep the two in step. -->
+    <section class="howto" aria-labelledby="howto-title">
+      <h2 id="howto-title">How to play</h2>
+      <ol>
+        <li>Select a training example at the left edge of the game. Its two values feed both perceptrons in the hidden layer.</li>
+        <li>To change a weight, click its box and type a value, or drag on the box.</li>
+        <li>Follow each sum and output from the hidden layer to the final output on the right.</li>
+      </ol>
+      <p>You need a mouse or trackpad: the game area can’t be reached with the keyboard alone.</p>
+      <h2>What the game shows</h2>
+      <p id="game-summary">Two perceptrons form a hidden layer, and a third perceptron combines their outputs. Each perceptron has a fixed input of 1.0 for its bias, multiplies its inputs by its weights, adds the products, and passes the sum through the activation shown in its small graph. The training example you select feeds both hidden perceptrons, and their outputs become the inputs of the last one.</p>
+    </section>
     <p class="note">Built in Unity WebGL. Requires a desktop browser with WebGL enabled;
        the build is around 5&nbsp;MB, so first load takes a moment.</p>
   </div>

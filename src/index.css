@@ -135,6 +135,9 @@
   .demo-preview > a > img { @apply aspect-[16/10] w-full rounded-card border border-line object-cover; }
   .demo-player { @apply overflow-hidden rounded-card border border-line bg-surface; }
   .demo-player iframe { display: block; width: 100%; height: min(78vh, 850px); min-height: 600px; border: 0; background: var(--surface); }
+  /* Unity games: phones and small touch tablets get this notice in place of the play buttons. */
+  .unity-phone-gate { display: none; margin-top: 1.5rem; max-width: 44rem; }
+  .unity-phone-gate h2 { @apply mb-2 font-display text-lg font-semibold; }
   footer { background: var(--surface); }
 }
 
@@ -164,6 +167,10 @@
   .book-art img { max-height: 244px; }
   .book-art-large { height: auto; }
   .book-art-large img { max-height: 320px; }
+}
+@media (hover: none) and (pointer: coarse) and (max-width: 1049px) {
+  .unity-phone-gate { display: block; }
+  .unity-desktop-play { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }

@@ -1,5 +1,7 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, devices } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
+
+const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 
 test('agent learning loop responds to keyboard selection with reduced motion', async ({ page }) => {
   const errors: string[] = []
@@ -246,6 +248,79 @@ test('an embedded Unity game at 1,024 px keeps its left edge and can scroll to i
   expect(box.left, 'left edge hidden').toBeGreaterThanOrEqual(0)
   expect(box.right, 'right edge out of reach').toBeLessThanOrEqual(1)
   expect(box.overflow).toBeGreaterThan(0)
+})
+
+test.describe('Unity games on a phone', () => {
+  // iPhone emulation in the configured browser: touch, a coarse pointer and a 390 px screen.
+  const { viewport, userAgent, deviceScaleFactor, isMobile, hasTouch } = devices['iPhone 13']
+  test.use({ viewport, userAgent, deviceScaleFactor, isMobile, hasTouch })
+
+  test('the game page shows a desktop-required notice and downloads nothing until the visitor continues', async ({ page }) => {
+    const downloads: string[] = []
+    page.on('request', request => { if (/(\.unityweb|Web\.json)$/.test(new URL(request.url()).pathname)) downloads.push(request.url()) })
+    await page.goto('/demos/Perceptron_Game/index.html', { waitUntil: 'networkidle' })
+    await expect(page.getByRole('heading', { name: 'Desktop required' })).toBeVisible()
+    expect(downloads).toEqual([])
+    expect((await new AxeBuilder({ page }).include('.unity-panel').withTags(WCAG).analyze()).violations).toEqual([])
+    const manifest = page.waitForRequest(request => request.url().endsWith('/Perceptron_Game/Build/Web.json'))
+    await page.getByRole('button', { name: 'Continue anyway' }).click()
+    await manifest
+    await expect(page.getByRole('heading', { name: 'Desktop required' })).toHaveCount(0)
+  })
+
+  test('the demo page offers the notice in place of the play buttons, for Unity games only', async ({ page }) => {
+    await page.goto('/demos/perceptron/')
+    await expect(page.getByRole('heading', { name: 'Desktop required' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Play The Perceptron Game' })).toBeHidden()
+    await expect(page.getByRole('link', { name: 'Continue anyway' })).toHaveAttribute('href', '/demos/Perceptron_Game/index.html?device=any')
+    await page.goto('/demos/proof-gate/')
+    await expect(page.getByRole('link', { name: 'Play The Proof Gate', exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Desktop required' })).toHaveCount(0)
+  })
+})
+
+test('a standalone Unity game that cannot load says so in the page and can try again, without an alert', async ({ page }) => {
+  const dialogs: string[] = []
+  page.on('dialog', dialog => { dialogs.push(dialog.message()); void dialog.dismiss() })
+  await page.route('**/Perceptron_Game/Build/Web.json', route => route.fulfill({ status: 503, body: 'Temporarily unavailable' }))
+  await page.goto('/demos/Perceptron_Game/index.html')
+  const error = page.getByRole('heading', { name: 'The game didn’t load' })
+  await expect(error).toBeFocused()
+  await expect(page.getByRole('link', { name: 'Back to the game’s page' })).toHaveAttribute('href', '/demos/perceptron/')
+  expect((await new AxeBuilder({ page }).include('.unity-panel').withTags(WCAG).analyze()).violations).toEqual([])
+  await page.unroute('**/Perceptron_Game/Build/Web.json')
+  const manifest = page.waitForResponse(response => response.url().endsWith('/Perceptron_Game/Build/Web.json') && response.ok())
+  await page.getByRole('button', { name: 'Try again' }).click()
+  await manifest
+  await expect(error).toHaveCount(0)
+  // Where the browser provides WebGL the game then starts, with a labelled canvas.
+  if (await page.evaluate(() => !!document.createElement('canvas').getContext('webgl'))) {
+    await expect(page.getByRole('status')).toHaveText('The Perceptron Game is ready.', { timeout: 60_000 })
+    await expect(page.getByRole('img', { name: /The Perceptron Game, an interactive Unity game/ })).toHaveAttribute('aria-describedby', 'game-summary')
+  }
+  expect(dialogs).toEqual([])
+})
+
+test('an embedded Unity game that cannot load is reported straight away', async ({ page }) => {
+  await page.route('**/Perceptron_Game/Build/Web.json', route => route.fulfill({ status: 503, body: 'Temporarily unavailable' }))
+  await page.goto('/demos/perceptron/')
+  await page.getByRole('button', { name: 'Play here', exact: true }).click()
+  await expect(page.locator('.demo-player [role="status"]')).toHaveText('The demo could not start.')
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible()
+})
+
+test('each Unity game explains how to play, with the same text on its site page and beside the game', async ({ page }) => {
+  for (const [slug, folder] of [['perceptron', 'Perceptron_Game'], ['multilayer-perceptron', 'MLP_Game'], ['autoencoder', 'Autoencoder_Game']]) {
+    await page.goto(`/demos/${slug}/`)
+    await expect(page.getByRole('heading', { name: 'How to play' })).toBeVisible()
+    const steps = await page.locator('#how-to-play ~ ol li').allTextContents()
+    const summary = await page.locator('h2:has-text("What the game shows") + p').textContent()
+    const html = await (await page.request.get(`/demos/${folder}/index.html`)).text()
+    const section = html.slice(html.indexOf('<section class="howto"'), html.indexOf('</section>'))
+    expect(steps.length, slug).toBeGreaterThanOrEqual(3)
+    expect([...section.matchAll(/<li>(.*?)<\/li>/g)].map(match => match[1]), slug).toEqual(steps)
+    expect(section.match(/<p id="game-summary">(.*?)<\/p>/)?.[1], slug).toBe(summary)
+  }
 })
 
 test('desktop demo can start and close, with honest failure recovery', async ({ page }) => {

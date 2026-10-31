@@ -1,0 +1,27 @@
+/* Status line, phone notice, error panel (unity-player.js) and the "How to
+   play" section of the three Unity game pages. Colours come from each page's
+   --text, --dim, --amber, --border and --bg tokens. */
+.unity-hidden { display:none !important; }
+.unity-status { margin:0 0 .8rem; min-height:1.5em; font-size:.9rem; color:var(--dim); }
+.unity-percent { margin-left:.5rem; font-variant-numeric:tabular-nums; }
+.unity-panel { max-width:44rem; margin:0 0 1.6rem; padding:1.2rem 1.4rem; border:1px solid var(--border);
+               border-left:3px solid var(--amber); border-radius:12px; background:#16130F; }
+.unity-panel h2 { margin:0 0 .5rem; font:600 1.15rem/1.3 "Space Grotesk",Inter,sans-serif; color:var(--text); }
+.unity-panel h2:focus { outline:none; }
+.unity-panel p { margin:0; line-height:1.6; color:var(--dim); }
+.unity-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.8rem 1.4rem; margin-top:1rem; }
+.unity-actions button { min-height:44px; padding:.6rem 1.1rem; border:1px solid var(--amber); border-radius:10px;
+                        background:transparent; color:var(--amber); font:600 .9rem/1.2 Inter,sans-serif; cursor:pointer; }
+.unity-actions button:hover { background:var(--amber); color:var(--bg); }
+.unity-actions a { color:var(--amber); font-size:.9rem; text-decoration:underline; text-underline-offset:3px; }
+.unity-actions :focus-visible { outline:2px solid var(--amber); outline-offset:3px; }
+
+.howto { max-width:44rem; margin-top:2.2rem; color:var(--dim); line-height:1.6; }
+.howto h2 { margin:1.6rem 0 .6rem; font:600 1.15rem/1.3 "Space Grotesk",Inter,sans-serif; color:var(--text); }
+.howto h2:first-child { margin-top:0; }
+.howto ol { margin:0; padding-left:1.3rem; }
+.howto li + li { margin-top:.35rem; }
+.howto p { margin:.6rem 0 0; }
+
+/* In the site's iframe the demo page shows the status and instructions. */
+.embedded .unity-status, .embedded .howto { display:none; }
