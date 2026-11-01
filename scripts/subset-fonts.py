@@ -1,8 +1,8 @@
 """Build the self-hosted web fonts in public/fonts/.
 
-The site used to load Inter, Space Grotesk and JetBrains Mono from Google
-Fonts, a render-blocking third-party stylesheet that also sent every
-visitor's IP address to Google. This script rebuilds the local copies:
+The site used to load its fonts from Google Fonts, a render-blocking
+third-party stylesheet that also sent every visitor's IP address to Google.
+This script rebuilds the local copies:
 
 1. Download the variable sources from google/fonts at a pinned commit and
    check their SHA-256.
@@ -10,9 +10,9 @@ visitor's IP address to Google. This script rebuilds the local copies:
    (U+2190-2199), and drop hinting and OpenType features the pages never
    turn on.
 3. Limit each family to the weights the pages use: Inter 400-700 and
-   JetBrains Mono 400-700 stay variable; Space Grotesk becomes static 600
-   (the site) and 700 (demo headings); Fraunces 400-700 is the display serif
-   of the Darwin-engine look.
+   JetBrains Mono 400-700 stay variable; Fraunces 400-700 is the display
+   serif of the Darwin-engine look. (Space Grotesk, the display face before
+   that look, was dropped in November 2026.)
 4. Write the woff2 files, public/fonts/fonts.css for the standalone demo
    pages, and the OFL licence for each family.
 
@@ -37,15 +37,12 @@ OUT = Path(__file__).resolve().parent.parent / 'public' / 'fonts'
 
 SOURCES = {
     'Inter': ('inter/Inter%5Bopsz%2Cwght%5D.ttf', '29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031', 'inter'),
-    'Space Grotesk': ('spacegrotesk/SpaceGrotesk%5Bwght%5D.ttf', 'acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72', 'spacegrotesk'),
     'JetBrains Mono': ('jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf', '48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda', 'jetbrainsmono'),
     'Fraunces': ('fraunces/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf', '177ff6c0f14e5550a3c624247cd1189611d4eb65d000b14944c63d967958abbb', 'fraunces'),
 }
 # (family, file name, axis limits, CSS font-weight)
 FACES = [
     ('Inter', 'inter-latin-wght.woff2', {'opsz': 14, 'wght': (400, 700)}, '400 700'),
-    ('Space Grotesk', 'space-grotesk-latin-600.woff2', {'wght': 600}, '600'),
-    ('Space Grotesk', 'space-grotesk-latin-700.woff2', {'wght': 700}, '700'),
     ('JetBrains Mono', 'jetbrains-mono-latin-wght.woff2', {'wght': (400, 700)}, '400 700'),
     # Display serif for the Darwin-engine look: optical size fixed for headings.
     ('Fraunces', 'fraunces-latin-wght.woff2', {'opsz': 72, 'SOFT': 0, 'WONK': 0, 'wght': (400, 700)}, '400 700'),

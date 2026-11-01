@@ -33,7 +33,7 @@ test('the home page leads with the author, his books and his credentials', async
   expect(credentials!.y).toBeLessThan(loop!.y)
 })
 
-test('the home bookshelf shows every book newest first, and only the home page closes on a cobalt band', async ({ page }) => {
+test('the home bookshelf shows every book newest first, and only the home page closes on an iron band', async ({ page }) => {
   await page.goto('/')
   const shelf = page.getByRole('list', { name: 'Books by Micheal Lanham, newest first' })
   const links = shelf.getByRole('link')
@@ -66,10 +66,17 @@ test('book and demo pages end with somewhere to go next', async ({ page }) => {
   await expect(demos.locator('a[href="/demos/selection-engine/"]')).toHaveCount(0)
 })
 
-test('the dark lab band leads into every demo', async ({ page }) => {
+test('the iron lab band leads into every demo', async ({ page }) => {
   await page.goto('/')
   const lab = page.locator('#demos')
-  expect(await lab.evaluate(element => getComputedStyle(element).backgroundColor)).toBe('rgb(11, 10, 8)')
+  expect(await lab.evaluate(element => getComputedStyle(element).backgroundColor)).toBe('rgb(23, 19, 14)')
+  // The concept games are engines: each names its subject, states two readouts and can be played.
+  const engines = lab.getByRole('list', { name: 'Concept games' }).getByRole('listitem')
+  await expect(engines).toHaveCount(3)
+  for (const engine of await engines.all()) {
+    await expect(engine.locator('.gauge')).toHaveCount(2)
+    await expect(engine.getByRole('link', { name: /^Play The / })).toHaveAttribute('href', /^\/demos\/[A-Za-z_]+\/index\.html$/)
+  }
   await expect(lab.getByRole('link', { name: 'Play The Selection Engine' })).toHaveAttribute('href', '/demos/Selection_Engine/index.html')
   await expect(lab.getByRole('link', { name: 'See all six demos' })).toHaveAttribute('href', '/demos/')
   for (const slug of ['instinct-engine', 'difference-engine', 'perceptron', 'multilayer-perceptron', 'autoencoder']) await expect(lab.locator(`a[href="/demos/${slug}/"]`)).toBeVisible()

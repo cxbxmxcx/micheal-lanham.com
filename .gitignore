@@ -3,3 +3,11 @@ dist
 .DS_Store
 .preview
 self-improving-agents/
+# Working notes and design reviews stay private (owner's decision, 2026-11-01).
+# Copies published before that date remain in the public history.
+CHANGES-batch1.md
+MERGE-NOTES.md
+RESTYLE-NOTES.md
+GAMES-BRIEF.md
+*_report.md
+docs/designs/

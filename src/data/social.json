@@ -1,0 +1,112 @@
+{
+  "/": {
+    "image": "/social/site.jpg",
+    "alt": "Micheal Lanham, author of AI Agents in Action, with two of his books",
+    "sha1": "1577e36945ff70b89933d3af7ac0cf5e33c11887"
+  },
+  "/books/self-improving-agents/": {
+    "image": "/social/book-self-improving-agents.jpg",
+    "alt": "Self-Improving Agents by Micheal Lanham, with its cover",
+    "sha1": "e252fc3fad5d99328c0cd9ec8f447064bef3ecec"
+  },
+  "/books/learn-ai-filmmaking/": {
+    "image": "/social/book-learn-ai-filmmaking.jpg",
+    "alt": "Learn AI Filmmaking by Micheal Lanham",
+    "sha1": "b6782f88da8fb8241832acfbf16a5b9741803e07"
+  },
+  "/books/instinctual-learning-agent-harness/": {
+    "image": "/social/book-instinctual-learning-agent-harness.jpg",
+    "alt": "The Instinctual Learning Agent Harness by Micheal Lanham",
+    "sha1": "12f031fcdaea7c8f11a9f899f849438521449f35"
+  },
+  "/books/ai-agents-in-action-second-edition/": {
+    "image": "/social/book-ai-agents-in-action-second-edition.jpg",
+    "alt": "AI Agents in Action, Second Edition by Micheal Lanham, with its cover",
+    "sha1": "57a34b56e66345ccbc82fb97de773981eb477795"
+  },
+  "/books/ai-agents-in-action/": {
+    "image": "/social/book-ai-agents-in-action.jpg",
+    "alt": "AI Agents in Action by Micheal Lanham, with its cover",
+    "sha1": "409b618bde6550f5f81967b5c5755ad9973bc523"
+  },
+  "/books/evolutionary-deep-learning/": {
+    "image": "/social/book-evolutionary-deep-learning.jpg",
+    "alt": "Evolutionary Deep Learning by Micheal Lanham, with its cover",
+    "sha1": "e6935da626193ec48f9b151b90301fc227573fe6"
+  },
+  "/books/practical-ai-google-cloud/": {
+    "image": "/social/book-practical-ai-google-cloud.jpg",
+    "alt": "Practical AI on the Google Cloud Platform by Micheal Lanham, with its cover",
+    "sha1": "c54e25431ddc960259487899305daa36f0ec250d"
+  },
+  "/books/generating-a-new-reality/": {
+    "image": "/social/book-generating-a-new-reality.jpg",
+    "alt": "Generating a New Reality by Micheal Lanham, with its cover",
+    "sha1": "1689d3587de70257d6ff7767bcc5da95e5ee3638"
+  },
+  "/books/reinforcement-learning-for-games/": {
+    "image": "/social/book-reinforcement-learning-for-games.jpg",
+    "alt": "Hands-On Reinforcement Learning for Games by Micheal Lanham, with its cover",
+    "sha1": "a55a211232ad2645249ffad1c9c493fc9c67ef8b"
+  },
+  "/books/deep-learning-for-games/": {
+    "image": "/social/book-deep-learning-for-games.jpg",
+    "alt": "Hands-On Deep Learning for Games by Micheal Lanham, with its cover",
+    "sha1": "df2ef270d3e693532e56e762717654003a14c398"
+  },
+  "/books/learn-unity-ml-agents/": {
+    "image": "/social/book-learn-unity-ml-agents.jpg",
+    "alt": "Learn Unity ML-Agents — Fundamentals of Unity Machine Learning by Micheal Lanham, with its cover",
+    "sha1": "54625a99d579333848c41a0b45990a611fcc9da1"
+  },
+  "/books/learn-arcore/": {
+    "image": "/social/book-learn-arcore.jpg",
+    "alt": "Learn ARCore — Fundamentals of Google ARCore by Micheal Lanham, with its cover",
+    "sha1": "93405b7cac8e6bf0aaabb00054868b26fa513767"
+  },
+  "/books/augmented-reality-game-development/": {
+    "image": "/social/book-augmented-reality-game-development.jpg",
+    "alt": "Augmented Reality Game Development by Micheal Lanham, with its cover",
+    "sha1": "e029df4705f8e398cac7c87b621b5b9d3c0bd555"
+  },
+  "/books/game-audio-development/": {
+    "image": "/social/book-game-audio-development.jpg",
+    "alt": "Game Audio Development with Unity 5.X by Micheal Lanham, with its cover",
+    "sha1": "822b1a71321cbcbede26862380469ea343e9e477"
+  },
+  "/books/python-game-development-chatgpt/": {
+    "image": "/social/book-python-game-development-chatgpt.jpg",
+    "alt": "Learn Python Game Development with ChatGPT by Micheal Lanham, with its cover",
+    "sha1": "6494a6e3ed7d5c4eb622abe2596de1097a0a5aaa"
+  },
+  "/demos/selection-engine/": {
+    "image": "/social/demo-selection-engine.jpg",
+    "alt": "The Selection Engine, an interactive demo by Micheal Lanham",
+    "sha1": "49cde0466f402327e20eca9d66bd6daee0c7a081"
+  },
+  "/demos/instinct-engine/": {
+    "image": "/social/demo-instinct-engine.jpg",
+    "alt": "The Instinct Engine, an interactive demo by Micheal Lanham",
+    "sha1": "a95c29b8917c8ecdf7e9b1fadb27248b3c077c9b"
+  },
+  "/demos/difference-engine/": {
+    "image": "/social/demo-difference-engine.jpg",
+    "alt": "The Difference Engine, an interactive demo by Micheal Lanham",
+    "sha1": "57218f52518e7024295e4c9efbee555a9a1e437f"
+  },
+  "/demos/perceptron/": {
+    "image": "/social/demo-perceptron.jpg",
+    "alt": "The Perceptron Game, an interactive demo by Micheal Lanham",
+    "sha1": "f4dd8b228da9077716b215181f11c0629885935c"
+  },
+  "/demos/multilayer-perceptron/": {
+    "image": "/social/demo-multilayer-perceptron.jpg",
+    "alt": "The Multilayer Perceptron Game, an interactive demo by Micheal Lanham",
+    "sha1": "31accb6e57576b3856c4267aeda007a41d86fe59"
+  },
+  "/demos/autoencoder/": {
+    "image": "/social/demo-autoencoder.jpg",
+    "alt": "The Autoencoder Game, an interactive demo by Micheal Lanham",
+    "sha1": "32983af07e891b4c638db5c2ee1bde4047bfb098"
+  }
+}

@@ -1,11 +1,14 @@
 import { BOOKS } from '@/data/books'
 import { SERVICES } from '@/data/services'
 import { DEMOS } from '@/data/demos'
+import SOCIAL from '@/data/social.json'
 
 const ORIGIN = 'https://micheal-lanham.com'
 const SITE = 'Micheal Lanham'
 // Search results cut descriptions at about 160 characters: add whole sentences while they fit.
 const fit = (...sentences: string[]) => sentences.reduce((text, sentence) => !text ? sentence : `${text} ${sentence}`.length <= 160 ? `${text} ${sentence}` : text, '')
+// Social cards, built by scripts/build-social.mjs: books and demos have their own; every other page shares the site's.
+const CARDS: Record<string, { image: string; alt: string }> = SOCIAL
 export const PAGE_PATHS = ['/', '/books/', '/work/', '/demos/', ...BOOKS.map(book => `/books/${book.slug}/`), ...SERVICES.map(service => `/work/${service.slug}/`), ...DEMOS.map(demo => `/demos/${demo.slug}/`)]
 
 export function getMetadata(path: string) {
@@ -21,7 +24,9 @@ export function getMetadata(path: string) {
   const noindex = !PAGE_PATHS.includes(normalized)
   if (noindex) { title = 'Page not found'; description = 'Explore books, interactive AI demos, and ways to work with Micheal Lanham.' }
   // A page that asks not to be indexed has no canonical address to point to.
-  return { title: normalized === '/' ? title : `${title} — Micheal Lanham`, description, canonical: noindex ? undefined : ORIGIN + normalized, noindex, image: `${ORIGIN}/og-image-light.png` }
+  const card = CARDS[normalized] ?? CARDS['/']
+  const type = BOOKS.some(book => normalized === `/books/${book.slug}/`) ? 'book' : 'website'
+  return { title: normalized === '/' ? title : `${title} — Micheal Lanham`, description, canonical: noindex ? undefined : ORIGIN + normalized, noindex, image: ORIGIN + card.image, imageAlt: card.alt, type }
 }
 
 const PERSON_ID = `${ORIGIN}/#person`

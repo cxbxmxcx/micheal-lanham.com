@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "images": "node scripts/build-images.mjs",
-    "test": "node scripts/build-images.mjs --check",
+    "social": "node scripts/build-social.mjs",
+    "test": "node scripts/build-images.mjs --check && node scripts/build-social.mjs --check && node scripts/check-palette.mjs",
     "test:browser": "playwright test"
   },
   "dependencies": {

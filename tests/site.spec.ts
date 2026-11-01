@@ -111,6 +111,9 @@ test('Back restores the reading position after opening a book near the library b
   expect(position).toBeGreaterThan(1000)
   await book.click()
   await expect(page).toHaveURL(/\/books\/game-audio-development\/$/)
+  // The URL changes before React commits the book page. Going Back before it
+  // appears never leaves the library, and focus rightly stays on the link.
+  await expect(page.getByRole('heading', { level: 1, name: 'Game Audio Development with Unity 5.X' })).toBeVisible()
   await page.goBack()
   await expect(page).toHaveURL(/\/books\/$/)
   await expect.poll(async () => Math.abs(await page.evaluate(() => window.scrollY) - position)).toBeLessThan(10)
@@ -353,7 +356,7 @@ test('pages and companion demos load their fonts from this site and contact no o
   for (const url of ['/', '/books/self-improving-agents/', '/demos/Selection_Engine/index.html', '/demos/Instinct_Engine/index.html', '/demos/Difference_Engine/index.html']) {
     await page.goto(url, { waitUntil: 'networkidle' })
     const families = await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter(face => face.status === 'loaded').map(face => face.family) })
-    expect(families, url).toEqual(expect.arrayContaining(['Inter', 'Space Grotesk']))
+    expect(families, url).toEqual(expect.arrayContaining(['Inter', 'Fraunces']))
   }
   expect(external).toEqual([])
 })
@@ -454,7 +457,26 @@ test.describe('production build', () => {
       const html = await (await page.request.get(`/demos/${player}/index.html`)).text()
       expect(html).toContain('<meta name="robots" content="noindex">')
       expect(html).toContain(`<meta property="og:url" content="https://micheal-lanham.com/demos/${slug}/">`)
-      expect(html).toMatch(/<meta property="og:image" content="https:\/\/micheal-lanham\.com\/[^"]+">/)
+      expect(html).toContain(`<meta property="og:image" content="https://micheal-lanham.com/social/demo-${slug}.jpg">`)
+    }
+  })
+
+  test('books and demos share their own social card, and every other page shares the site card', async ({ page }) => {
+    const pages: [string, string, string][] = [
+      ['/', 'site', 'website'], ['/books/', 'site', 'website'], ['/work/architecture-reviews/', 'site', 'website'],
+      ['/books/self-improving-agents/', 'book-self-improving-agents', 'book'], ['/books/instinctual-learning-agent-harness/', 'book-instinctual-learning-agent-harness', 'book'],
+      ['/demos/difference-engine/', 'demo-difference-engine', 'website'], ['/demos/perceptron/', 'demo-perceptron', 'website'],
+    ]
+    for (const [path, card, type] of pages) {
+      const html = await (await page.request.get(path)).text()
+      const image = `https://micheal-lanham.com/social/${card}.jpg`
+      expect(html, path).toContain(`<meta property="og:image" content="${image}" />`)
+      expect(html, path).toContain(`<meta name="twitter:image" content="${image}" />`)
+      expect(html, path).toContain(`<meta property="og:type" content="${type}" />`)
+      expect(html, path).toMatch(/<meta property="og:image:alt" content="[^"]{20,}" \/>/)
+      const response = await page.request.get(`/social/${card}.jpg`)
+      expect(response.status(), card).toBe(200)
+      expect(response.headers()['content-type'], card).toContain('image/jpeg')
     }
   })
 })

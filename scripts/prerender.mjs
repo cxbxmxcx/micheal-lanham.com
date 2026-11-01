@@ -12,11 +12,11 @@ try {
     const { html, meta, schema } = render(route)
     let output = template.replace('<div id="root"></div>', () => `<div id="root">${html}</div>`)
     output = output.replace(/<title>[^<]*<\/title>/, () => `<title>${escape(meta.title)}</title>`)
-    for (const [name, value] of Object.entries({ description: meta.description, 'twitter:title': meta.title, 'twitter:description': meta.description, 'twitter:image': meta.image })) {
+    for (const [name, value] of Object.entries({ description: meta.description, 'twitter:title': meta.title, 'twitter:description': meta.description, 'twitter:image': meta.image, 'twitter:image:alt': meta.imageAlt })) {
       output = output.replace(new RegExp(`<meta\\s+name="${name}"\\s+content="[^"]*"\\s*\\/?>`), () => `<meta name="${name}" content="${escape(value)}" />`)
     }
     // A noindex page (the 404) has no canonical address, so it also drops og:url.
-    for (const [property, value] of Object.entries({ 'og:title': meta.title, 'og:description': meta.description, 'og:url': meta.canonical, 'og:image': meta.image })) {
+    for (const [property, value] of Object.entries({ 'og:type': meta.type, 'og:title': meta.title, 'og:description': meta.description, 'og:url': meta.canonical, 'og:image': meta.image, 'og:image:alt': meta.imageAlt })) {
       output = output.replace(new RegExp(`<meta\\s+property="${property}"\\s+content="[^"]*"\\s*\\/?>`), () => value === undefined ? '' : `<meta property="${property}" content="${escape(value)}" />`)
     }
     output = output.replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, () => meta.canonical ? `<link rel="canonical" href="${escape(meta.canonical)}" />` : '')
@@ -41,6 +41,9 @@ try {
       `<meta property="og:description" content="${escape(meta.description)}">`,
       `<meta property="og:url" content="${escape(meta.canonical)}">`,
       `<meta property="og:image" content="${escape(meta.image)}">`,
+      '<meta property="og:image:width" content="1200">',
+      '<meta property="og:image:height" content="630">',
+      `<meta property="og:image:alt" content="${escape(meta.imageAlt)}">`,
       '<meta name="twitter:card" content="summary_large_image">',
     ]
     const html = await readFile(file, 'utf8')
