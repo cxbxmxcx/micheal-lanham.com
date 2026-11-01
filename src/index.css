@@ -220,7 +220,8 @@
   .reading-copy h2:first-child { margin-top: 0; }
   .reading-copy h3 { @apply font-display text-xl font-semibold; }
   .reading-copy p { @apply mt-4 leading-relaxed text-muted; }
-  .reading-copy > :is(p, ul, ol):not(.notice) { max-width: 68ch; }
+  /* About 70 characters a line: one ch (the width of "0") is wider than an average Inter letter, so 68ch ran to 80-86. */
+  .reading-copy > :is(p, ul, ol):not(.notice) { max-width: 60ch; }
   .reading-copy ul, .reading-copy ol { @apply my-4 space-y-3 pl-5 leading-relaxed text-muted; }
   .reading-copy ul { list-style: disc; }
   .reading-copy ol { list-style: decimal; }
