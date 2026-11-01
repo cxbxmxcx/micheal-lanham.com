@@ -140,8 +140,24 @@ test('structured data follows client navigation between books', async ({ page })
   await page.getByRole('link', { name: 'Looking for the latest material? Explore the second edition' }).click()
   await expect(page).toHaveURL(/\/books\/ai-agents-in-action-second-edition\/$/)
   const schema = page.locator('script[type="application/ld+json"]')
-  await expect.poll(async () => JSON.parse(await schema.textContent() || '{}').isbn).toBe('9781633434530')
-  await expect.poll(async () => JSON.parse(await schema.textContent() || '{}').url).toBe('https://micheal-lanham.com/books/ai-agents-in-action-second-edition/')
+  const book = async () => (JSON.parse(await schema.textContent() || '{}')['@graph'] ?? []).find((node: { '@type': string }) => node['@type'] === 'Book') ?? {}
+  await expect.poll(async () => (await book()).isbn).toBe('9781633434530')
+  await expect.poll(async () => (await book()).url).toBe('https://micheal-lanham.com/books/ai-agents-in-action-second-edition/')
+})
+
+test('structured data describes the site, the author, services and breadcrumbs', async ({ page }) => {
+  const graph = async (url: string) => {
+    await page.goto(url)
+    return JSON.parse(await page.locator('#page-schema').textContent() || '{}')['@graph'] as { '@type': string; [key: string]: unknown }[]
+  }
+  const home = await graph('/')
+  expect(home.map(node => node['@type'])).toEqual(expect.arrayContaining(['WebSite', 'ProfilePage']))
+  expect((home.find(node => node['@type'] === 'ProfilePage')!.mainEntity as { jobTitle: string }).jobTitle).toBe('Author and AI practitioner')
+  const service = await graph('/work/workshops/')
+  expect(service.find(node => node['@type'] === 'Service')!.name).toBe('AI agent training workshops')
+  const crumbs = service.find(node => node['@type'] === 'BreadcrumbList')!.itemListElement as { name: string; item: string }[]
+  expect(crumbs.map(crumb => crumb.name)).toEqual(['Home', 'Work with me', 'AI agent training workshops'])
+  expect(crumbs.at(-1)!.item).toBe('https://micheal-lanham.com/work/workshops/')
 })
 
 test('early access has a real publisher destination', async ({ page }) => {
@@ -416,6 +432,51 @@ test('the 404 page has no canonical, and leaving it restores one', async ({ page
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://micheal-lanham.com/books/')
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://micheal-lanham.com/books/')
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
+})
+
+test.describe('production build', () => {
+  test.skip(!process.env.STATIC_CHECK, 'Runs against the production build')
+
+  // Every route in the sitemap, the 404 page and the five standalone demo pages.
+  const routes = async (page: import('@playwright/test').Page) => {
+    const sitemap = await (await page.request.get('/sitemap.xml')).text()
+    return [...sitemap.matchAll(/<loc>https:\/\/micheal-lanham\.com(\/[^<]*)<\/loc>/g)].map(match => match[1])
+  }
+  const PLAYERS = ['Proof_Gate', 'Helix_Garden', 'Perceptron_Game', 'MLP_Game', 'Autoencoder_Game'].map(folder => `/demos/${folder}/index.html`)
+
+  test('every route meets WCAG 2.2 A/AA, keeps heading order and has visible labels in its names', async ({ page }) => {
+    test.slow()
+    // Only the page shells are audited; skip the 5 MB Unity downloads.
+    await page.route('**/*.unityweb', route => route.abort())
+    const pages = [...await routes(page), '/404.html', ...PLAYERS]
+    expect(pages.length).toBeGreaterThan(30)
+    for (const url of pages) {
+      await page.goto(url)
+      await expect(page.locator('h1'), url).toBeVisible()
+      expect((await new AxeBuilder({ page }).withTags(WCAG).analyze()).violations, url).toEqual([])
+      expect((await new AxeBuilder({ page }).withRules(['heading-order', 'label-content-name-mismatch']).analyze()).violations, url).toEqual([])
+    }
+  })
+
+  test('every route has a description of at most 160 characters, and the sitemap dates each page', async ({ page }) => {
+    const sitemap = await (await page.request.get('/sitemap.xml')).text()
+    expect(sitemap.match(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/g)?.length).toBe((await routes(page)).length)
+    for (const url of await routes(page)) {
+      const html = await (await page.request.get(url)).text()
+      const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? ''
+      expect(description.length, url).toBeGreaterThan(50)
+      expect(description.length, url).toBeLessThanOrEqual(160)
+    }
+  })
+
+  test('standalone demo pages stay out of search and share their site page', async ({ page }) => {
+    for (const [player, slug] of [['Proof_Gate', 'proof-gate'], ['Perceptron_Game', 'perceptron']]) {
+      const html = await (await page.request.get(`/demos/${player}/index.html`)).text()
+      expect(html).toContain('<meta name="robots" content="noindex">')
+      expect(html).toContain(`<meta property="og:url" content="https://micheal-lanham.com/demos/${slug}/">`)
+      expect(html).toMatch(/<meta property="og:image" content="https:\/\/micheal-lanham\.com\/[^"]+">/)
+    }
+  })
 })
 
 test('prerendered detail content and metadata work without JavaScript', async ({ browser }) => {
