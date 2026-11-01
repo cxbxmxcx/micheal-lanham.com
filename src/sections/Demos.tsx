@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { DEMOS } from '@/data/demos'
 import SectionShell from '@/components/SectionShell'
+import LabTiles from '@/components/LabTiles'
 
 export default function Demos() {
   const [featured, ...others] = DEMOS
@@ -18,13 +19,7 @@ export default function Demos() {
           </div>
         </div>
       </article>
-      <ul className="lab-tiles" aria-label="More demos">
-        {others.map(demo => <li key={demo.slug}><Link to={`/demos/${demo.slug}/`}>
-          <img src={demo.poster} width="960" height="600" alt="" loading="lazy" />
-          <span className="lab-tile-title">{demo.title}</span>
-          <span className="lab-tile-meta">{demo.kind === 'Browser' ? 'Runs in your browser' : 'Desktop · Unity WebGL'}</span>
-        </Link></li>)}
-      </ul>
+      <LabTiles demos={others} label="More demos" />
     </div>
   </SectionShell>
 }

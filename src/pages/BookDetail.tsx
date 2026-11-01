@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router'
+import RelatedBooks from '@/components/RelatedBooks'
 import { BOOKS, bookDestination, bookInquiry } from '@/data/books'
 import { BookArtwork } from '@/components/BookPreview'
 import PageIntro from '@/components/PageIntro'
@@ -23,5 +24,6 @@ export default function BookDetail() {
         <dl className="book-details"><div><dt>Publisher</dt><dd>{book.publisher}</dd></div><div><dt>Topic</dt><dd>{book.topic}</dd></div>{book.year && <div><dt>Published</dt><dd>{book.year}</dd></div>}{book.isbn && <div><dt>ISBN</dt><dd>{book.isbn}</dd></div>}</dl>
       </div>
     </div>
+    <RelatedBooks book={book} />
   </article>
 }

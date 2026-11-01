@@ -11,9 +11,11 @@ test('the home page leads with the author, his books and his credentials', async
   await expect(hero).toContainText('Self-Improving Agents')
   await expect(hero).toContainText('architecture reviews and hands-on training')
   await expect(hero.getByRole('img', { name: 'Micheal Lanham' })).toBeVisible()
+  const covers = hero.getByRole('list', { name: 'Featured books' })
   for (const [name, slug] of [['Self-Improving Agents', 'self-improving-agents'], ['AI Agents in Action, Second Edition', 'ai-agents-in-action-second-edition']]) {
-    await expect(hero.getByRole('link', { name, exact: true })).toHaveAttribute('href', `/books/${slug}/`)
+    await expect(covers.getByRole('link', { name, exact: true })).toHaveAttribute('href', `/books/${slug}/`)
   }
+  await expect(hero.locator('.hero-lede').getByRole('link', { name: 'Self-Improving Agents' })).toHaveAttribute('href', '/books/self-improving-agents/')
   await expect(hero.getByText('Published with')).toBeVisible()
 
   // On a phone the covers sit in the first screen, and the credentials come before the agent loop.
@@ -40,6 +42,23 @@ test('the home bookshelf shows every book newest first, and only the home page c
 
   await page.goto('/work/')
   expect(await page.locator('#contact').evaluate(element => getComputedStyle(element).backgroundImage)).toBe('none')
+})
+
+test('book and demo pages end with somewhere to go next', async ({ page }) => {
+  await page.goto('/books/evolutionary-deep-learning/')
+  const related = page.getByRole('region', { name: 'More on machine learning' })
+  expect(await related.getByRole('link').count()).toBeGreaterThanOrEqual(3)
+  await expect(related.locator('a[href="/books/evolutionary-deep-learning/"]')).toHaveCount(0)
+
+  await page.goto('/books/self-improving-agents/')
+  const more = page.getByRole('region', { name: 'More books to explore' })
+  await expect(more.getByRole('link').first()).toHaveAttribute('href', '/books/ai-agents-in-action-second-edition/')
+  await expect(more.locator('a[href="/books/self-improving-agents/"]')).toHaveCount(0)
+
+  await page.goto('/demos/proof-gate/')
+  const demos = page.getByRole('region', { name: 'More demos' })
+  await expect(demos.getByRole('link')).toHaveCount(4)
+  await expect(demos.locator('a[href="/demos/proof-gate/"]')).toHaveCount(0)
 })
 
 test('the dark lab band leads into all five demos', async ({ page }) => {

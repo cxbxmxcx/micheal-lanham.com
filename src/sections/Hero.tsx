@@ -13,7 +13,7 @@ export default function Hero() {
         <div className="hero-intro">
           <p className="kicker">Author &amp; AI practitioner</p>
           <h1>Micheal Lanham,<br /> <span className="text-accent">author of <span className="hero-book">AI Agents in Action</span>.</span></h1>
-          <p className="hero-lede">My next Manning book, <span className="hero-title">Self-Improving Agents</span>, is in early access. I also help teams design better agent systems through architecture reviews and hands-on training.</p>
+          <p className="hero-lede">My next Manning book, <Link className="hero-title" to="/books/self-improving-agents/">Self-Improving Agents</Link>, is in early access. I also help teams design better agent systems through architecture reviews and hands-on training.</p>
         </div>
         <div className="hero-art">
           <img className="hero-portrait" src="/micheal-lanham.png" alt="Micheal Lanham" width="350" height="436" fetchPriority="high" />
