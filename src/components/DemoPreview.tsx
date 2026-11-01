@@ -1,16 +1,20 @@
 import { Link } from 'react-router'
 import type { Demo } from '@/data/demos'
-import { loadingProps, type ImagePriority } from '@/lib/images'
+import { loadingProps } from '@/lib/images'
 
-export default function DemoPreview({ demo, priority }: { demo: Demo; priority?: ImagePriority }) {
-  return <article className="demo-preview">
-    <Link to={`/demos/${demo.slug}/`} tabIndex={-1} aria-hidden="true"><img src={demo.poster} alt="" width="960" height="600" {...loadingProps(priority)} /></Link>
-    <div className="flex flex-1 flex-col p-6">
-      <p className="text-sm text-teal">{demo.duration}</p>
-      <h2 className="mt-3 font-display text-2xl font-semibold">{demo.title}</h2>
-      <p className="mt-3 leading-relaxed text-muted">{demo.description}</p>
-      <p className="mt-4 text-sm text-muted">{demo.device}</p>
-      <Link className="text-link mt-auto pt-5" to={`/demos/${demo.slug}/`}>Explore {demo.title} <span aria-hidden="true">→</span></Link>
+export default function DemoPreview({ demo, featured = false }: { demo: Demo; featured?: boolean }) {
+  return <article className={featured ? 'demo-preview demo-preview-featured' : 'demo-preview'}>
+    <Link to={`/demos/${demo.slug}/`} tabIndex={-1} aria-hidden="true"><img src={demo.poster} alt="" width="960" height="600" {...loadingProps(featured ? 'high' : 'lazy')} /></Link>
+    <div className="demo-preview-copy">
+      {featured && <p className="kicker mb-2">Start here</p>}
+      <p className="lab-meta">{demo.duration}</p>
+      <h2>{demo.title}</h2>
+      <p className="demo-preview-text">{demo.description}</p>
+      <p className="demo-preview-device">{demo.device}</p>
+      <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-2 pt-5">
+        {featured && <a className="btn-lab" href={demo.playUrl}>Play {demo.title}</a>}
+        <Link className="lab-link" to={`/demos/${demo.slug}/`}>Explore {demo.title} <span aria-hidden="true">→</span></Link>
+      </div>
     </div>
   </article>
 }

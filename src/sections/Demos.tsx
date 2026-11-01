@@ -1,13 +1,25 @@
 import { Link } from 'react-router'
 import { DEMOS } from '@/data/demos'
 import SectionShell from '@/components/SectionShell'
+import LabTiles from '@/components/LabTiles'
 
 export default function Demos() {
-  const demo = DEMOS[0]
-  return <SectionShell id="demos" kicker="Learn by doing" title={<>Put an idea <span className="text-accent">to the test.</span></>} className="border-y border-line bg-surface-soft">
-    <div className="grid items-center gap-8 md:grid-cols-2 lg:gap-14">
-      <Link to="/demos/proof-gate/" tabIndex={-1} aria-hidden="true"><img className="w-full rounded-card border border-line" src={demo.poster} width="960" height="600" alt="" loading="lazy" /></Link>
-      <div><p className="text-sm text-teal">About 5 minutes · No account needed</p><h3 className="mt-3 font-display text-3xl font-semibold">The Proof Gate</h3><p className="mt-4 text-lg leading-relaxed text-muted">{demo.description} Explore proof, evidence, and the judgment behind shipping an improvement.</p><div className="mt-6 flex flex-wrap gap-4"><Link className="btn-primary" to="/demos/proof-gate/">Try The Proof Gate</Link><Link className="text-link" to="/demos/">Explore all five demos <span aria-hidden="true">→</span></Link></div></div>
+  const [featured, ...others] = DEMOS
+  return <SectionShell id="demos" kicker="Learn by doing" title="Put an idea to the test." lede="Five demos run in your browser. Start with The Proof Gate, a five-minute story about when a self-improving machine has earned the right to change." className="lab-band">
+    <div className="lab-home">
+      <article className="lab-feature">
+        <Link to={`/demos/${featured.slug}/`} tabIndex={-1} aria-hidden="true"><img src={featured.poster} width="960" height="600" alt="" loading="lazy" /></Link>
+        <div className="lab-feature-copy">
+          <p className="lab-meta">{featured.duration} · No account needed</p>
+          <h3>{featured.title}</h3>
+          <p>{featured.description} Explore proof, evidence, and the judgment behind shipping an improvement.</p>
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a className="btn-lab" href={featured.playUrl}>Play The Proof Gate (5 min)</a>
+            <Link className="lab-link" to="/demos/">See all five demos <span aria-hidden="true">→</span></Link>
+          </div>
+        </div>
+      </article>
+      <LabTiles demos={others} label="More demos" />
     </div>
   </SectionShell>
 }

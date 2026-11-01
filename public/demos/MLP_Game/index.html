@@ -5,25 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Multilayer Perceptron Game — Micheal Lanham</title>
 <meta name="description" content="Add hidden layers and see how a multilayer network solves problems a single perceptron cannot.">
-<link rel="shortcut icon" href="TemplateData/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="stylesheet" href="TemplateData/style.css">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
-  /* Theme wrapper matching micheal-lanham.com. The Unity loader markup
-     below is unchanged from the original build — only the page around
-     it is restyled. */
+  /* Dark stage around the Unity build. The site header, intro and footer
+     come from ../demo-shell.css. The Unity loader markup below is unchanged
+     from the original build. */
   :root { --bg:#0F0E0C; --text:#EDE7DD; --dim:#A79E90; --amber:#E09B4A; --border:#2A2620; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--text);
          font-family:"Inter",-apple-system,Segoe UI,Roboto,sans-serif; }
-  .bar { border-bottom:1px solid var(--border); padding:.9rem 1.5rem;
-         display:flex; align-items:center; gap:1rem; }
-  .bar a { color:var(--dim); text-decoration:none; font-size:.9rem; font-weight:500; }
-  .bar a:hover { color:var(--amber); }
   .shell { max-width:1120px; margin:0 auto; padding:2rem 1.5rem 3rem; }
-  .shell h1 { font-family:"Space Grotesk",Inter,sans-serif; font-weight:600;
-              font-size:clamp(1.7rem,4vw,2.4rem); margin:0 0 .5rem; letter-spacing:-.015em; }
-  .shell .desc { color:var(--dim); margin:0 0 1.8rem; max-width:44rem; }
   .stage { overflow-x:auto; }                       /* keeps the fixed-size canvas usable on small screens */
   .webgl-content { color:var(--text); }
   /* Unity's TemplateData/style.css absolutely-centres .webgl-content,
@@ -35,7 +28,7 @@
   .footer { margin-top:.6rem; }
   .note { margin-top:2rem; font-size:.85rem; color:#8A8271; border-top:1px solid var(--border); padding-top:1.2rem; }
   /* Embedded in the site's demo card: drop the page chrome, centre the canvas */
-  .embedded .bar, .embedded .shell h1, .embedded .desc, .embedded .note { display:none; }
+  .embedded .note { display:none; }
   .embedded .shell { padding:0; max-width:none; }
   /* Centre with auto margins: in an iframe narrower than the 1,050 px canvas
      they collapse to zero and the overflow goes right, where .stage scrolls.
@@ -45,6 +38,7 @@
   .embedded .footer { display:none; }
   button.fullscreen { border:0; padding:0; cursor:pointer; }
 </style>
+<link rel="stylesheet" href="../demo-shell.css">
 <script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
 <script src="TemplateData/UnityProgress.js"></script>
 <!-- The three games share one copy of the Unity 2019.3 engine (../unity-2019.3/).
@@ -53,11 +47,35 @@
 <link rel="stylesheet" href="../unity-2019.3/unity-player.css">
 <script defer src="../unity-2019.3/unity-player.js" data-title="The Multilayer Perceptron Game" data-page="/demos/multilayer-perceptron/"></script>
 </head>
-<body>
-  <div class="bar"><a href="../../">&larr; Micheal Lanham</a><a href="../../#demos">All demos</a></div>
-  <div class="shell">
+<body class="ml-page">
+<a class="ml-skip" href="#main">Skip to content</a>
+<header class="ml-header">
+  <nav class="ml-container ml-nav" aria-label="Main navigation">
+    <a class="ml-brand" href="/" aria-label="Micheal Lanham — home"><img src="/logo.svg" width="32" height="32" alt=""><span>Micheal Lanham</span></a>
+    <ul class="ml-links">
+      <li><a href="/books/">Books</a></li>
+      <li><a href="/demos/" aria-current="true">Demos</a></li>
+      <li><a class="ml-cta" href="/work/">Work with me</a></li>
+    </ul>
+    <details class="ml-menu">
+      <summary><svg class="ml-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg><svg class="ml-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg><span class="ml-sr">Menu</span></summary>
+      <ul class="ml-menu-panel">
+        <li><a href="/">Home</a></li>
+        <li><a href="/books/">Books</a></li>
+        <li><a href="/demos/" aria-current="true">Demos</a></li>
+        <li><a class="ml-cta" href="/work/">Work with me</a></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+<main id="main">
+  <div class="ml-intro"><div class="ml-container">
+    <a class="ml-back" href="/demos/"><span aria-hidden="true">←</span> All demos</a>
+    <p class="kicker">Interactive learning · Unity WebGL</p>
     <h1>The Multilayer Perceptron Game</h1>
     <p class="desc">Add hidden layers and see how a multilayer network solves problems a single perceptron cannot.</p>
+  </div></div>
+  <div class="ml-stage"><div class="shell">
     <div class="stage">
       <div class="webgl-content">
         <div id="unityContainer" style="width:1050px;height:600px"></div>
@@ -68,6 +86,8 @@
         </div>
       </div>
     </div>
+  </div></div>
+  <div class="ml-after"><div class="ml-container">
     <!-- How to play and a text description of the game. The same text is in
          UNITY_GUIDES in src/data/demos.ts; keep the two in step. -->
     <section class="howto" aria-labelledby="howto-title">
@@ -83,6 +103,14 @@
     </section>
     <p class="note">Built in Unity WebGL. Requires a desktop browser with WebGL enabled;
        the build is around 5&nbsp;MB, so first load takes a moment.</p>
+  </div></div>
+</main>
+<footer class="ml-footer">
+  <div class="ml-container ml-footer-row">
+    <div><a class="ml-footer-brand" href="/">Micheal Lanham</a><p>Author &amp; AI practitioner · Calgary, Canada</p></div>
+    <nav aria-label="Footer navigation"><a href="/books/">Books</a><a href="/demos/">Demos</a><a href="/work/">Work with me</a><a href="https://github.com/cxbxmxcx">GitHub <span aria-hidden="true">↗</span></a></nav>
+    <a class="ml-footer-mail" href="mailto:cxbxmxcx@micheal-lanham.com">cxbxmxcx@micheal-lanham.com</a>
   </div>
+</footer>
 </body>
 </html>

@@ -9,5 +9,5 @@ export function useCopyEmail() {
     try { await navigator.clipboard.writeText(EMAIL); setMessage('Email address copied.') }
     catch { setMessage('Copy was unavailable. Select the email address to copy it.') }
   }
-  return { copy, message }
+  return { copy, message, reset: () => setMessage('') }
 }

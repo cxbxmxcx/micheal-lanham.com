@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Helix Garden — Micheal Lanham</title>
 <meta name="description" content="A playable self-improving agent harness. Creatures run a sense–plan–act–learn loop; the harness runs act–signal–search–apply around them, evolving their policy cards — the artifact, never the machinery. You are the harness engineer.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
   :root {
@@ -19,9 +20,6 @@
   a:hover { text-decoration:underline; text-underline-offset:3px; }
   :focus-visible { outline:2px solid var(--amber); outline-offset:2px; }
   .mono { font-family:"JetBrains Mono",ui-monospace,Consolas,monospace; }
-  .bar { border-bottom:1px solid var(--line); padding:.8rem 1.4rem; display:flex; align-items:center; gap:1rem; }
-  .bar a { color:var(--muted); font-size:.88rem; font-weight:500; }
-  .bar a:hover { color:var(--amber); }
   .wrap { max-width:1380px; margin:0 auto; padding:1.1rem 1.4rem 3rem; }
   h1 { font-family:"Space Grotesk",Inter,sans-serif; font-weight:600; letter-spacing:-.02em;
        font-size:clamp(1.5rem,3vw,2.1rem); margin:.2rem 0 .3rem; }
@@ -149,18 +147,38 @@
   .loop span i { font-style:normal; font-size:.56rem; letter-spacing:.02em; color:var(--faint); text-transform:none; }
   .loop span.hot i { color:var(--copper); }
 
-  .embedded .bar, .embedded .pagehead { display:none; }
+  .embedded .pagehead { display:none; }
   .embedded .wrap { padding-top:.7rem; }
+  .embedded .ml-after .ml-container { max-width:1380px; padding:0 1.4rem 3rem; }
   @media (prefers-reduced-motion: reduce) { .loop span { transition:none; } }
 </style>
+<link rel="stylesheet" href="../demo-shell.css">
 <script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
 </head>
-<body>
-<div class="bar"><a href="../../">&larr; Micheal Lanham</a><a href="../../#demos">All demos</a>
-  <span style="margin-left:auto" class="mono" role="note" aria-label="companion note"
-        ><span style="color:var(--faint);font-size:.7rem">companion to </span><a href="https://www.manning.com/" style="font-size:.7rem">Self-Improving Agents (Manning)</a></span></div>
-
-<div class="wrap">
+<body class="ml-page">
+<a class="ml-skip" href="#main">Skip to content</a>
+<header class="ml-header">
+  <nav class="ml-container ml-nav" aria-label="Main navigation">
+    <a class="ml-brand" href="/" aria-label="Micheal Lanham — home"><img src="/logo.svg" width="32" height="32" alt=""><span>Micheal Lanham</span></a>
+    <ul class="ml-links">
+      <li><a href="/books/">Books</a></li>
+      <li><a href="/demos/" aria-current="true">Demos</a></li>
+      <li><a class="ml-cta" href="/work/">Work with me</a></li>
+    </ul>
+    <details class="ml-menu">
+      <summary><svg class="ml-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg><svg class="ml-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg><span class="ml-sr">Menu</span></summary>
+      <ul class="ml-menu-panel">
+        <li><a href="/">Home</a></li>
+        <li><a href="/books/">Books</a></li>
+        <li><a href="/demos/" aria-current="true">Demos</a></li>
+        <li><a class="ml-cta" href="/work/">Work with me</a></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+<main id="main">
+<div class="ml-intro"><div class="ml-container">
+  <a class="ml-back" href="/demos/"><span aria-hidden="true">←</span> All demos</a>
   <div class="pagehead">
     <p class="kicker">Playable theory · a companion to Self-Improving Agents (Manning)</p>
     <h1>Helix Garden</h1>
@@ -173,7 +191,10 @@
       this page are from <em style="color:var(--ink)">Self-Improving Agents</em> by Micheal Lanham (Manning).
     </p>
   </div>
+  <a class="ml-credit" href="/books/self-improving-agents/"><img src="/img/books/self-improving-agents-240.webp" alt="" width="22" height="28"><span>A companion to <strong>Self-Improving Agents</strong> (Manning)</span></a>
+</div></div>
 
+<div class="ml-stage"><div class="wrap">
   <div class="topbar">
     <div class="tabs" role="group" aria-label="Trials" id="tabs"></div>
     <div class="transport">
@@ -261,7 +282,9 @@
       </div>
     </aside>
   </div>
+</div></div>
 
+<div class="ml-after"><div class="ml-container">
   <details class="explain">
     <summary>How this maps to Self-Improving Agents (the book)</summary>
     <div class="body">
@@ -308,7 +331,15 @@
     name for the L0 toolkit — the harness you are operating here; the garden is just what it is pointed at.
     Deterministic per trial — same dials, same story. No model calls: the "judge" is simulated noise with a bias,
     which is the point.</p>
-</div>
+</div></div>
+</main>
+<footer class="ml-footer">
+  <div class="ml-container ml-footer-row">
+    <div><a class="ml-footer-brand" href="/">Micheal Lanham</a><p>Author &amp; AI practitioner · Calgary, Canada</p></div>
+    <nav aria-label="Footer navigation"><a href="/books/">Books</a><a href="/demos/">Demos</a><a href="/work/">Work with me</a><a href="https://github.com/cxbxmxcx">GitHub <span aria-hidden="true">↗</span></a></nav>
+    <a class="ml-footer-mail" href="mailto:cxbxmxcx@micheal-lanham.com">cxbxmxcx@micheal-lanham.com</a>
+  </div>
+</footer>
 
 <script src="sim.js"></script>
 <script>

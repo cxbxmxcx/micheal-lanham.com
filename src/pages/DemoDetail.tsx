@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router'
+import MoreDemos from '@/components/MoreDemos'
 import PageIntro from '@/components/PageIntro'
 import DemoPlayer from '@/components/DemoPlayer'
 import { DEMOS, UNITY_CONTROLS, UNITY_GUIDES } from '@/data/demos'
@@ -16,5 +17,6 @@ export default function DemoDetail() {
       <div className="reading-copy"><h2>What the game shows</h2><p>{guide.summary}</p></div>
     </div>}
     <DemoPlayer key={demo.slug} demo={demo} />
+    <MoreDemos current={demo.slug} />
   </article>
 }
