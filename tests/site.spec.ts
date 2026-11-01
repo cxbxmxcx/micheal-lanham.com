@@ -190,6 +190,7 @@ test('a failed embedded demo offers recovery without claiming it is running', as
 })
 
 test('every Proof Gate scene meets WCAG contrast, and advancing moves focus to the new scene', async ({ page }) => {
+  test.slow() // about 25 axe runs; CI runners are slower than a workstation
   await page.goto('/demos/Proof_Gate/index.html')
   await page.locator('#n').focus()
   await page.keyboard.press('Enter')
@@ -280,6 +281,7 @@ test.describe('Unity games on a phone', () => {
 })
 
 test('a standalone Unity game that cannot load says so in the page and can try again, without an alert', async ({ page }) => {
+  test.slow() // where WebGL is available the real 5 MB game loads after the retry
   const dialogs: string[] = []
   page.on('dialog', dialog => { dialogs.push(dialog.message()); void dialog.dismiss() })
   await page.route('**/Perceptron_Game/Build/Web.json', route => route.fulfill({ status: 503, body: 'Temporarily unavailable' }))
