@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup: the Darwin-engine look</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/demos/kit/darwin-engine.css">
+<style>
+  /* Mockup only: layout for the home page and one game screen. */
+  * { box-sizing: border-box; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
+  .note { background: var(--de-iron); color: var(--de-iron-text); font: 500 .8rem/1.5 var(--de-mono); padding: .5rem 0; text-align: center; }
+  header { border-bottom: 1px solid var(--de-rule); background: rgba(242, 232, 213, .92); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 76px; gap: 20px; }
+  .brand { display: flex; align-items: center; gap: 12px; font: 600 1.2rem/1 var(--de-display); color: var(--de-ink); text-decoration: none; }
+  .links { display: flex; gap: 26px; align-items: center; font-size: .9rem; }
+  .links a { color: var(--de-ink-soft); text-decoration: none; }
+  .hero { position: relative; display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; align-items: center; padding-top: 64px; padding-bottom: 56px; }
+  .hero h1 { font-size: clamp(2.4rem, 5vw, 4rem); margin: 14px 0 0; }
+  .hero h1 em { font-style: italic; color: var(--de-brass-ink); }
+  .lede { font-size: 1.12rem; color: var(--de-ink-soft); max-width: 34rem; margin: 22px 0 28px; }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .plate { position: relative; justify-self: center; width: min(420px, 100%); }
+  .plate .tree { position: absolute; top: -8%; left: -4%; width: 46%; opacity: .7; }
+  .oval { position: relative; width: 62%; margin-left: auto; aspect-ratio: 4 / 5; border-radius: 50%; padding: 10px; background: linear-gradient(135deg, #E3B964, var(--de-brass-deep)); box-shadow: 0 18px 40px rgba(42, 33, 24, .3); }
+  .oval img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; filter: sepia(.25) contrast(1.02); }
+  .plate .caption { position: absolute; left: 0; bottom: 6%; }
+  .covers { position: absolute; left: 0; bottom: 16%; display: flex; }
+  .covers img { width: 104px; box-shadow: 0 12px 24px rgba(42, 33, 24, .35); border: 1px solid var(--de-rule); }
+  .covers img:nth-child(1) { transform: rotate(-8deg) translateX(10px); }
+  .covers img:nth-child(2) { transform: rotate(3deg) translate(-18px, -10px); }
+  .facts { display: flex; gap: 40px; flex-wrap: wrap; padding: 22px 0; border-top: 1px solid var(--de-rule); border-bottom: 1px solid var(--de-rule); }
+  .facts strong { display: block; font: 600 2rem/1 var(--de-display); }
+  .facts span { font-size: .85rem; color: var(--de-ink-soft); }
+  .lab { margin-top: 72px; padding: 64px 0; background: var(--de-iron); color: var(--de-iron-text); background-image: repeating-linear-gradient(0deg, transparent 0 39px, rgba(201, 151, 62, .06) 39px 40px), repeating-linear-gradient(90deg, transparent 0 39px, rgba(201, 151, 62, .06) 39px 40px); }
+  .lab h2 { font-size: clamp(1.9rem, 3.4vw, 2.7rem); margin: 10px 0 8px; color: var(--de-iron-text); }
+  .lab > .wrap > p { color: var(--de-iron-dim); max-width: 40rem; }
+  .engines { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 34px; }
+  .engines .de-engine { display: flex; flex-direction: column; gap: 12px; }
+  .engines h3 { font: 600 1.4rem/1.15 var(--de-display); margin: 0; }
+  .engines .emblem { color: var(--de-brass); height: 110px; }
+  .engines .emblem svg { height: 100%; width: auto; }
+  .gauges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .section { padding: 72px 0 24px; }
+  .section h2 { font-size: clamp(1.9rem, 3.4vw, 2.7rem); margin: 10px 0 26px; }
+  .shelf { display: flex; gap: 22px; align-items: flex-end; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 6px double var(--de-rule); }
+  .shelf figure { margin: 0; width: 118px; }
+  .shelf img { width: 100%; display: block; box-shadow: 4px 8px 12px rgba(42, 33, 24, .25); }
+  .shelf figcaption { margin-top: 8px; text-align: center; }
+  .game { margin-top: 80px; margin-bottom: 80px; }
+  .board { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; }
+  .table { display: grid; grid-template-columns: repeat(11, 1fr); gap: 3px; font: 500 .78rem/1 var(--de-mono); }
+  .table span { display: grid; place-items: center; aspect-ratio: 1; border: 1px solid var(--de-iron-line); border-radius: 3px; color: var(--de-iron-text); }
+  .table .head { color: var(--de-brass); border-color: transparent; }
+  .table .held { color: var(--de-iron-dim); background: repeating-linear-gradient(135deg, transparent 0 4px, rgba(201, 151, 62, .18) 4px 5px); }
+  .table .ok { color: var(--de-glow); border-color: rgba(95, 227, 238, .45); }
+  .gearbox { display: flex; flex-direction: column; gap: 14px; }
+  .rules { display: flex; flex-wrap: wrap; gap: 8px; }
+  footer { margin-top: 40px; padding: 30px 0 50px; border-top: 1px solid var(--de-rule); color: var(--de-ink-soft); font-size: .9rem; }
+  @media (max-width: 860px) { .hero, .board { grid-template-columns: 1fr; } .engines { grid-template-columns: 1fr; } .links { display: none; } }
+</style>
+</head>
+<body class="de-page">
+<div class="note">MOCKUP · the Darwin-engine look · home page and one game screen · not the live site</div>
+<header><div class="wrap nav">
+  <a class="brand" href="#"><span class="de-gear" style="width:30px"></span>Micheal Lanham</a>
+  <nav class="links" aria-label="Main"><a href="#">Books</a><a href="#">Demos</a><a href="#">About</a><a class="de-btn" href="#">Work with me</a></nav>
+</div></header>
+
+<main>
+<section class="wrap hero">
+  <div>
+    <p class="de-kicker">Author &amp; AI practitioner · Calgary</p>
+    <h1>Micheal Lanham, author of <em>AI Agents in Action</em>.</h1>
+    <p class="lede">My next Manning book, <em>Self-Improving Agents</em>, is in early access. I also help teams design agent systems that learn, through architecture reviews and hands-on training.</p>
+    <div class="actions"><a class="de-btn" href="#">Work with me →</a><a class="de-btn-ghost" href="#">Browse the books</a></div>
+  </div>
+  <div class="plate">
+    <!-- After Darwin's 1837 "I think" sketch: a tree of descent drawn in ink. -->
+    <div class="tree de-sketch" aria-hidden="true"><svg viewBox="0 0 220 200"><text x="18" y="26" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="currentColor" stroke="none">I think</text><path d="M40 182 C 44 150, 60 140, 72 120 C 84 100, 86 84, 104 70"/><path d="M72 120 C 92 122, 108 112, 126 100 C 144 88, 160 92, 176 78"/><path d="M104 70 C 116 58, 120 46, 138 40"/><path d="M104 70 C 96 54, 92 46, 98 30"/><path d="M126 100 C 132 116, 146 124, 162 126"/><path d="M60 140 C 46 130, 36 120, 30 104"/><path d="M138 40 h 12 M98 30 v -10 M176 78 l 10 -6 M162 126 l 12 2 M30 104 l -8 -8"/><circle cx="40" cy="182" r="3"/><text x="44" y="196" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" stroke="none">1</text></svg></div>
+    <div class="oval"><img src="/img/micheal-lanham-350.webp" alt="Micheal Lanham"></div>
+    <div class="covers"><img src="/img/books/self-improving-agents-240.webp" alt="Self-Improving Agents"><img src="/img/books/ai-agents-second-240.webp" alt="AI Agents in Action, Second Edition"></div>
+    <span class="caption de-label">Plate I · the author, with specimens</span>
+  </div>
+</section>
+<div class="wrap"><div class="facts"><div><strong>12</strong><span>Published books</span></div><div><strong>20+</strong><span>Years in software</span></div><div><strong>3</strong><span>Concept games</span></div><div><strong>5</strong><span>Publishers</span></div></div></div>
+
+<section class="lab">
+  <div class="wrap">
+    <p class="de-kicker" style="color:var(--de-brass)">The laboratory</p>
+    <h2>Three engines for agents that learn.</h2>
+    <p>Each game is a small machine you can operate: measure what good means, turn slow reasoning into instinct, and find the rule that writes the memory.</p>
+    <div class="engines">
+      <article class="de-engine">
+        <div class="emblem" aria-hidden="true"><svg viewBox="0 0 120 110" fill="none" stroke="currentColor" stroke-width="2"><path d="M60 104 V70 M60 70 C 40 60 30 44 24 22 M60 70 C 76 58 86 46 92 24 M60 86 C 74 82 92 76 104 64 M24 22 h -8 M92 24 h 8 M104 64 l 8 -4"/><circle cx="24" cy="22" r="4"/><circle cx="92" cy="24" r="4"/><circle cx="104" cy="64" r="4"/></svg></div>
+        <p class="de-kicker">Self-Improving Agents</p>
+        <h3>The Selection Engine</h3>
+        <p class="de-muted">Decide what good is, measure the gap with proof or evidence, and let a search breed better versions.</p>
+        <div class="gauges"><span class="de-gauge"><span>Signal</span><strong>Proof</strong></span><span class="de-gauge"><span>Search</span><strong>DGM</strong></span></div>
+      </article>
+      <article class="de-engine">
+        <div class="emblem" aria-hidden="true"><svg viewBox="0 0 120 110" fill="none" stroke="currentColor" stroke-width="2"><circle cx="60" cy="46" r="26"/><circle cx="60" cy="46" r="10"/><path d="M8 96 h104 M20 96 v-10 h16 v10 M52 96 v-10 h16 v10 M84 96 v-10 h16 v10 M60 72 v14"/></svg></div>
+        <p class="de-kicker">The Instinctual Learning Agent Harness</p>
+        <h3>The Instinct Engine</h3>
+        <p class="de-muted">The model stays frozen; the harness learns. Turn slow System&nbsp;2 reasoning into fast System&nbsp;1 instinct.</p>
+        <div class="gauges"><span class="de-gauge"><span>System 2 load</span><strong>18%</strong></span><span class="de-gauge"><span>Cost / task</span><strong>0.4¢</strong></span></div>
+      </article>
+      <article class="de-engine">
+        <div class="emblem" aria-hidden="true"><svg viewBox="0 0 120 110" fill="none" stroke="currentColor" stroke-width="2"><rect x="10" y="12" width="56" height="56"/><path d="M10 26 h56 M10 40 h56 M10 54 h56 M24 12 v56 M38 12 v56 M52 12 v56"/><circle cx="92" cy="74" r="20"/><circle cx="92" cy="74" r="7"/><path d="M92 50 v-6 M92 98 v6 M68 74 h-6 M116 74 h6"/></svg></div>
+        <p class="de-kicker">Metacognition</p>
+        <h3>The Difference Engine</h3>
+        <p class="de-muted">Learn to learn: find the mechanism that rebuilds the times table, then let it write a bigger one.</p>
+        <div class="gauges"><span class="de-gauge"><span>Recall</span><strong>72%</strong></span><span class="de-gauge"><span>Held back</span><strong>9 / 9</strong></span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section">
+  <p class="de-kicker">The books</p>
+  <h2>Twelve published books, and one in early access.</h2>
+  <div class="shelf">
+    <figure><img src="/img/books/self-improving-agents-240.webp" alt="Self-Improving Agents"><figcaption><span class="de-label">Early access</span></figcaption></figure>
+    <figure><img src="/img/books/ai-agents-second-240.webp" alt="AI Agents in Action, Second Edition"><figcaption><span class="de-label">2026</span></figcaption></figure>
+    <figure><img src="/img/books/evolutionary-deep-learning-240.webp" alt="Evolutionary Deep Learning"><figcaption><span class="de-label">2023</span></figcaption></figure>
+    <figure><img src="/img/books/generating-a-new-reality-240.webp" alt="Generating a New Reality"><figcaption><span class="de-label">2021</span></figcaption></figure>
+    <figure><img src="/img/books/reinforcement-learning-for-games-240.webp" alt="Hands-On Reinforcement Learning for Games"><figcaption><span class="de-label">2020</span></figcaption></figure>
+  </div>
+</section>
+
+<section class="wrap game">
+  <p class="de-kicker">Game screen · The Difference Engine · stage 3 of 4</p>
+  <h2 style="font-size:clamp(1.7rem,3vw,2.3rem);margin:8px 0 18px">Find the rule that rebuilds the table.</h2>
+  <div class="board">
+    <div class="de-engine">
+      <p class="de-kicker" style="margin:0 0 10px">The known table · nine cells held back</p>
+      <div class="table" aria-label="Times table from 1 to 10, rebuilt by the chosen rules">
+        <span class="head">×</span><span class="head">1</span><span class="head">2</span><span class="head">3</span><span class="head">4</span><span class="head">5</span><span class="head">6</span><span class="head">7</span><span class="head">8</span><span class="head">9</span><span class="head">10</span>
+        <span class="head">1</span><span class="ok">1</span><span class="ok">2</span><span class="ok">3</span><span class="ok">4</span><span class="ok">5</span><span class="ok">6</span><span class="ok">7</span><span class="ok">8</span><span class="ok">9</span><span class="ok">10</span>
+        <span class="head">2</span><span class="ok">2</span><span class="ok">4</span><span class="ok">6</span><span class="ok">8</span><span class="ok">10</span><span class="ok">12</span><span class="ok">14</span><span class="ok">16</span><span class="ok">18</span><span class="ok">20</span>
+        <span class="head">3</span><span class="ok">3</span><span class="ok">6</span><span class="ok">9</span><span class="ok">12</span><span class="held">?</span><span class="ok">18</span><span class="ok">21</span><span class="ok">24</span><span class="ok">27</span><span class="ok">30</span>
+        <span class="head">4</span><span class="ok">4</span><span class="ok">8</span><span class="ok">12</span><span class="ok">16</span><span class="ok">20</span><span class="ok">24</span><span class="held">?</span><span class="ok">32</span><span class="ok">36</span><span class="ok">40</span>
+        <span class="head">5</span><span class="ok">5</span><span class="ok">10</span><span class="held">?</span><span class="ok">20</span><span class="ok">25</span><span class="ok">30</span><span class="ok">35</span><span class="ok">40</span><span class="ok">45</span><span class="ok">50</span>
+        <span class="head">6</span><span class="ok">6</span><span class="ok">12</span><span class="ok">18</span><span class="ok">24</span><span class="ok">30</span><span class="ok">36</span><span class="ok">42</span><span class="held">?</span><span class="ok">54</span><span class="ok">60</span>
+        <span class="head">7</span><span class="ok">7</span><span class="ok">14</span><span class="ok">21</span><span class="held">?</span><span class="ok">35</span><span class="ok">42</span><span class="ok">49</span><span class="ok">56</span><span class="ok">63</span><span class="ok">70</span>
+        <span class="head">8</span><span class="ok">8</span><span class="ok">16</span><span class="ok">24</span><span class="ok">32</span><span class="ok">40</span><span class="held">?</span><span class="ok">56</span><span class="ok">64</span><span class="ok">72</span><span class="ok">80</span>
+        <span class="head">9</span><span class="ok">9</span><span class="held">?</span><span class="ok">27</span><span class="ok">36</span><span class="ok">45</span><span class="ok">54</span><span class="ok">63</span><span class="ok">72</span><span class="held">?</span><span class="ok">90</span>
+        <span class="head">10</span><span class="ok">10</span><span class="ok">20</span><span class="ok">30</span><span class="ok">40</span><span class="ok">50</span><span class="ok">60</span><span class="ok">70</span><span class="ok">80</span><span class="ok">90</span><span class="held">?</span>
+      </div>
+    </div>
+    <div class="gearbox">
+      <div class="de-engine">
+        <p class="de-kicker" style="margin:0 0 10px">Rule gears in the mechanism</p>
+        <div class="rules"><button class="de-chip is-on" aria-pressed="true">repeated addition</button><button class="de-chip is-on" aria-pressed="true">swap</button><button class="de-chip" aria-pressed="false">split</button><button class="de-chip" aria-pressed="false">double</button><button class="de-chip" aria-pressed="false">×10 shift</button><button class="de-chip" aria-pressed="false">memorize only</button></div>
+      </div>
+      <div class="de-engine gauges"><span class="de-gauge"><span>Visible cells</span><strong>91 / 91</strong></span><span class="de-gauge"><span>Held back</span><strong>9 / 9</strong></span><span class="de-gauge"><span>Turns per answer</span><strong>4.1</strong></span></div>
+      <div class="actions"><button class="de-btn">Test the mechanism</button><button class="de-btn-ghost">Print a 20 × 20 table</button></div>
+      <p class="de-muted" style="margin:0">A mechanism that only memorizes rebuilds the visible cells and fails the nine held back.</p>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap">Micheal Lanham · Author &amp; AI practitioner · Calgary, Canada</div></footer>
+</body>
+</html>

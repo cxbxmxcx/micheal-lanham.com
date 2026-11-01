@@ -28,7 +28,7 @@ export default function Hero() {
             <Link className="btn-primary" to="/work/">Work with me <span aria-hidden="true">→</span></Link>
             <Link className="btn-secondary" to="/books/">Browse the books</Link>
           </div>
-          <Link to="/demos/proof-gate/" className="mt-5 inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">Learn by doing: play The Proof Gate <span className="ml-2 text-teal" aria-hidden="true">→</span></Link>
+          <Link to="/demos/selection-engine/" className="mt-5 inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">Learn by doing: play The Selection Engine <span className="ml-2 text-teal" aria-hidden="true">→</span></Link>
         </div>
       </div>
       <div className="hero-proof">

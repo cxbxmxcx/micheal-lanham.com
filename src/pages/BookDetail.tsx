@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router'
 import RelatedBooks from '@/components/RelatedBooks'
+import { DEMOS } from '@/data/demos'
 import { BOOKS, bookDestination, bookInquiry } from '@/data/books'
 import { BookArtwork } from '@/components/BookPreview'
 import PageIntro from '@/components/PageIntro'
@@ -10,6 +11,7 @@ export default function BookDetail() {
   const { slug } = useParams()
   const book = BOOKS.find(item => item.slug === slug)
   if (!book) return <NotFound />
+  const companions = DEMOS.filter(demo => demo.bookSlug === book.slug)
   return <article className="container-x pb-20">
     <PageIntro back={{ to: '/books/', label: 'All books' }} kicker={`${book.publisher} · ${book.status}`} title={book.title}><p>{book.subtitle}</p></PageIntro>
     <div className="grid items-start gap-10 md:grid-cols-[minmax(200px,320px)_1fr] lg:gap-16">
@@ -21,7 +23,7 @@ export default function BookDetail() {
         {book.year && Number(book.year) < 2024 && <p className="notice">Published in {book.year}. Libraries, services, and APIs may have changed since this edition; check current documentation when running its examples.</p>}
         {book.slug === 'ai-agents-in-action' && <p><Link className="text-link" to="/books/ai-agents-in-action-second-edition/">Looking for the latest material? Explore the second edition <span aria-hidden="true">→</span></Link></p>}
         <div className="my-7 flex flex-wrap gap-4">{book.url ? <a className="btn-primary" href={book.url}>{bookDestination(book)} <span aria-hidden="true">↗</span></a> : <a className="btn-primary" href={bookInquiry(book)}><MailIcon /> {bookDestination(book)}</a>}{book.code && <a className="btn-secondary" href={book.code}>Explore the companion code <span aria-hidden="true">↗</span></a>}</div>
-        {book.slug === 'self-improving-agents' && <div className="notice"><h3>Try the ideas</h3><p>Explore improvement decisions through two interactive companions.</p><div className="mt-3 flex flex-wrap gap-5"><Link className="text-link" to="/demos/proof-gate/">The Proof Gate <span aria-hidden="true">→</span></Link><Link className="text-link" to="/demos/helix-garden/">Helix Garden <span aria-hidden="true">→</span></Link></div></div>}
+        {companions.length > 0 && <div className="notice"><h3>Try the ideas</h3><p>Play them in {companions.length === 1 ? 'an interactive companion' : `${companions.length} interactive companions`}.</p><div className="mt-3 flex flex-wrap gap-5">{companions.map(demo => <Link key={demo.slug} className="text-link" to={`/demos/${demo.slug}/`}>{demo.title} <span aria-hidden="true">→</span></Link>)}</div></div>}
         <dl className="book-details"><div><dt>Publisher</dt><dd>{book.publisher}</dd></div><div><dt>Topic</dt><dd>{book.topic}</dd></div>{book.year && <div><dt>Published</dt><dd>{book.year}</dd></div>}{book.isbn && <div><dt>ISBN</dt><dd>{book.isbn}</dd></div>}</dl>
       </div>
     </div>

@@ -11,6 +11,7 @@
   --ml-gutter: clamp(20px, 5vw, 48px);
 }
 
+body.ml-page { margin: 0; }
 html:not(.embedded) body.ml-page { background: var(--ml-canvas); color: var(--ml-ink); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .ml-container { width: 100%; max-width: 1280px; margin-inline: auto; padding-inline: var(--ml-gutter); }
 .ml-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

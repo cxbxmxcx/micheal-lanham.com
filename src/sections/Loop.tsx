@@ -8,7 +8,7 @@ export default function Loop() {
         <p className="kicker">How agents improve</p>
         <h2>Systems that learn, adapt, and improve.</h2>
         <p className="section-lede">Whether you are building a first agent or improving one in production, the work tends to follow the same four steps. Gather context, act, look for evidence, and keep only the changes that evidence supports.</p>
-        <Link className="text-link mt-4" to="/demos/helix-garden/">See the loop run in Helix Garden <span aria-hidden="true">→</span></Link>
+        <Link className="text-link mt-4" to="/demos/selection-engine/">Run the loop in The Selection Engine <span aria-hidden="true">→</span></Link>
       </div>
       <AgentLoop />
     </div>

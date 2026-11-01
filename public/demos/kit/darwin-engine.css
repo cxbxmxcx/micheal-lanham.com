@@ -1,0 +1,114 @@
+/* The Darwin engine kit: high-tech steampunk on Darwin's notebook paper.
+   Paper and sepia ink for reading, brass instruments on dark iron for the
+   machines, cyan readouts for the high-tech layer. Shared by the concept
+   games and, once the owner approves the mockup, the site.
+
+   Load /fonts/fonts.css first (Fraunces, Inter, JetBrains Mono). Every
+   colour pair below is AA or better; text colours are named for the
+   surface they sit on (…-ink on paper, plain names on iron). Prefix: de-. */
+
+:root {
+  /* Darwin's notebooks */
+  --de-paper: #F2E8D5;
+  --de-paper-2: #E8DABD;        /* wells, table stripes */
+  --de-rule: #CDB892;           /* hairlines and ruled lines */
+  --de-ink: #2A2118;            /* text on paper: 13:1 */
+  --de-ink-soft: #5B4A37;       /* secondary text on paper: 7:1 */
+  --de-brass-ink: #74501C;      /* brass-coloured text on paper: 5.9:1 */
+  --de-good-ink: #2F6B2A;
+  --de-bad-ink: #9A2F20;
+  --de-verdigris-ink: #1F5F55;
+
+  /* the engine */
+  --de-iron: #17130E;
+  --de-iron-2: #221B14;
+  --de-iron-line: #3A2F22;
+  --de-iron-text: #E9DFCB;      /* text on iron: 14:1 */
+  --de-iron-dim: #B3A58C;       /* secondary text on iron: 7:1 */
+  --de-brass: #C9973E;          /* brass text and trim on iron: 7:1 */
+  --de-brass-deep: #8E6526;
+  --de-copper: #B5653C;
+  --de-verdigris: #3F8F80;
+  --de-glow: #5FE3EE;           /* instrument readouts on iron: 12:1 */
+  --de-glow-soft: rgba(95, 227, 238, .18);
+  --de-good: #7FBF6A;
+  --de-bad: #E8806C;
+
+  --de-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --de-body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --de-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --de-radius: 10px;
+}
+
+/* Paper: faint fibres and ruled lines, like a field notebook. */
+.de-page {
+  margin: 0; color: var(--de-ink); font: 400 1rem/1.6 var(--de-body);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, .55), transparent 40%),
+    radial-gradient(circle at 82% 70%, rgba(140, 104, 52, .07), transparent 45%),
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(160, 128, 80, .10) 31px 32px),
+    var(--de-paper);
+}
+.de-page :focus-visible { outline: 2px solid var(--de-ink); outline-offset: 3px; }
+
+.de-display, .de-page h1, .de-page h2 { font-family: var(--de-display); font-weight: 600; letter-spacing: -.01em; line-height: 1.12; }
+.de-kicker { font: 500 .75rem/1.6 var(--de-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--de-brass-ink); }
+.de-muted { color: var(--de-ink-soft); }
+
+/* A specimen label: double rule, like the cards pinned in Darwin's drawers. */
+.de-panel { background: rgba(255, 252, 244, .72); border: 1px solid var(--de-rule); outline: 1px solid var(--de-rule); outline-offset: -5px; border-radius: 4px; padding: 1.1rem 1.25rem; }
+.de-label { display: inline-block; padding: .15rem .55rem; border: 1px solid var(--de-ink-soft); border-radius: 2px; font: 500 .72rem/1.5 var(--de-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--de-ink); background: var(--de-paper); }
+
+/* The engine: dark iron inside a brass bezel with rivets. */
+.de-engine {
+  position: relative; color: var(--de-iron-text); background: linear-gradient(180deg, var(--de-iron-2), var(--de-iron));
+  border: 3px solid transparent; border-radius: var(--de-radius); padding: 1.1rem 1.25rem;
+  background-clip: padding-box; box-shadow: 0 0 0 1px var(--de-brass-deep), 0 0 0 4px #5C4218, 0 14px 30px rgba(42, 33, 24, .28);
+}
+.de-engine::before, .de-engine::after { content: ""; position: absolute; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #F0D49A, var(--de-brass-deep)); }
+.de-engine::before { left: 7px; } .de-engine::after { right: 7px; }
+.de-engine :focus-visible { outline-color: var(--de-glow); }
+.de-engine h2, .de-engine h3 { color: var(--de-iron-text); }
+.de-engine .de-kicker { color: var(--de-brass); }
+.de-engine .de-muted { color: var(--de-iron-dim); }
+
+/* Instrument readout: a labelled glowing value. */
+.de-gauge { display: inline-flex; flex-direction: column; gap: .15rem; min-width: 7rem; padding: .5rem .7rem; border: 1px solid var(--de-iron-line); border-radius: 6px; background: #0F0C08; }
+.de-gauge > span:first-child { font: 500 .68rem/1.4 var(--de-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--de-iron-dim); }
+.de-gauge > strong, .de-gauge > output { font: 600 1.15rem/1.2 var(--de-mono); color: var(--de-glow); text-shadow: 0 0 10px var(--de-glow-soft); }
+
+/* Bar meter in a brass frame. Set --value from 0 to 1. */
+.de-meter { height: 10px; border: 1px solid var(--de-brass-deep); border-radius: 5px; background: #0F0C08; overflow: hidden; }
+.de-meter > i { display: block; height: 100%; width: calc(var(--value, 0) * 100%); background: linear-gradient(90deg, var(--de-verdigris), var(--de-glow)); transition: width .4s ease; }
+
+/* Buttons: polished brass, and a quieter outline variant. 44 px targets. */
+.de-btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: .55rem 1.1rem; border: 1px solid #6E4D17; border-radius: 8px; cursor: pointer; font: 600 .9rem/1.2 var(--de-body); color: #1E160D; background: linear-gradient(180deg, #E3B964, var(--de-brass) 55%, #A9782B); box-shadow: inset 0 1px 0 rgba(255, 244, 214, .7), 0 2px 0 #5C4218; text-decoration: none; }
+.de-btn:hover { filter: brightness(1.06); }
+.de-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255, 244, 214, .5); }
+.de-btn:disabled { cursor: not-allowed; filter: grayscale(.6) brightness(.85); }
+.de-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: .55rem 1rem; border: 1px solid currentColor; border-radius: 8px; background: transparent; color: inherit; font: 600 .9rem/1.2 var(--de-body); cursor: pointer; }
+.de-engine .de-btn-ghost { color: var(--de-brass); }
+.de-chip { display: inline-flex; align-items: center; min-height: 28px; padding: .1rem .6rem; border: 1px solid var(--de-iron-line); border-radius: 999px; background: transparent; font: 500 .75rem/1.3 var(--de-mono); color: var(--de-iron-dim); }
+button.de-chip { min-height: 44px; padding-inline: .9rem; cursor: pointer; }
+.de-chip[aria-pressed="true"], .de-chip.is-on { border-color: var(--de-glow); color: var(--de-glow); background: var(--de-glow-soft); }
+
+/* Ink line art (inline SVG): strokes follow the text colour. */
+.de-sketch { color: var(--de-ink); }
+.de-sketch svg { display: block; width: 100%; height: auto; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* A brass gear (decorative). Add .de-gear-turn to let it turn slowly. */
+.de-gear { display: inline-block; width: 48px; aspect-ratio: 1; background: linear-gradient(135deg, #E3B964, var(--de-brass-deep));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M44 2h12l2 12 9 4 10-7 8 8-7 10 4 9 12 2v12l-12 2-4 9 7 10-8 8-10-7-9 4-2 12H44l-2-12-9-4-10 7-8-8 7-10-4-9-12-2V44l12-2 4-9-7-10 8-8 10 7 9-4z M50 34a16 16 0 1 0 0 32 16 16 0 1 0 0-32z' fill-rule='evenodd'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M44 2h12l2 12 9 4 10-7 8 8-7 10 4 9 12 2v12l-12 2-4 9 7 10-8 8-10-7-9 4-2 12H44l-2-12-9-4-10 7-8-8 7-10-4-9-12-2V44l12-2 4-9-7-10 8-8 10 7 9-4z M50 34a16 16 0 1 0 0 32 16 16 0 1 0 0-32z' fill-rule='evenodd'/%3E%3C/svg%3E") center / contain no-repeat; }
+.de-gear-turn { animation: de-turn 24s linear infinite; }
+@keyframes de-turn { to { transform: rotate(360deg); } }
+
+/* Engraving hatch, for shading panels and wells. */
+.de-hatch { background-image: repeating-linear-gradient(135deg, rgba(42, 33, 24, .08) 0 1px, transparent 1px 6px); }
+
+.de-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .de-gear-turn { animation: none; }
+  .de-meter > i { transition: none; }
+}

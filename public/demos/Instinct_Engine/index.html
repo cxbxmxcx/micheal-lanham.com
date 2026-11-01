@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Instinct Engine — Micheal Lanham</title>
+<meta name="description" content="Be the harness around a frozen language model: route tasks between fast and slow thinking, write memories, and move decisions to Jev.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="../demo-shell.css">
+<link rel="stylesheet" href="/demos/kit/darwin-engine.css">
+<style>
+  /* Layout only, after the owner's Darwin-engine mockup (game screen): a kicker
+     and display heading on the paper, then a board with the instrument on the
+     left and a gearbox of iron panels and controls on the right. Colours, type
+     and controls come from the kit. */
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--de-body); }
+  .ie-wrap { max-width: 1180px; margin: 0 auto; padding: 2rem clamp(16px, 5vw, 48px) 4rem; }
+  .ie-wrap p { max-width: 70ch; }
+  .ie-title { margin: .5rem 0 1.1rem; font-size: clamp(1.7rem, 3vw, 2.3rem); }
+  .ie-title:focus { outline: none; }
+  .ie-board { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .ie-gearbox { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .ie-gearbox > #scene > :first-child { margin-top: 0; }
+  .de-engine > .de-kicker:first-child, .de-engine > h3.de-kicker { margin: 0 0 10px; }
+
+  /* the instrument */
+  .ie-machine { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .ie-svg { display: block; width: 100%; height: auto; }
+  .ie-svg .line { fill: none; stroke: var(--de-brass-deep); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ie-svg .brass { fill: none; stroke: var(--de-brass); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ie-svg .glass { fill: rgba(95, 227, 238, .05); stroke: var(--de-iron-dim); stroke-width: 1.5; }
+  .ie-svg .ring { fill: none; stroke: var(--de-brass-deep); stroke-width: 1.5; stroke-dasharray: 5 6; }
+  .ie-svg text { fill: var(--de-iron-dim); font: 500 11px var(--de-mono); letter-spacing: .14em; }
+  .ie-svg .lit .line, .ie-svg .lit .brass { stroke: var(--de-glow); filter: drop-shadow(0 0 4px rgba(95, 227, 238, .6)); }
+  .ie-svg .lit text { fill: var(--de-glow); }
+  .ie-svg .closed { opacity: .4; }
+  .ie-belt { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: .45rem; list-style: none; border: 1px solid var(--de-iron-line); border-radius: 6px;
+    background: repeating-linear-gradient(90deg, #0F0C08 0 14px, #1A140E 14px 16px); }
+  .ie-belt[hidden] { display: none; }
+  .ie-belt li { flex: 1 1 4.5rem; min-height: 32px; padding: .3rem .5rem; border: 1px solid var(--de-iron-line); border-radius: 4px; background: var(--de-iron-2); font: 500 .72rem/1.3 var(--de-mono); color: var(--de-iron-dim); text-align: center; }
+  .ie-belt li.now { border-color: var(--de-glow); color: var(--de-glow); }
+  .ie-belt li.done { color: var(--de-iron-text); }
+  .ie-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+
+  /* the gearbox */
+  .ie-gauges { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ie-gauges .de-gauge { flex: 1 1 6.5rem; min-width: 0; }
+  .ie-term { font-size: .9rem; color: var(--de-ink-soft); }
+  .ie-term .de-label { margin-right: .4rem; }
+  .ie-specimen { margin: .9rem 0; }
+  .ie-specimen > p { margin: .45rem 0 0; font: 400 1.05rem/1.5 var(--de-display); }
+  .ie-specimen > p.ie-plain { font: .95rem/1.55 var(--de-body); }
+  .ie-box { margin: .9rem 0; }
+  .ie-box > p { margin: .45rem 0 0; font: .88rem/1.55 var(--de-mono); overflow-wrap: anywhere; }
+  .ie-routes { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: .6rem; }
+  .ie-route.de-btn { flex-direction: column; align-items: flex-start; gap: .15rem; width: 100%; padding: .6rem .85rem; text-align: left; }
+  .ie-route strong { font-size: 1rem; }
+  .ie-route span { font: 500 .78rem/1.35 var(--de-mono); }
+  .ie-route:disabled span.why { font-family: var(--de-body); font-style: italic; }
+  .ie-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1rem; }
+  .ie-verdict { display: inline-flex; align-items: center; gap: .4rem; margin: .4rem 0; font: 700 1rem/1.3 var(--de-body); }
+  .ie-verdict.good { color: var(--de-good-ink); }
+  .ie-verdict.bad { color: var(--de-bad-ink); }
+  .ie-verdict.unknown { color: var(--de-ink-soft); }
+  .ie-stack { display: grid; gap: .6rem; margin: .8rem 0; padding: 0; list-style: none; }
+  .ie-stack > li.de-panel > b { display: block; margin-bottom: .2rem; font: 600 1.05rem/1.3 var(--de-display); }
+  .ie-stack > li.de-panel > .de-label { margin-bottom: .35rem; }
+  .ie-routecard h3 { margin: 0 0 .3rem; font: 600 1.3rem/1.15 var(--de-display); }
+  .ie-routecard p { margin: 0; }
+  .ie-drawer { margin-top: .9rem; }
+  .ie-drawer summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; font-weight: 600; color: var(--de-brass-ink); }
+  .ie-type pre { margin: 0; font: 600 .9rem/1.6 var(--de-mono); color: var(--de-glow); white-space: pre-wrap; }
+  .ie-judgment { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ie-judgment .de-gauge { flex: 1 1 6.5rem; min-width: 0; }
+  table.ie-ledger { width: 100%; margin: .6rem 0; border-collapse: collapse; font-size: .85rem; }
+  .ie-ledger caption { padding-bottom: .3rem; text-align: left; }
+  .ie-ledger th, .ie-ledger td { padding: .35rem .4rem; border-bottom: 1px solid var(--de-rule); text-align: left; vertical-align: top; }
+  .ie-ledger thead th { font-weight: 600; color: var(--de-ink-soft); }
+  .ie-ledger tbody tr:nth-child(even) { background: rgba(232, 218, 189, .45); }
+  .ie-ledger .good { color: var(--de-good-ink); font-weight: 600; }
+  .ie-ledger .bad { color: var(--de-bad-ink); font-weight: 600; }
+  .ie-chart { margin: 1rem 0; }
+  .ie-chart .de-muted { margin: 0 0 .6rem; font-size: .85rem; }
+  .ie-bars { margin: 0; padding: 0; list-style: none; }
+  .ie-bars li { display: grid; grid-template-columns: 3.4rem 1fr; align-items: center; gap: .25rem .6rem; margin: .55rem 0; font: 500 .78rem/1.3 var(--de-mono); color: var(--de-iron-dim); }
+  .ie-bars .track, .ie-bars .de-meter { position: relative; display: block; }
+  .ie-bars .tick { position: absolute; top: -4px; bottom: -4px; left: calc(var(--r) * 100% - 1px); width: 2px; background: var(--de-iron-text); }
+  .ie-bars .val { grid-column: 2; }
+  .ie-book { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; margin: 1.2rem 0 0; }
+  .ie-book p { margin: 0; }
+  .ml-credit.ie-credit { padding-left: 14px; }
+  .embedded .ie-wrap { padding-top: 1.2rem; }
+  .embedded .ml-after .ml-container { max-width: 1180px; padding: 0 clamp(16px, 5vw, 48px) 2.5rem; }
+  @media (max-width: 860px) {
+    .ie-board { grid-template-columns: minmax(0, 1fr); }
+    .ie-machine { position: static; }
+  }
+  @media (max-width: 400px) {
+    .ie-wrap .de-engine { padding: .9rem .75rem; }
+    .ie-ledger th, .ie-ledger td { padding: .3rem .25rem; }
+  }
+</style>
+<script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
+</head>
+<body class="ml-page">
+<a class="ml-skip" href="#main">Skip to content</a>
+<header class="ml-header">
+  <nav class="ml-container ml-nav" aria-label="Main navigation">
+    <a class="ml-brand" href="/" aria-label="Micheal Lanham — home"><img src="/logo.svg" width="32" height="32" alt=""><span>Micheal Lanham</span></a>
+    <ul class="ml-links">
+      <li><a href="/books/">Books</a></li>
+      <li><a href="/demos/" aria-current="true">Demos</a></li>
+      <li><a class="ml-cta" href="/work/">Work with me</a></li>
+    </ul>
+    <details class="ml-menu">
+      <summary><svg class="ml-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg><svg class="ml-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg><span class="ml-sr">Menu</span></summary>
+      <ul class="ml-menu-panel">
+        <li><a href="/">Home</a></li>
+        <li><a href="/books/">Books</a></li>
+        <li><a href="/demos/" aria-current="true">Demos</a></li>
+        <li><a class="ml-cta" href="/work/">Work with me</a></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+<main id="main">
+<div class="ml-intro"><div class="ml-container">
+  <a class="ml-back" href="/demos/"><span aria-hidden="true">←</span> All demos</a>
+  <div class="pagehead">
+    <p class="kicker">Playable theory · The Instinctual Learning Agent Harness</p>
+    <h1>The Instinct Engine</h1>
+    <p class="lede">A language model sits at the centre of this machine, frozen: it will not learn a thing. Everything around it can.
+      You play that part, the harness, over four days at a clock-repair shop’s help desk, and teach it to turn slow thinking into fast instinct.</p>
+  </div>
+  <a class="ml-credit ie-credit" href="/books/instinctual-learning-agent-harness/"><span>A companion to <strong>The Instinctual Learning Agent Harness</strong> (Packt)</span></a>
+</div></div>
+
+<div class="ml-stage de-page"><div class="ie-wrap">
+  <p class="de-kicker" id="kicker"></p>
+  <h2 class="ie-title" id="sceneTitle" tabindex="-1"></h2>
+  <div class="ie-board">
+    <section class="de-engine ie-machine" aria-labelledby="machineLabel">
+      <p class="de-kicker" id="machineLabel">The harness · around a frozen oracle</p>
+      <svg class="ie-svg" viewBox="0 0 640 250" aria-hidden="true" focusable="false">
+        <!-- the conveyor -->
+        <path class="line" d="M30 26H610M30 44H610"/>
+        <g class="brass"><circle cx="60" cy="35" r="6"/><circle cx="140" cy="35" r="6"/><circle cx="220" cy="35" r="6"/><circle cx="420" cy="35" r="6"/><circle cx="500" cy="35" r="6"/><circle cx="580" cy="35" r="6"/></g>
+        <rect class="brass" x="298" y="18" width="44" height="30" rx="2"/><path class="line" d="M306 28h28M306 36h20"/>
+        <path class="line" d="M320 50V96m-6-8 6 8 6-8"/>
+        <!-- the harness: everything around the oracle -->
+        <ellipse class="ring" cx="320" cy="162" rx="104" ry="64"/>
+        <text x="320" y="124" text-anchor="middle">HARNESS</text>
+        <!-- the frozen oracle under glass, drawn like the mockup's Instinct Engine emblem -->
+        <g id="svgOracle">
+          <path class="glass" d="M290 202V164a30 30 0 0 1 60 0v38z"/>
+          <circle class="brass" cx="320" cy="162" r="18"/><circle class="brass" cx="320" cy="162" r="7"/>
+          <path class="brass" d="M320 180v22M246 212h148M258 212v-10h24v10M300 212v-10h40v10M358 212v-10h24v10"/>
+          <text x="320" y="245" text-anchor="middle">ORACLE · FROZEN</text>
+        </g>
+        <!-- System 1: a short straight path -->
+        <g id="svg-s1"><path class="line" d="M290 168 158 98"/><circle class="brass" cx="132" cy="92" r="24"/><path class="brass" d="M132 92l12-10"/><text x="132" y="138" text-anchor="middle">SYSTEM 1</text></g>
+        <!-- System 2: a long coiled path through gears -->
+        <g id="svg-s2"><path class="line" d="M290 190c-18 0-22 16-36 16s-18-16-32-16-18 16-32 16-16-12-28-12-14 6-24 6"/><circle class="brass" cx="122" cy="196" r="16"/><circle class="brass" cx="98" cy="216" r="10"/><text x="112" y="244" text-anchor="middle">SYSTEM 2</text></g>
+        <!-- the memory drawer feeds a card into the oracle's prompt -->
+        <g id="svg-mem"><path class="line" d="M350 170 482 104"/><rect class="brass" x="482" y="72" width="84" height="48" rx="3"/><path class="brass" d="M510 96h28M496 84h56"/><text x="524" y="138" text-anchor="middle">MEMORY</text></g>
+        <!-- Jev: a dial box reached from the harness ring, bypassing the oracle -->
+        <g id="svg-jev"><path class="line" d="M424 166H490"/><rect class="brass" x="490" y="164" width="68" height="48" rx="4"/><path class="brass" d="M506 198a18 18 0 0 1 36 0M524 198l10-10"/><text x="524" y="234" text-anchor="middle">JEV</text></g>
+      </svg>
+      <ol class="ie-belt" id="belt" aria-label="Today’s messages" hidden></ol>
+      <p class="de-kicker" id="learnedLabel">What the harness has learned</p>
+      <ul class="ie-chips" id="learned" aria-labelledby="learnedLabel"></ul>
+    </section>
+
+    <div class="ie-gearbox">
+      <section class="de-engine ie-gauges" aria-label="Gauges">
+        <div class="de-gauge"><span>Day</span><strong id="gDay">—</strong></div>
+        <div class="de-gauge"><span>Time today</span><strong id="gTime">—</strong></div>
+        <div class="de-gauge"><span>Cost today</span><strong id="gCost">—</strong></div>
+        <div class="de-gauge"><span>System 2 load</span><strong id="gLoad">—</strong></div>
+        <div class="de-gauge"><span>Wrong today</span><strong id="gWrong">—</strong></div>
+      </section>
+      <p class="de-sr" id="status" role="status"></p>
+      <div id="scene"></div>
+    </div>
+  </div>
+</div></div>
+
+<div class="ml-after"><div class="ml-container">
+  <p class="footnote">A concept game for <em>The Instinctual Learning Agent Harness</em> (Micheal Lanham, Packt, in development). The shop, its
+    customers and its policies are invented. Times and costs are illustrative game units chosen to show the shape of the trade,
+    not measurements of any model. Jev is TypeSafe’s decision model; here it is simulated. Nothing on this page calls a model or the network.</p>
+</div></div>
+</main>
+<footer class="ml-footer">
+  <div class="ml-container ml-footer-row">
+    <div><a class="ml-footer-brand" href="/">Micheal Lanham</a><p>Author &amp; AI practitioner · Calgary, Canada</p></div>
+    <nav aria-label="Footer navigation"><a href="/books/">Books</a><a href="/demos/">Demos</a><a href="/work/">Work with me</a><a href="https://github.com/cxbxmxcx">GitHub <span aria-hidden="true">↗</span></a></nav>
+    <a class="ml-footer-mail" href="mailto:cxbxmxcx@micheal-lanham.com">cxbxmxcx@micheal-lanham.com</a>
+  </div>
+</footer>
+
+<script src="engine.js"></script>
+<script>
+(function () {
+  'use strict'
+  const E = window.InstinctEngine
+  const $ = (id) => document.getElementById(id)
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  const num = (tenths) => (tenths % 10 === 0 ? String(tenths / 10) : (tenths / 10).toFixed(1))
+  const secs = (t) => num(t) + ' s'
+  const cents = (c) => num(c) + '¢'
+  const ROUTE_SHORT = { s1: 'S1', s2: 'S2', mem: 'Card', jev: 'Jev', 'jev+s2': 'Jev→S2' }
+  const ROUTE_LONG = { s1: 'System 1', s2: 'System 2', mem: 'Memory card', jev: 'Jev', 'jev+s2': 'Jev, handed to System 2' }
+  const REFERENCE = E.simulate(E.idealRoute)   // a well-tuned harness, for the debrief
+
+  let game, phase, last, started = false
+
+  /* ---------------- helpers ---------------- */
+  function say(text) { $('status').textContent = text }
+  /* Each scene is a title (the h2 above the board) and a body (the gearbox). */
+  function scene(title, body) {
+    /* The control that advanced the story is about to be replaced; if it had
+       focus, move focus to the new heading so keyboard and screen-reader
+       users land on the new step. */
+    const box = $('scene'), h = $('sceneTitle'), active = document.activeElement
+    const hadFocus = started && (box.contains(active) || active === document.body || active === h)
+    h.innerHTML = title
+    box.innerHTML = body
+    if (hadFocus) h.focus()
+    started = true
+    machine(); kicker(); wire()
+  }
+  const term = (name, text) => '<p class="ie-term"><span class="de-label">Term: ' + esc(name) + '</span>' + text + '</p>'
+  const btn = (id, label, cls) => '<button type="button" class="' + (cls || 'de-btn') + '" id="' + id + '">' + label + '</button>'
+  const actions = (...buttons) => '<div class="ie-actions">' + buttons.join('') + '</div>'
+  const specimen = (label, text, cls) => '<div class="de-panel ' + (cls || 'ie-specimen') + '"><span class="de-label">' + esc(label) + '</span><p>' + text + '</p></div>'
+  const panel = (label, inner, cls) => '<section class="de-engine ' + (cls || '') + '"><h3 class="de-kicker">' + label + '</h3>' + inner + '</section>'
+  const hidden = () => game.g.day === 3 && phase !== 'summary' && phase !== 'debrief'
+
+  function cardsHtml() {
+    const c = game.g.cards, items = []
+    if (c.W) items.push('<li class="de-panel ie-card"><span class="de-label">Warranty card' + (game.g.quarantine ? ' · benched' : '') + '</span><br>Covered if bought here within ' + c.W.limit +
+      ' months, unless it was dropped or water-damaged.' + (c.W.gift ? ' The warranty follows the clock: with no receipt, check the sales ledger.' : '') + '</li>')
+    if (c.Q) items.push('<li class="de-panel ie-card"><span class="de-label">Quote card</span><br>$' + E.SERVICE + ' service on every job, plus parts: ' +
+      Object.entries(E.PRICES).map(([k, v]) => k + ' $' + v).join(', ') + '.</li>')
+    return items
+  }
+  function drawer() {
+    const items = cardsHtml()
+    if (!items.length) return ''
+    return '<details class="ie-drawer"><summary>Read the memory cards in the drawer (' + items.length + ')</summary><ul class="ie-stack">' + items.join('') + '</ul></details>'
+  }
+
+  /* ---------------- the instrument and gauges ---------------- */
+  function machine() {
+    const g = game.g, d = g.days[g.day], inDay = ['task', 'result', 'checked', 'complaint', 'summary'].includes(phase)
+    const today = g.log.filter((e) => e.day === g.day)
+    $('gDay').textContent = inDay ? String(g.day + 1) + ' of 4' : '—'
+    $('gTime').textContent = inDay ? secs(d.t) : '—'
+    $('gCost').textContent = inDay ? cents(d.c) : '—'
+    $('gLoad').textContent = inDay && today.length ? Math.round(100 * today.filter((e) => e.route === 's2' || e.escalated || e.checked).length / today.length) + '%' : '—'
+    $('gWrong').textContent = !inDay ? '—' : hidden() ? '? hidden' : String(d.wrong)
+    const lit = (phase === 'result' || phase === 'checked') && last ? last : null
+    for (const r of ['s1', 's2', 'mem', 'jev']) {
+      const el = $('svg-' + r)
+      el.classList.toggle('lit', !!(lit && (lit.route === r || (r === 's2' && (lit.escalated || lit.checked)))))
+      el.classList.toggle('closed', phase === 'task' && !!game.closed(r))
+    }
+    $('svgOracle').classList.toggle('lit', !!(lit && (lit.route !== 'jev' || lit.escalated || lit.checked)))
+
+    const belt = $('belt')
+    belt.hidden = !inDay
+    if (inDay) {
+      belt.innerHTML = E.DAYS[g.day].tasks.map((t, i) => {
+        const e = today[i]
+        if (e) {
+          const mark = hidden() ? '' : e.right ? ' ✓' : ' ✗'
+          const sr = hidden() ? 'sent' : e.right ? 'right' : 'wrong'
+          return '<li class="done"><span aria-hidden="true">' + (i + 1) + ' · ' + ROUTE_SHORT[e.escalated ? 'jev+s2' : e.route] + mark + '</span><span class="de-sr">Message ' + (i + 1) + ': ' + ROUTE_LONG[e.escalated ? 'jev+s2' : e.route] + ', ' + sr + '</span></li>'
+        }
+        const now = i === g.ix && phase === 'task'
+        return '<li' + (now ? ' class="now" aria-current="step"' : '') + '><span aria-hidden="true">' + (i + 1) + (now ? ' · now' : ' · waiting') + '</span><span class="de-sr">Message ' + (i + 1) + ': ' + (now ? 'now' : 'waiting') + '</span></li>'
+      }).join('')
+    }
+
+    /* What the harness knows it has learned. It cannot see staleness; it only
+       knows what a complaint benched. */
+    const chip = (on, text) => '<li class="de-chip' + (on ? ' is-on' : '') + '">' + text + '</li>'
+    const bench = g.quarantine ? ': benched' : ''
+    $('learned').innerHTML =
+      chip(!!g.cards.W && !g.quarantine, 'Warranty card' + (g.cards.W ? bench || ': learned' : ': none')) +
+      chip(!!g.cards.Q, 'Quote card' + (g.cards.Q ? ': learned' : ': none')) +
+      chip(!!g.jev && !g.quarantine, 'Jev, warranty' + (g.jev ? bench || ': compiled' : ': not compiled'))
+  }
+  function kicker() {
+    const g = game.g
+    let k = 'The Instinct Engine · '
+    if (phase === 'intro' || phase === 'routes') k += 'Before the shop opens'
+    else if (phase === 'compile') k += 'Overnight after day 2'
+    else if (phase === 'debrief') k += 'Debrief'
+    else {
+      k += 'Day ' + (g.day + 1) + ' of 4 · ' + E.DAYS[g.day].title
+      if (phase === 'task' || phase === 'result' || phase === 'checked' || phase === 'complaint') k += ' · Message ' + (g.ix + 1) + ' of 5'
+    }
+    $('kicker').textContent = k
+  }
+
+  /* ---------------- scenes ---------------- */
+  function intro() {
+    phase = 'intro'
+    scene('A brass oracle that cannot learn',
+      '<p>In the middle of this machine sits an <b>oracle</b>: a large language model, the kind of AI that writes answers from text. It has been <b>frozen</b>. Nothing that happens today will change a single thing inside it.</p>' +
+      '<p>It can answer in two ways. Asked plainly, it answers at once, from instinct: <b>fast thinking</b>. Asked to work step by step, it reasons slowly and carefully: <b>slow thinking</b>.</p>' +
+      '<p>Around the oracle is everything else: what it is shown, what it is reminded of, and which questions reach it at all. That part can learn. That part is you.</p>' +
+      term('the harness', 'the learner around a frozen model. Fast and slow thinking are often called System 1 and System 2.') +
+      actions(btn('n', 'Meet the four routes <span aria-hidden="true">▸</span>')))
+  }
+  function routes() {
+    phase = 'routes'
+    const R = E.ROUTES
+    const card = (r, text) => '<article class="de-engine ie-routecard"><p class="de-kicker">' + secs(R[r].t) + ' · ' + cents(R[r].c) + '</p><h3>' + ROUTE_LONG[r] + '</h3><p class="de-muted">' + text + '</p></article>'
+    scene('Four routes for every message',
+      '<p>You run the help desk of a clock-repair shop. Customer messages arrive on the belt, and you send each one down a route:</p>' +
+      '<div class="ie-stack">' +
+      card('s1', 'The oracle answers at once. Right when the answer is common knowledge; confidently wrong when it needs the shop’s own facts or real working out.') +
+      card('s2', 'The oracle reasons step by step and reads the shop’s policy book and price list. Slow and costly, and reliable.') +
+      card('mem', 'After System 2 solves a kind of message, the harness writes down what it worked out. Next time, System 1 reads the card with the message and gets it right.') +
+      card('jev', 'Once one kind of yes-or-no decision has repeated enough, the harness can compile those decisions into Jev, a small decision model from TypeSafe. It returns a typed answer with a probability, and when the probability is low it hands the case to System 2.') +
+      '</div>' +
+      '<p>Your goal over four days: answer every customer correctly, and spend less time and money each day.</p>' +
+      term('learned memory', 'System 2 work written down so that it becomes System 1 work.') +
+      actions(btn('n', 'Open the shop: day 1 <span aria-hidden="true">▸</span>')))
+  }
+  const DAY_INTROS = [
+    () => '<p>Nothing has been learned yet: no memory cards, and no Jev. Only the oracle’s two speeds. Five messages are on the belt.</p>',
+    () => '<p>The drawer holds ' + (cardsHtml().length ? 'what yesterday’s System 2 work left behind' : 'nothing yet: yesterday no System 2 solve left a card') + '. Today’s messages look a lot like yesterday’s.</p>' + drawer(),
+    () => '<p>Overnight the harness compiled warranty decisions into Jev. Warranty questions can now skip the oracle entirely. Quotes still need the memory card.</p>' + drawer(),
+    () => '<p>Overnight, the shop owner edited the policy book. Nobody told the harness what changed.</p>' +
+      '<p>And from now on you see only what the harness sees: each answer, how fast it came and how sure it sounded, but <b>not whether it was right</b>. The truth comes out at closing time.</p>' + drawer(),
+  ]
+  function dayIntro() {
+    phase = 'dayIntro'
+    const d = game.g.day
+    scene('Day ' + (d + 1) + ' · ' + esc(E.DAYS[d].title), DAY_INTROS[d]() + actions(btn('n', 'First message <span aria-hidden="true">▸</span>')))
+  }
+
+  function taskScene() {
+    phase = 'task'
+    const g = game.g, t = game.task(), R = E.ROUTES
+    const routeBtn = (r, line) => {
+      const why = game.closed(r)
+      return '<button type="button" class="de-btn ie-route" id="r-' + r + '"' + (why ? ' disabled' : '') + '><strong>' + ROUTE_LONG[r] + '</strong>' +
+        (why ? '' : '<span>' + secs(R[r].t) + ' · ' + cents(R[r].c) + '</span>') +
+        '<span class="' + (why ? 'why' : '') + '">' + esc(why || line) + '</span></button>'
+    }
+    scene('Day ' + (g.day + 1) + ' · Message ' + (g.ix + 1) + ' of 5',
+      specimen(E.FAMILIES[t.fam], '“' + esc(t.text) + '”') +
+      panel('Send it down a route', '<div class="ie-routes" role="group" aria-label="Routes">' +
+        routeBtn('s1', 'answer at once') + routeBtn('s2', 'reason it out') + routeBtn('mem', 'recall the card') + routeBtn('jev', 'typed decision') + '</div>') +
+      drawer())
+  }
+
+  function explain(e) {
+    const t = E.DAYS[e.day].tasks[e.ix], ev = e.events
+    const lines = []
+    if (hidden() && e.route !== 's2' && !e.escalated) {
+      lines.push('Sent in ' + secs(e.t) + '. Is it right? Today you can’t see that, and neither can the harness. ' +
+        (e.route === 'jev' ? 'Jev answered with the same high probability as ever.' : e.route === 'mem' ? 'The card answered with the same confidence as ever.' : 'System 1 sounded sure, as it always does.'))
+      if (e.route !== 's1') lines.push('A harness that wants to know has to spend something on a check.')
+      return lines
+    }
+    if (e.route === 's1') lines.push(e.right ? 'Right, in ' + secs(e.t) + '. This is common knowledge: there is nothing to work out.' :
+      'Fast, and confidently wrong. System 1 doesn’t know this shop’s ' + (t.fam === 'Q' ? 'prices: it left out the $' + E.SERVICE + ' service charge' : t.fam === 'W' ? 'warranty policy, so it filled the gap with a typical one' : 'situation, so it made a promise nobody can keep') + '.')
+    if (e.route === 's2') {
+      if (t.fam === 'E') lines.push('Right, but you paid for ' + secs(e.t) + ' of reasoning on a question System 1 already knew.')
+      else if (t.fam === 'N') lines.push('Right. This one is a one-off: no card would help next time, so it stays with System 2. Knowing that is the harness doing its job too.')
+      else if (ev.includes('card-w') || ev.includes('card-q')) lines.push('Right, and slow. But the work wasn’t wasted: the harness wrote down what System 2 worked out.')
+      else if (!ev.length) lines.push('Right, but a card already knew this. You paid for reasoning the harness had stored.')
+      else lines.push('Right. System 2 read the policy book itself.')
+    }
+    if (e.route === 'mem') lines.push(e.right ? 'Right, in ' + secs(e.t) + '. System 1 read the card instead of reasoning: System 2 work, turned into System 1 work.' :
+      'Fast, and wrong. The card says nothing about gifts or lost receipts, and System 1 trusted it anyway. A card is only as good as what it says.')
+    if (e.route === 'jev' && !e.escalated) lines.push('Right, in a tenth of a second, and the oracle never ran. Jev returned a typed judgment and the harness wrote the reply from it.')
+    if (e.escalated) lines.push('Jev’s probability was ' + e.p.toFixed(2) + ', below its ' + E.JEV_THRESHOLD.toFixed(2) + ' threshold, so it handed the case to System 2. Slower and dearer, and right. Knowing when not to answer is part of the job.')
+    lines.push(...learned(ev))
+    return lines
+  }
+  function learned(ev) {
+    const out = []
+    if (ev.includes('card-w')) out.push('New memory card: warranty rules.')
+    if (ev.includes('card-q')) out.push('New memory card: quote rules and the price list.')
+    if (ev.includes('card-gift')) out.push('System 2 found a rule the warranty card lacked, and the harness added it: the warranty follows the clock, and the sales ledger has the date.')
+    if (ev.includes('card-rewritten') || ev.includes('jev-recompiled')) {
+      const fixes = [ev.includes('card-rewritten') ? 'rewrote the warranty card' : '', ev.includes('jev-recompiled') ? 'recompiled Jev on relabelled cases' : ''].filter(Boolean).join(' and ')
+      out.push('System 2 read the policy book and disagreed with what the harness remembered: the warranty is now ' + game.g.policy + ' months, not 12. The harness ' + fixes + '.')
+    }
+    if (ev.includes('unbenched')) out.push('The warranty card and Jev are back on the bench.')
+    return out
+  }
+
+  function verdict(e, force) {
+    if (!force && hidden() && e.route !== 's2' && !e.escalated) return '<p class="ie-verdict unknown"><span aria-hidden="true">?</span> Unknown to the harness</p>'
+    return e.right ? '<p class="ie-verdict good"><span aria-hidden="true">✓</span> Right</p>' : '<p class="ie-verdict bad"><span aria-hidden="true">✗</span> Wrong</p>'
+  }
+  function judgment(e) {
+    if (e.route !== 'jev') return ''
+    const gauge = (label, value) => '<div class="de-gauge"><span>' + label + '</span><strong>' + value + '</strong></div>'
+    return panel('Jev’s typed judgment', '<div class="ie-judgment">' +
+      gauge('Covered', e.escalated ? '—' : String(e.judgment)) + gauge('Probability', e.p.toFixed(2)) + gauge('Threshold', E.JEV_THRESHOLD.toFixed(2)) + '</div>')
+  }
+  function answerBox(e) {
+    const pre = e.escalated ? 'Jev → probability ' + e.p.toFixed(2) + ' < ' + E.JEV_THRESHOLD.toFixed(2) + ': handed to System 2. ' : ''
+    return '<div class="de-panel ie-box"><span class="de-label">Reply sent</span><p>' + esc(pre + e.answer) + '</p></div>'
+  }
+  function costLine(e) { return '<p class="de-kicker">' + ROUTE_LONG[e.escalated ? 'jev+s2' : e.route] + ' · ' + secs(e.t) + ' · ' + cents(e.c) + '</p>' }
+  function nextLabel() { return game.g.ix < 4 ? 'Next message <span aria-hidden="true">▸</span>' : 'Close the day <span aria-hidden="true">▸</span>' }
+
+  function resultScene() {
+    phase = 'result'
+    const e = last, g = game.g
+    const canCheck = !e.checked && !e.escalated && (e.route === 'mem' || e.route === 'jev')
+    const fresh = e.events.some((x) => x.startsWith('card'))
+    scene('Day ' + (g.day + 1) + ' · Message ' + (g.ix + 1) + ': ' + ROUTE_LONG[e.escalated ? 'jev+s2' : e.route] + ' answered',
+      costLine(e) + judgment(e) + answerBox(e) + verdict(e) + explain(e).map((l) => '<p>' + esc(l) + '</p>').join('') +
+      (fresh ? '<ul class="ie-stack">' + cardsHtml().join('') + '</ul>' : '') +
+      actions(btn('n', nextLabel()), canCheck ? btn('check', 'Spot-check with System 2 (+' + secs(E.ROUTES.s2.t) + ', +' + cents(E.ROUTES.s2.c) + ')', 'de-btn-ghost') : ''))
+    say('Message ' + (g.ix + 1) + ': ' + ROUTE_LONG[e.escalated ? 'jev+s2' : e.route] + ', ' + secs(e.t) + ', ' + cents(e.c) + '. ' +
+      (hidden() && e.route !== 's2' && !e.escalated ? 'Right or wrong is hidden today.' : e.right ? 'Right.' : 'Wrong.'))
+  }
+  function checkedScene() {
+    phase = 'checked'
+    const e = last, g = game.g, ev = e.checkEvents
+    const found = ev.length > 0
+    scene('Message ' + (g.ix + 1) + ': the spot check',
+      '<p class="de-kicker">System 2 re-solved it · +' + secs(E.ROUTES.s2.t) + ' · +' + cents(E.ROUTES.s2.c) + '</p>' +
+      specimen('System 2 says', esc(game.truth(E.DAYS[e.day].tasks[e.ix]).text), 'ie-box') +
+      verdict(e, true) +
+      (found ? '<p>' + esc(e.right ? 'The answer held, but the check still taught the harness something.' : 'The reply had already gone out, wrong. But the check found why, so every case from now on is right.') + '</p>' +
+        learned(ev).map((l) => '<p>' + esc(l) + '</p>').join('') :
+        '<p>Confirmed: System 2 agrees with ' + (e.route === 'jev' ? 'Jev' : 'the card') + '. That cost real time and money to learn nothing new, which is the price of trust. Checking every answer would undo the savings; checking none leaves the harness blind.</p>') +
+      term('signal', 'a check that tells the harness whether its memory is still good. A System 2 re-solve is one; a ground-truth label is another.') +
+      actions(btn('n', nextLabel())))
+    say('Spot check: ' + (e.right ? 'the answer was right.' : 'the answer was wrong.') + (found ? ' The harness updated its memory.' : ''))
+  }
+  function complaintScene() {
+    phase = 'complaint'
+    game.complain()
+    const e = [...game.g.log].reverse().find((x) => x.stale), t = E.DAYS[e.day].tasks[e.ix]
+    scene('A complaint arrives',
+      specimen('Customer reply', '“You told me my clock, bought ' + t.months + ' months ago, was covered. The shop says the warranty is ' + game.g.policy + ' months now.”') +
+      '<p>That is a <b>ground-truth label</b>: exact, but late, and paid for with a customer’s trust. It means at least one fast, confident answer today was wrong, and the harness never noticed.</p>' +
+      '<p>The harness benches the warranty card and Jev. Until System 2 solves a warranty case against the current policy book, warranty questions go the slow way.</p>' +
+      term('signal', 'a ground-truth label is the most trustworthy signal, and usually the slowest to arrive.') +
+      actions(btn('n', nextLabel())))
+    say('A complaint arrived. The warranty card and Jev are benched.')
+  }
+
+  function ledger(day) {
+    const rows = game.g.log.filter((e) => e.day === day).map((e) => {
+      const t = E.DAYS[day].tasks[e.ix]
+      return '<tr><td>' + (e.ix + 1) + ' · ' + esc(E.FAMILIES[t.fam].split(' ')[0]) + '</td><td>' + ROUTE_SHORT[e.escalated ? 'jev+s2' : e.route] + (e.checked ? ' + check' : '') + '</td><td>' + secs(e.t) + ' · ' + cents(e.c) + '</td>' +
+        '<td class="' + (e.right ? 'good' : 'bad') + '">' + (e.right ? '<span aria-hidden="true">✓ </span>Right' : '<span aria-hidden="true">✗ </span>Wrong') + '</td></tr>'
+    })
+    return '<table class="ie-ledger"><caption class="de-kicker">Day ' + (day + 1) + ' ledger</caption><thead><tr><th scope="col">Message</th><th scope="col">Route</th><th scope="col">Time · cost</th><th scope="col">Result</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>'
+  }
+  /* Bar meters on iron: one series (your harness), with the well-tuned
+     harness as a tick when withRef. Every value is printed beside its bar. */
+  function chart(title, metric, upto, withRef, note) {
+    const days = game.g.days.slice(0, upto + 1)
+    const max = Math.max(...days.map((d) => d[metric]), ...(withRef ? REFERENCE.map((d) => d[metric]) : [1]))
+    const f = metric === 't' ? secs : cents
+    const rows = days.map((d, i) => '<li><span>Day ' + (i + 1) + '</span><span class="track"><span class="de-meter" style="--value:' + (d[metric] / max).toFixed(3) + '"><i></i></span>' +
+      (withRef ? '<i class="tick" style="--r:' + (REFERENCE[i][metric] / max).toFixed(3) + '"></i>' : '') + '</span>' +
+      '<span class="val">' + (withRef ? 'yours ' : '') + f(d[metric]) + (metric === 't' ? ', ' + d.wrong + ' wrong' : '') +
+      (withRef ? ' · well-tuned ' + f(REFERENCE[i][metric]) + (metric === 't' ? ', 0 wrong' : '') : '') + '</span></li>').join('')
+    return panel(title, (note ? '<p class="de-muted">' + note + '</p>' : '') + '<ul class="ie-bars">' + rows + '</ul>', 'ie-chart')
+  }
+  function routeCount(day, r) { return game.g.days[day].routes.filter((x) => x === r).length }
+
+  function summaryScene() {
+    phase = 'summary'
+    const g = game.g, d = g.day, today = g.days[d]
+    let lesson = ''
+    if (d === 0) {
+      const n = cardsHtml().length
+      lesson = '<p>System 1 was fast, and wrong whenever it needed the shop’s own facts. System 2 was slow, and right every time.</p>' +
+        (n ? '<p>The oracle learned nothing today. The harness learned ' + (n === 1 ? 'one memory card' : n + ' memory cards') + ', each one left behind by a System 2 solve.</p>' :
+          '<p>The oracle learned nothing today, and neither did the harness: no System 2 solve of a repeating kind, so no memory cards. Tomorrow starts from scratch.</p>')
+    } else if (d === 1) {
+      const m = routeCount(1, 'mem')
+      lesson = '<p>' + (m ? m + (m === 1 ? ' answer' : ' answers') + ' came from a memory card in ' + secs(E.ROUTES.mem.t) + ' each: work that took System 2 ' + secs(E.ROUTES.s2.t) + ' yesterday.' : 'No answers came from a memory card today.') + ' Time today: ' + secs(today.t) + ', against ' + secs(g.days[0].t) + ' yesterday.</p>' +
+        '<p>The quartz request is the kind of message that should stay with System 2: a one-off, with nothing worth remembering.</p>'
+    } else if (d === 2) {
+      const j = routeCount(2, 'jev'), escN = routeCount(2, 'jev+s2')
+      const w7 = g.log.find((e) => e.id === 'W7')
+      lesson = '<p>' + (j ? 'Jev settled ' + j + ' warranty ' + (j === 1 ? 'question' : 'questions') + ' in a tenth of a second each, with no language model running at all.' : 'Jev sat idle today.') + '</p>' +
+        (escN ? '<p>On the gift case, Jev was unsure (probability ' + E.DAYS[2].tasks[2].p.toFixed(2) + ') and handed it to System 2. That cost ' + secs(E.ROUTES.s2.t) + ', and it was the right call.</p>' : '') +
+        (w7 && w7.route === 'mem' ? '<p>The memory card answered the gift case quickly and wrongly. It did not know what it did not know; Jev at least reports a probability.</p>' : '')
+    } else {
+      const staleN = g.staleWrong
+      const fixed = (x) => (x || []).includes('card-rewritten') || (x || []).includes('jev-recompiled')
+      const caught = g.log.find((e) => e.day === 3 && (fixed(e.events) || fixed(e.checkEvents)))
+      lesson = '<p>Here is the truth for today. The shop cut its warranty from 12 months to ' + g.policy + '.</p>' +
+        (staleN ? '<p>' + staleN + (staleN === 1 ? ' answer was' : ' answers were') + ' fast, confident and wrong: the harness still remembered a 12-month warranty. A stale memory is worse than none, because it is quick and sure of itself.</p>' :
+          '<p>No stale memory reached a customer.</p>') +
+        (g.complained ? '<p>A complaint caught it: ground truth, arriving after the damage was done.' + (caught ? ' A System 2 solve on message ' + (caught.ix + 1) + ' then repaired the memory.' : '') + '</p>' :
+          caught ? '<p>' + (caught.checked ? 'Your spot check' : 'A System 2 solve') + ' on message ' + (caught.ix + 1) + ' caught the change.</p>' : '') +
+        (game.stale() ? '<p><b>The card is still stale at closing time.</b> Tomorrow it would go on giving fast, confident wrong answers until something checked it.</p>' : '')
+    }
+    scene('Day ' + (d + 1) + ' · Closing time',
+      ledger(d) + '<p class="de-kicker">Today: ' + secs(today.t) + ' · ' + cents(today.c) + ' · ' + today.wrong + ' wrong</p>' + lesson +
+      (d > 0 ? chart('Time per day so far', 't', d, false) : '') +
+      actions(btn('n', d === 1 ? 'Overnight <span aria-hidden="true">▸</span>' : d === 3 ? 'The debrief <span aria-hidden="true">▸</span>' : 'Day ' + (d + 2) + ' <span aria-hidden="true">▸</span>')))
+    say('Day ' + (d + 1) + ' closed: ' + secs(today.t) + ', ' + cents(today.c) + ', ' + today.wrong + ' wrong.')
+  }
+  function compileScene() {
+    phase = 'compile'
+    game.compileJev()
+    scene('Compiling Jev',
+      '<p>Warranty questions keep coming, and each one is the same decision: covered, or not. That decision doesn’t need a language model to write it.</p>' +
+      '<p>Overnight the harness gathers the ' + game.warrantyCasesSoFar() + ' warranty cases from days 1 and 2, each labelled with the right answer from the shop’s records, plus ' + E.LEDGER_CLAIMS + ' settled claims from the shop’s ledger. It compiles them into <b>Jev</b>, a decision model for this one kind of task.</p>' +
+      '<p>Jev doesn’t write replies. It returns a typed judgment, and the harness writes the reply from it:</p>' +
+      panel('The typed judgment', '<pre>warranty_decision {\n  covered: true | false\n  probability: 0.00 – 1.00\n}</pre>', 'ie-type') +
+      '<p>When the probability is below ' + E.JEV_THRESHOLD.toFixed(2) + ', Jev hands the case to System 2. Jev knows warranty decisions and nothing else; quotes still use the memory card.</p>' +
+      term('moving the decision', 'a decision that repeats can leave the language model entirely and go to a decision model.') +
+      actions(btn('n', 'Day 3 <span aria-hidden="true">▸</span>')))
+  }
+  function debriefScene() {
+    phase = 'debrief'
+    const g = game.g, wrong = g.days.reduce((n, d) => n + d.wrong, 0)
+    const lesson = (title, text) => '<li class="de-panel"><b>' + title + '</b>' + text + '</li>'
+    scene('The oracle never changed',
+      '<p>Four days, twenty messages, and not one thing inside the oracle moved. Everything that got faster and cheaper was the harness: what it remembered, and where it sent the work. You answered ' + (20 - wrong) + ' of 20 correctly.</p>' +
+      chart('Time per day', 't', 3, true, 'The bar is your harness; the light tick is a well-tuned one, which recalls what it can, reasons when it must, and spot-checks after the policy book changes.') +
+      chart('Cost per day', 'c', 3, true) +
+      '<p>The well-tuned harness never reaches zero. New requests, edge cases and checks stay with System 2, and that is by design.</p>' +
+      '<ul class="ie-stack" aria-label="What you did">' +
+      lesson('The model is frozen; the harness learns.', 'Every improvement lived outside the oracle: in its memory cards, in Jev, and in your routing.') +
+      lesson('Slow thinking becomes fast thinking.', 'A System 2 solve, written down as a memory card, turned the next case into System 1 recall.') +
+      lesson('Decisions can leave the model.', 'A repeating yes-or-no decision moved to Jev: a typed judgment with a probability, which escalates when unsure.') +
+      lesson('Memories need checking.', 'A stale card gives fast, confident wrong answers. Spot checks and ground-truth labels are the signals that catch it, and each one costs something.') +
+      '</ul>' +
+      '<div class="ie-book de-engine"><p>These ideas come from <em>The Instinctual Learning Agent Harness</em> (Packt, in development).</p>' +
+      '<a class="de-btn" href="/books/instinctual-learning-agent-harness/" target="_top">About the book <span aria-hidden="true">▸</span></a></div>' +
+      actions(btn('replay', '<span aria-hidden="true">↺</span> Play again', 'de-btn-ghost')))
+    say('Debrief: ' + (20 - wrong) + ' of 20 answered correctly.')
+  }
+
+  /* ---------------- flow ---------------- */
+  function advance() {
+    const g = game.g
+    if (phase === 'intro') return routes()
+    if (phase === 'routes' || phase === 'compile') { if (phase === 'compile') game.nextDay(); return dayIntro() }
+    if (phase === 'dayIntro') return taskScene()
+    if (phase === 'result' || phase === 'checked' || phase === 'complaint') {
+      if (phase !== 'complaint' && game.complaintDue()) return complaintScene()
+      return game.nextTask() ? taskScene() : summaryScene()
+    }
+    if (phase === 'summary') {
+      if (g.day === 1) return compileScene()
+      if (g.day === 3) return debriefScene()
+      game.nextDay(); return dayIntro()
+    }
+  }
+  function choose(r) { const e = game.route(r); if (!e) return false; last = e; resultScene(); return true }
+  function spotCheck() { if (!game.check()) return false; checkedScene(); return true }
+  function reset() { game = E.createGame(); last = null; intro() }
+
+  function wire() {
+    const n = $('n'); if (n) n.onclick = advance
+    for (const r of ['s1', 's2', 'mem', 'jev']) { const b = $('r-' + r); if (b) b.onclick = () => choose(r) }
+    const c = $('check'); if (c) c.onclick = spotCheck
+    const rp = $('replay'); if (rp) rp.onclick = reset
+  }
+
+  /* test hook: step the game the way a player would */
+  window.__instinct = {
+    state: () => JSON.parse(JSON.stringify({ phase, day: game.g.day, ix: game.g.ix, policy: game.g.policy, cards: game.g.cards, jev: game.g.jev, quarantine: game.g.quarantine, staleWrong: game.g.staleWrong, complained: game.g.complained, days: game.g.days, task: phase === 'task' ? game.task() : null, last })),
+    reference: () => JSON.parse(JSON.stringify(REFERENCE)),
+    ideal: () => (phase === 'task' ? E.idealRoute(game) : null),
+    click: (id) => { const b = $(id); if (b && !b.disabled) { b.click(); return true } return false },
+  }
+
+  reset()
+
+  /* embedded handshake: the site's demo player waits for this */
+  if (window.self !== window.top) {
+    try { window.parent.postMessage({ type: 'unity-ready' }, window.location.origin) } catch (err) { /* no-op */ }
+  }
+})()
+</script>
+</body>
+</html>

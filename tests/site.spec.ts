@@ -193,59 +193,25 @@ test('a shared topic link hydrates without errors and preserves keyboard focus w
 test('a failed embedded demo offers recovery without claiming it is running', async ({ page }) => {
   await page.clock.install()
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.route('**/demos/Proof_Gate/index.html', route => route.fulfill({ status: 503, body: 'Temporarily unavailable' }))
-  await page.goto('/demos/proof-gate/')
+  await page.route('**/demos/Selection_Engine/index.html', route => route.fulfill({ status: 503, body: 'Temporarily unavailable' }))
+  await page.goto('/demos/selection-engine/')
   await page.getByRole('button', { name: 'Play here', exact: true }).click()
   await expect(page.locator('iframe')).toBeAttached()
   await page.clock.fastForward(45_001)
   await expect(page.getByRole('status')).toHaveText('The demo has not reported ready.')
   await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Open demo page' })).toHaveAttribute('href', '/demos/Proof_Gate/index.html')
+  await expect(page.getByRole('link', { name: 'Open demo page' })).toHaveAttribute('href', '/demos/Selection_Engine/index.html')
   await page.getByRole('button', { name: 'Close demo' }).click()
   await expect(page.locator('iframe')).toHaveCount(0)
 })
 
-test('every Proof Gate scene meets WCAG contrast, and advancing moves focus to the new scene', async ({ page }) => {
-  test.slow() // about 25 axe runs; CI runners are slower than a workstation
-  await page.goto('/demos/Proof_Gate/index.html')
-  await page.locator('#n').focus()
-  await page.keyboard.press('Enter')
-  await expect(page.locator('#scene h2')).toHaveText('Claim 1 of 3')
-  await expect(page.locator('#scene h2')).toBeFocused()
-  // Walk the whole story (keeping every version), checking each scene.
-  for (let step = 0; step < 40; step++) {
-    const report = await new AxeBuilder({ page }).include('#scene').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
-    expect(report.violations, JSON.stringify(await page.evaluate(() => (window as unknown as { __gate: { state(): unknown } }).__gate.state()))).toEqual([])
-    const next = page.locator('#n, #k').first()
-    if (!await next.count()) break
-    await next.click()
-  }
-  await expect(page.getByRole('button', { name: '↺ play again' })).toBeVisible()
-})
-
-test('Helix Garden keeps focus on the intro and fits a 320 px screen after it', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.setViewportSize({ width: 320, height: 740 })
-  await page.goto('/demos/Helix_Garden/index.html')
-  await page.locator('#gNext').focus()
-  await page.keyboard.press('Enter')
-  await expect(page.locator('#guide h2')).toHaveText('One life, four steps, forever')
-  await expect(page.locator('#guide h2')).toBeFocused()
-  await page.locator('#gSkip').focus()
-  await page.keyboard.press('Enter')
-  await expect(page.locator('#btnPause')).toBeFocused()
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
-  const report = await new AxeBuilder({ page }).withRules(['link-in-text-block', 'color-contrast']).analyze()
-  expect(report.violations).toEqual([])
-})
-
 test('mobile demos use the full page instead of a tiny iframe', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/demos/proof-gate/')
-  const play = page.getByRole('link', { name: 'Play The Proof Gate', exact: true })
-  await expect(play).toHaveAttribute('href', '/demos/Proof_Gate/index.html')
+  await page.goto('/demos/selection-engine/')
+  const play = page.getByRole('link', { name: 'Play The Selection Engine', exact: true })
+  await expect(play).toHaveAttribute('href', '/demos/Selection_Engine/index.html')
   await play.click()
-  await expect(page).toHaveURL(/\/demos\/Proof_Gate\/index.html$/)
+  await expect(page).toHaveURL(/\/demos\/Selection_Engine\/index.html$/)
   await expect(page.locator('iframe')).toHaveCount(0)
 })
 
@@ -290,8 +256,8 @@ test.describe('Unity games on a phone', () => {
     await expect(page.getByRole('heading', { name: 'Desktop required' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Play The Perceptron Game' })).toBeHidden()
     await expect(page.getByRole('link', { name: 'Continue anyway' })).toHaveAttribute('href', '/demos/Perceptron_Game/index.html?device=any')
-    await page.goto('/demos/proof-gate/')
-    await expect(page.getByRole('link', { name: 'Play The Proof Gate', exact: true })).toBeVisible()
+    await page.goto('/demos/selection-engine/')
+    await expect(page.getByRole('link', { name: 'Play The Selection Engine', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Desktop required' })).toHaveCount(0)
   })
 })
@@ -342,9 +308,9 @@ test('each Unity game explains how to play, with the same text on its site page 
 })
 
 test('desktop demo can start and close, with honest failure recovery', async ({ page }) => {
-  await page.goto('/demos/proof-gate/')
+  await page.goto('/demos/selection-engine/')
   await page.getByRole('button', { name: 'Play here', exact: true }).click()
-  await expect(page.getByTitle('The Proof Gate', { exact: true })).toBeVisible()
+  await expect(page.getByTitle('The Selection Engine', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Close demo', exact: true }).click()
   await expect(page.locator('iframe')).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Play here', exact: true })).toBeFocused()
@@ -361,7 +327,7 @@ test('narrow and reduced-motion pages keep content readable', async ({ page }) =
 })
 
 test('key pages have no automated WCAG A/AA violations', async ({ page }) => {
-  for (const url of ['/', '/books/', '/work/architecture-reviews/', '/demos/proof-gate/']) {
+  for (const url of ['/', '/books/', '/work/architecture-reviews/', '/demos/selection-engine/']) {
     await page.goto(url)
     await expect(page.locator('h1')).toBeVisible()
     const report = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
@@ -384,7 +350,7 @@ test('pages and companion demos load their fonts from this site and contact no o
   const origin = new URL(baseURL!).origin
   const external: string[] = []
   page.on('request', request => { if (/^https?:/.test(request.url()) && !request.url().startsWith(origin)) external.push(request.url()) })
-  for (const url of ['/', '/books/self-improving-agents/', '/demos/Proof_Gate/index.html', '/demos/Helix_Garden/index.html']) {
+  for (const url of ['/', '/books/self-improving-agents/', '/demos/Selection_Engine/index.html', '/demos/Instinct_Engine/index.html', '/demos/Difference_Engine/index.html']) {
     await page.goto(url, { waitUntil: 'networkidle' })
     const families = await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter(face => face.status === 'loaded').map(face => face.family) })
     expect(families, url).toEqual(expect.arrayContaining(['Inter', 'Space Grotesk']))
@@ -442,7 +408,7 @@ test.describe('production build', () => {
     const sitemap = await (await page.request.get('/sitemap.xml')).text()
     return [...sitemap.matchAll(/<loc>https:\/\/micheal-lanham\.com(\/[^<]*)<\/loc>/g)].map(match => match[1])
   }
-  const PLAYERS = ['Proof_Gate', 'Helix_Garden', 'Perceptron_Game', 'MLP_Game', 'Autoencoder_Game'].map(folder => `/demos/${folder}/index.html`)
+  const PLAYERS = ['Selection_Engine', 'Instinct_Engine', 'Difference_Engine', 'Perceptron_Game', 'MLP_Game', 'Autoencoder_Game'].map(folder => `/demos/${folder}/index.html`)
 
   test('every route meets WCAG 2.2 A/AA, keeps heading order and has visible labels in its names', async ({ page }) => {
     test.slow()
@@ -469,8 +435,22 @@ test.describe('production build', () => {
     }
   })
 
+  test('the retired Proof Gate and Helix Garden addresses lead to The Selection Engine', async ({ page }) => {
+    const moves: [string, RegExp][] = [
+      ['/demos/proof-gate/', /\/demos\/selection-engine\/$/],
+      ['/demos/helix-garden/', /\/demos\/selection-engine\/$/],
+      ['/demos/Proof_Gate/index.html', /\/demos\/Selection_Engine\/index\.html$/],
+      ['/demos/Helix_Garden/index.html', /\/demos\/Selection_Engine\/index\.html$/],
+    ]
+    for (const [from, to] of moves) {
+      await page.goto(from)
+      await expect(page, from).toHaveURL(to)
+      await expect(page.locator('h1')).toBeVisible()
+    }
+  })
+
   test('standalone demo pages stay out of search and share their site page', async ({ page }) => {
-    for (const [player, slug] of [['Proof_Gate', 'proof-gate'], ['Perceptron_Game', 'perceptron']]) {
+    for (const [player, slug] of [['Selection_Engine', 'selection-engine'], ['Instinct_Engine', 'instinct-engine'], ['Difference_Engine', 'difference-engine'], ['Perceptron_Game', 'perceptron']]) {
       const html = await (await page.request.get(`/demos/${player}/index.html`)).text()
       expect(html).toContain('<meta name="robots" content="noindex">')
       expect(html).toContain(`<meta property="og:url" content="https://micheal-lanham.com/demos/${slug}/">`)

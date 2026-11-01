@@ -1,0 +1,119 @@
+/* The Difference Engine: game-specific layout only. Colours, type, panels,
+   buttons, chips and gauges come from the Darwin engine kit (de-*), so the
+   approved look can change in one file. The layout follows the owner's
+   mockup (mockups/darwin-engine): reading text on the notebook paper, and a
+   board with the machine on the left and a gearbox on the right. Prefix: dx-. */
+
+*, *::before, *::after { box-sizing: border-box; }
+html.embedded body { background: var(--de-paper); }
+.ml-stage.de-page { color: var(--de-ink); }
+.dx-wrap { max-width: 1180px; margin: 0 auto; padding: 1.25rem var(--ml-gutter) 3rem; }
+.dx-credit-gear { width: 22px; flex: none; }
+
+/* Stage chips and the ledger. */
+.dx-stages { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .8rem; padding: 0; list-style: none; }
+.dx-stages li { padding: .3rem .7rem; border: 1px solid var(--de-rule); border-radius: 999px; background: var(--de-paper); color: var(--de-ink-soft); font: 500 .72rem/1.3 var(--de-mono); letter-spacing: .06em; text-transform: uppercase; }
+.dx-stages li[aria-current] { border-color: var(--de-ink); color: var(--de-ink); font-weight: 700; box-shadow: inset 0 0 0 1px var(--de-ink); }
+.dx-ledger { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; padding: .75rem .8rem; }
+.dx-ledger .de-gauge { flex: 1 1 8rem; margin: 0; }
+
+/* Scenes sit straight on the notebook paper, as in the mockup's game screen. */
+.dx-scene { padding: .6rem 0 0; }
+.dx-scene h2 { margin: .4rem 0 1rem; font-size: clamp(1.7rem, 3vw, 2.3rem); }
+.dx-scene h3 { margin: 0 0 .4rem; font: 600 1.15rem/1.3 var(--de-display); }
+.dx-scene h2:focus, .dx-scene h3:focus { outline: none; }
+.dx-scene p { margin: .5rem 0; max-width: 70ch; }
+.dx-scene .de-kicker { margin: 0; }
+.dx-q { margin: .5rem 0; font: 600 clamp(1.6rem, 6vw, 2.3rem)/1.15 var(--de-mono); }
+.dx-note { color: var(--de-ink-soft); font-size: .9rem; }
+.dx-note .de-label { margin-right: .45rem; }
+.dx-small { font-size: .9rem; }
+.dx-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+.dx-out { margin-top: 1rem; }
+.dx-machine { margin: 1rem 0; max-width: 46rem; }
+.dx-machine p { margin: .4rem 0 0; }
+.dx-sketch { max-width: 320px; margin: .6rem 0 0; }
+.dx-list { margin: .5rem 0; padding-left: 1.3rem; }
+.dx-list li { margin: .2rem 0; }
+.dx-mech { font-family: var(--de-mono); font-size: .85rem; }
+
+/* The board: machine left, gearbox right; one column below 860 px. */
+.dx-board { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; align-items: start; margin: 1.2rem 0; }
+.dx-plate .de-kicker { margin: 0 0 10px; }
+.dx-gearbox { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.dx-gearbox > *, .dx-gearbox .dx-row, .dx-gearbox .dx-out, .dx-gearbox .dx-q { margin: 0; }
+.dx-gearbox .de-engine p { margin: 0; }
+.dx-gearbox .de-engine .de-kicker { margin: 0 0 10px; }
+.dx-gauges { display: flex; flex-wrap: wrap; gap: 10px; padding: .9rem; }
+.dx-gauges .de-gauge { flex: 1 1 7.5rem; margin: 0; }
+.dx-mark { font: 600 .72rem/1.4 var(--de-mono); color: var(--de-iron-dim); }
+.dx-mark.is-pass { color: var(--de-good); }
+.dx-mark.is-fail { color: var(--de-bad); }
+
+/* Stage 1: fingers. */
+.dx-fingers { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
+.dx-group { display: flex; flex-wrap: wrap; gap: .35rem; width: 100%; }
+.dx-f { display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px dashed var(--de-iron-dim); border-radius: 50%; color: var(--de-iron-dim); font: 600 .8rem/1 var(--de-mono); }
+.dx-f.is-held { border: 2px solid var(--de-brass); color: var(--de-brass); background: rgba(201, 151, 62, .16); }
+.dx-f.is-counted { border: 2px solid var(--de-glow); color: var(--de-glow); background: var(--de-glow-soft); }
+
+/* The times table in the mockup's look: separate rounded cells, brass heads,
+   cyan for rebuilt cells, hatching for held-back ones. */
+.dx-table { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; font: 500 clamp(.6rem, 2.4vw, .78rem)/1 var(--de-mono); }
+.dx-table th, .dx-table td { height: clamp(1.55rem, 3.6vw, 2.4rem); padding: 0; border: 1px solid var(--de-iron-line); border-radius: 3px; text-align: center; color: var(--de-iron-text); }
+.dx-table th { border-color: transparent; color: var(--de-brass); font-weight: 500; }
+.dx-table td.is-ok { color: var(--de-glow); border-color: rgba(95, 227, 238, .45); }
+.dx-table td.is-held { color: var(--de-iron-dim); background: repeating-linear-gradient(135deg, transparent 0 4px, rgba(201, 151, 62, .18) 4px 5px); }
+.dx-table td.is-held.is-ok { color: var(--de-glow); }
+.dx-table td.is-bad { color: var(--de-bad); border: 2px dashed var(--de-bad); text-decoration: line-through; }
+.dx-table td.is-blank { color: var(--de-iron-dim); }
+.dx-table td.is-hit { outline: 2px solid var(--de-glow); outline-offset: -2px; color: var(--de-glow); font-weight: 700; }
+#plate.is-stale { opacity: .55; }
+.dx-key-line { margin: .7rem 0 0; color: var(--de-iron-dim); font-size: .82rem; }
+
+/* Stage 3: rule gears as chips, with their rules written out below. */
+.dx-rules { display: flex; flex-wrap: wrap; gap: 8px; }
+.dx-rules .dx-on { display: none; }
+.dx-rules [aria-pressed="true"] .dx-on, .dx-rules .is-on .dx-on { display: inline; }
+.dx-key { margin: .8rem 0 .6rem; padding: 0; list-style: none; color: var(--de-iron-dim); font-size: .82rem; line-height: 1.45; }
+.dx-key li { margin: .25rem 0; }
+.dx-key b { color: var(--de-iron-text); font-weight: 600; }
+.dx-term { color: var(--de-brass); font: 500 .66rem/1.4 var(--de-mono); letter-spacing: .08em; text-transform: uppercase; }
+.dx-notebook { margin: .4rem 0 0; padding-left: 1.4rem; font-size: .9rem; }
+.dx-notebook li { margin: .3rem 0; }
+.dx-notebook .is-pass { color: var(--de-good-ink); font-weight: 600; }
+.dx-notebook .is-fail { color: var(--de-bad-ink); font-weight: 600; }
+#hint p { margin: 0 0 .4rem; }
+
+/* Stage 4: the printed 20 x 20 table. */
+.dx-print { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 0 .8rem; }
+.dx-print .m { fill: var(--de-brass); }
+.dx-print .n { fill: var(--de-verdigris); stroke: var(--de-glow); stroke-width: .8; }
+.dx-print .b { fill: none; stroke: var(--de-iron-dim); stroke-width: .6; }
+.dx-legend { display: flex; flex-wrap: wrap; gap: .3rem 1rem; margin: 0; padding: 0; list-style: none; color: var(--de-iron-dim); font-size: .85rem; }
+.dx-legend svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: .3rem; }
+.dx-tasks { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.dx-tasks th, .dx-tasks td { padding: .45rem .35rem; border-bottom: 1px solid var(--de-iron-line); text-align: left; vertical-align: top; }
+.dx-tasks th { color: var(--de-brass); font: 600 .72rem/1.3 var(--de-mono); letter-spacing: .06em; text-transform: uppercase; }
+.dx-tasks td:first-child { font-family: var(--de-mono); white-space: nowrap; }
+.dx-tasks td:last-child { color: var(--de-glow); }
+
+/* Debrief: three laboratory engines. */
+.dx-roads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin: 1.2rem 0; }
+.dx-road { margin: 0; }
+.dx-road h3 { margin-bottom: .3rem; font-size: 1.3rem; }
+.dx-book { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; margin-top: 1.2rem; max-width: 46rem; }
+.dx-book p { margin: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .dx-print .n { animation: dx-in .35s ease-out both; animation-delay: var(--d, 0s); }
+  @keyframes dx-in { from { opacity: 0; } }
+}
+@media (max-width: 860px) {
+  .dx-board, .dx-roads { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .dx-plate.de-engine, .dx-machine.de-engine { padding: .8rem .45rem; }
+  .dx-table { border-spacing: 2px; }
+  .dx-tasks { font-size: .82rem; }
+}

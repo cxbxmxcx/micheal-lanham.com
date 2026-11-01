@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Selection Engine — Micheal Lanham</title>
+<meta name="description" content="Build a machine that improves itself: define good, measure the gap, search for better versions and gate what ships. A playable companion to Self-Improving Agents.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="../demo-shell.css">
+<link rel="stylesheet" href="/demos/kit/darwin-engine.css">
+<style>
+  /* Game-specific layout only. Colours, type, panels, buttons and gauges come
+     from the Darwin engine kit, so the approved look can change in one file. */
+  * { box-sizing: border-box; }
+  .embedded body { background: var(--de-paper); }
+  .se-wrap { max-width: 1180px; margin: 0 auto; padding: 1.25rem var(--ml-gutter) 3rem; }
+  .embedded .se-wrap { padding-top: .75rem; }
+  .se-wrap p { max-width: 70ch; }
+  .se-wrap h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); margin: .4rem 0 1rem; }
+  .se-wrap h2:focus { outline: none; }
+  .se-wrap h3 { font: 600 1.05rem/1.3 var(--de-display); margin: 0 0 .35rem; }
+
+  /* The engine: four stations, always on screen. */
+  .se-engine { margin-bottom: 1.1rem; }
+  .se-engine-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin: 0 0 .7rem; padding-inline: .6rem; }
+  .se-engine-head h2 { font-size: 1.35rem; margin: 0; }
+  .se-engine-id { display: flex; align-items: center; gap: .8rem; }
+  .se-engine-id .de-kicker { margin: 0; }
+  .se-engine-id .se-emblem { height: 52px; }
+  .se-chapters { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+  .se-stations { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; margin: 0; padding: 0; list-style: none; }
+  .se-station { border: 1px solid var(--de-iron-line); border-radius: 8px; padding: .5rem .6rem; background: #0F0C08; min-width: 0; }
+  .se-station b { display: block; font: 600 .95rem/1.25 var(--de-body); color: var(--de-iron-text); }
+  .se-station small { display: block; font: 500 .7rem/1.4 var(--de-mono); color: var(--de-iron-dim); letter-spacing: .04em; }
+  .se-station .se-state { margin-top: .3rem; font: 500 .72rem/1.3 var(--de-mono); color: var(--de-iron-dim); }
+  .se-station.is-now { border-color: var(--de-glow); box-shadow: inset 0 0 0 1px var(--de-glow-soft); }
+  .se-station.is-now .se-state { color: var(--de-glow); }
+  .se-station.is-done .se-state { color: var(--de-good); }
+  .se-gauges { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+  .se-gauges:empty { display: none; }
+  .se-gauges .de-gauge { flex: 1 1 8rem; }
+
+  /* Scenes. */
+  /* The scene sits straight on the notebook paper, as in the mockup's game screen. */
+  .se-scene { padding: .6rem 0 0; }
+  .se-specimen { position: relative; margin: 1.4rem 0 1rem; padding-top: 1.35rem; max-width: 46rem; }
+  .se-specimen > .de-label { position: absolute; top: -.75rem; left: .9rem; }
+  .se-specimen .se-quote { margin: 0; }
+  /* Board: the machine on the left, a gearbox of gauges and controls on the right. */
+  .se-board { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; align-items: start; margin: 1.2rem 0; }
+  .se-board .se-rack, .se-board .se-figure { margin: 0; }
+  .se-gearbox { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .se-gearbox .se-row, .se-gearbox .se-note { margin: 0; }
+  .se-gearbox > p { margin: 0; }
+  .se-gauge-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .se-gauge-row .de-gauge { flex: 1 1 8rem; }
+  .se-small { font-size: .875rem; }
+  .se-front p:last-child { margin: 0; font: 500 .85rem/1.6 var(--de-mono); color: var(--de-glow); }
+  .se-iron-table .se-table { margin: 0; }
+  .se-iron-table .se-table th { color: var(--de-brass); border-color: var(--de-iron-line); }
+  .se-iron-table .se-table td, .se-iron-table .se-table th[scope="row"] { color: var(--de-iron-text); border-color: var(--de-iron-line); font-family: var(--de-mono); font-size: .82rem; letter-spacing: 0; text-transform: none; }
+  .se-iron-table .se-table td:last-child { color: var(--de-glow); }
+  .se-iron-table + p { margin: 0; }
+  .se-figure > .de-label { margin-top: .6rem; }
+  .se-tree svg { max-width: 440px; }
+  /* Search cards: the mockup's laboratory engines. */
+  .se-methods { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin: 1.2rem 0; }
+  .se-method { display: flex; flex-direction: column; gap: 12px; }
+  .se-method h3 { font-size: 1.4rem; margin: 0; }
+  .se-method p { margin: 0; }
+  .se-method .de-gauge { align-self: flex-start; }
+  .se-method .de-btn { margin-top: auto; align-self: flex-start; }
+  .se-emblem { color: var(--de-brass); height: 96px; }
+  .se-emblem svg { display: block; height: 100%; width: auto; }
+  .se-quote { margin: .8rem 0; padding: .7rem .9rem; border-left: 3px solid var(--de-brass-deep); background: var(--de-paper-2); font: 500 .9rem/1.6 var(--de-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .se-quote .dim { color: var(--de-ink-soft); }
+  .se-term { font: 500 .78rem/1.5 var(--de-mono); color: var(--de-verdigris-ink); }
+  .se-row { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+  .se-choices { display: grid; gap: .5rem; margin: .9rem 0 0; }
+  .se-choices .de-btn-ghost { justify-content: flex-start; text-align: left; width: 100%; }
+  .se-note { margin: .9rem 0 0; padding: .65rem .9rem; border: 1px solid var(--de-rule); border-left-width: 4px; border-radius: 4px; background: rgba(255, 252, 244, .8); }
+  .se-note.good { border-left-color: var(--de-good-ink); }
+  .se-note.bad { border-left-color: var(--de-bad-ink); }
+  .se-note b:first-child { margin-right: .25rem; }
+  .se-good { color: var(--de-good-ink); font-weight: 600; }
+  .se-bad { color: var(--de-bad-ink); font-weight: 600; }
+
+  /* The instrument rack. */
+  .se-rack { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr)); gap: .6rem; margin: .9rem 0; padding: .9rem; }
+  .se-inst { display: flex; flex-direction: column; gap: .35rem; border: 1px solid var(--de-iron-line); border-radius: 8px; padding: .65rem .7rem; background: #0F0C08; min-width: 0; }
+  .se-inst h3 { color: var(--de-iron-text); font-size: 1rem; margin: 0; }
+  .se-inst dl { display: grid; grid-template-columns: auto 1fr; gap: .1rem .5rem; margin: 0; font: 500 .72rem/1.45 var(--de-mono); }
+  .se-inst dt { color: var(--de-iron-dim); }
+  .se-inst dd { margin: 0; color: var(--de-iron-text); }
+  .se-inst .se-read { display: block; margin: 0; min-height: 1.4em; font: 500 .8rem/1.5 var(--de-mono); color: var(--de-glow); overflow-wrap: anywhere; }
+  .se-inst .de-btn-ghost { margin-top: auto; }
+  .se-inst.is-off h3 { color: var(--de-iron-dim); }
+
+  /* Gate drawing. */
+  .se-gate { display: flex; align-items: center; gap: .8rem; margin: .9rem 0; }
+  .se-gate svg { width: 64px; height: 64px; flex: none; }
+  .se-gate strong { font: 600 .82rem/1.4 var(--de-mono); letter-spacing: .06em; }
+
+  /* Charts and the archive tree. */
+  .se-figure { margin: 1rem 0; }
+  .se-figure figcaption { font-size: .85rem; color: var(--de-ink-soft); margin-top: .35rem; }
+  .se-tree text { fill: currentColor; stroke: none; font-family: var(--de-mono); font-size: 15px; }
+  .se-tree .think { font-family: var(--de-display); font-style: italic; font-size: 22px; }
+  .se-tree .dash { stroke-dasharray: 4 5; }
+  .se-tree .ship { stroke-width: 3; }
+  .se-tree .dot-fill { fill: currentColor; }
+  .se-tree .dot-open { fill: var(--de-paper); }
+  .se-log { margin: .8rem 0 0; padding: 0; list-style: none; display: grid; gap: .35rem; }
+  .se-log li { padding: .45rem .7rem; border: 1px solid var(--de-rule); border-radius: 4px; background: rgba(255, 252, 244, .8); font-size: .9rem; overflow-wrap: anywhere; }
+  .se-log li strong { font-family: var(--de-mono); font-size: .82rem; }
+  .se-table { width: 100%; border-collapse: collapse; margin: .8rem 0; font-size: .9rem; }
+  .se-table th, .se-table td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--de-rule); vertical-align: top; }
+  .se-table th { font: 600 .75rem/1.4 var(--de-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--de-ink-soft); }
+  .se-table-wrap { max-width: 100%; }
+  .se-parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .6rem; margin: .9rem 0; padding: 0; list-style: none; }
+  .se-parts li { padding: .7rem .8rem; }
+  .se-parts b { display: block; margin-top: .45rem; font-family: var(--de-display); font-size: 1.15rem; }
+  .se-book { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.4rem; margin-top: 1.4rem; }
+  .se-book .se-emblem { height: 64px; }
+  .se-book p { flex: 1 1 18rem; }
+  .se-book p { margin: 0; }
+
+  @media (max-width: 860px) {
+    .se-board, .se-methods { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .se-stations { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 380px) {
+    .se-station b { font-size: .85rem; }
+    .se-table { font-size: .82rem; }
+    .se-table th, .se-table td { padding: .35rem .3rem; }
+  }
+</style>
+<script>if (window.self !== window.top) document.documentElement.classList.add('embedded');</script>
+</head>
+<body class="ml-page">
+<a class="ml-skip" href="#main">Skip to content</a>
+<header class="ml-header">
+  <nav class="ml-container ml-nav" aria-label="Main navigation">
+    <a class="ml-brand" href="/" aria-label="Micheal Lanham — home"><img src="/logo.svg" width="32" height="32" alt=""><span>Micheal Lanham</span></a>
+    <ul class="ml-links">
+      <li><a href="/books/">Books</a></li>
+      <li><a href="/demos/" aria-current="true">Demos</a></li>
+      <li><a class="ml-cta" href="/work/">Work with me</a></li>
+    </ul>
+    <details class="ml-menu">
+      <summary><svg class="ml-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg><svg class="ml-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg><span class="ml-sr">Menu</span></summary>
+      <ul class="ml-menu-panel">
+        <li><a href="/">Home</a></li>
+        <li><a href="/books/">Books</a></li>
+        <li><a href="/demos/" aria-current="true">Demos</a></li>
+        <li><a class="ml-cta" href="/work/">Work with me</a></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+<main id="main">
+<div class="ml-intro"><div class="ml-container">
+  <a class="ml-back" href="/demos/"><span aria-hidden="true">←</span> All demos</a>
+  <div class="pagehead">
+    <p class="kicker">Playable theory · a companion to Self-Improving Agents</p>
+    <h1>The Selection Engine</h1>
+    <p class="lede">A machine that improves itself needs four parts: a definition of good, a signal that measures how far it falls short,
+      a search that turns that gap into better versions, and a gate that decides what ships. Build all four in three short chapters, about ten minutes.</p>
+  </div>
+  <a class="ml-credit" href="/books/self-improving-agents/"><img src="/img/books/self-improving-agents-240.webp" alt="" width="22" height="28"><span>A companion to <strong>Self-Improving Agents</strong> (Manning)</span></a>
+</div></div>
+
+<div class="ml-stage de-page"><div class="se-wrap">
+  <section class="de-engine se-engine" aria-labelledby="engine-title">
+    <div class="se-engine-head">
+      <div class="se-engine-id">
+        <div class="se-emblem" aria-hidden="true"><svg viewBox="0 0 120 110" fill="none" stroke="currentColor" stroke-width="2"><path d="M60 104 V70 M60 70 C 40 60 30 44 24 22 M60 70 C 76 58 86 46 92 24 M60 86 C 74 82 92 76 104 64 M24 22 h -8 M92 24 h 8 M104 64 l 8 -4"/><circle cx="24" cy="22" r="4"/><circle cx="92" cy="24" r="4"/><circle cx="104" cy="64" r="4"/></svg></div>
+        <div><p class="de-kicker">Self-Improving Agents</p><h2 id="engine-title">The engine</h2></div>
+      </div>
+      <ol class="se-chapters" id="chapters" aria-label="Chapters"></ol>
+    </div>
+    <ol class="se-stations" id="stations" aria-label="The four parts of the engine"></ol>
+    <div class="se-gauges" id="gauges"></div>
+  </section>
+  <p class="de-sr" id="status" role="status" aria-live="polite"></p>
+  <section class="se-scene" id="scene" aria-labelledby="scene-title"></section>
+</div></div>
+
+<div class="ml-after"><div class="ml-container">
+  <p class="footnote">Every number in chapters 2 and 3 comes from the revenue task in <em>Self-Improving Agents</em> (Manning, in early access):
+    the $508 leaderboard a vague instruction card produces, the $358 truth a canonical pipeline computes, the genesis card at 63 and the oracle at 100.
+    No model calls and no network: every judge, label and critique is authored, and the game plays the same way every time.
+    The 1837 tree is after the &ldquo;I think&rdquo; sketch in Charles Darwin&rsquo;s notebook.</p>
+</div></div>
+</main>
+<footer class="ml-footer">
+  <div class="ml-container ml-footer-row">
+    <div><a class="ml-footer-brand" href="/">Micheal Lanham</a><p>Author &amp; AI practitioner · Calgary, Canada</p></div>
+    <nav aria-label="Footer navigation"><a href="/books/">Books</a><a href="/demos/">Demos</a><a href="/work/">Work with me</a><a href="https://github.com/cxbxmxcx">GitHub <span aria-hidden="true">↗</span></a></nav>
+    <a class="ml-footer-mail" href="mailto:cxbxmxcx@micheal-lanham.com">cxbxmxcx@micheal-lanham.com</a>
+  </div>
+</footer>
+<script src="game.js"></script>
+</body>
+</html>

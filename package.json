@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "images": "node scripts/build-images.mjs",
-    "test": "node scripts/helix-garden-regression.mjs && node scripts/build-images.mjs --check",
+    "test": "node scripts/build-images.mjs --check",
     "test:browser": "playwright test"
   },
   "dependencies": {

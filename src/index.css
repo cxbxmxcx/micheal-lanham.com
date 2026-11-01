@@ -252,7 +252,7 @@
   .loop-layout { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 96px); }
   .lab-feature { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; align-items: center; }
   .lab-feature-copy { padding: 0; }
-  .lab-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lab-tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .demo-preview-featured { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: center; padding: 16px; }
   .demo-preview-featured .demo-preview-copy { padding: 12px 16px 12px 0; }
 }

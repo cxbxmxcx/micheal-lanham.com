@@ -28,7 +28,7 @@ try {
   // The standalone game pages are full-page players. The site's demo pages are
   // the ones to index and share, so stamp each player with noindex and with
   // share tags that point at its demo page.
-  const { DEMOS } = await server.ssrLoadModule('/src/data/demos.ts')
+  const { DEMOS, RETIRED_DEMOS } = await server.ssrLoadModule('/src/data/demos.ts')
   const { getMetadata } = await server.ssrLoadModule('/src/lib/metadata.ts')
   for (const demo of DEMOS) {
     const file = path.join('dist', demo.playUrl)
@@ -45,6 +45,13 @@ try {
     ]
     const html = await readFile(file, 'utf8')
     await writeFile(file, html.replace('</head>', () => `${tags.join('\n')}\n</head>`))
+  }
+  // Retired demos: send their old site pages to the game that replaced them.
+  for (const [old, slug] of Object.entries(RETIRED_DEMOS)) {
+    const target = DEMOS.find(demo => demo.slug === slug)
+    const url = `/demos/${slug}/`
+    await mkdir(path.join('dist', 'demos', old), { recursive: true })
+    await writeFile(path.join('dist', 'demos', old, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(target.title)} — Micheal Lanham</title><link rel="canonical" href="https://micheal-lanham.com${url}"><meta http-equiv="refresh" content="0; url=${url}"></head><body><p>This demo is now part of <a href="${url}">${escape(target.title)}</a>.</p></body></html>`)
   }
   // lastmod: the date of the commit being built (CI checks out the pushed commit).
   let lastmod = new Date().toISOString().slice(0, 10)
