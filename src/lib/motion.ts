@@ -16,19 +16,39 @@ export function useReveal(pathname: string) {
     const root = document.documentElement
     root.classList.add('motion-ready')
     if (!motionAllowed() || !('IntersectionObserver' in window)) return
-    // Set up in a task of its own, so motion never lengthens hydration.
+    // The observer reveals blocks as they enter. The sweep also reveals any block
+    // whose top has already reached the trigger line: blocks the visitor scrolled
+    // or jumped past before setup, or flung past between two frames, which an
+    // observer never reports. It reads every position before changing any class.
     let observer: IntersectionObserver | undefined
+    let frame = 0
+    const reveal = (element: Element) => { element.classList.add('is-in'); observer?.unobserve(element) }
+    const sweep = () => {
+      frame = 0
+      const line = window.innerHeight * 0.88
+      const reached = [...document.querySelectorAll('[data-reveal]:not(.is-in)')].filter(element => element.getBoundingClientRect().top < line)
+      reached.forEach(reveal)
+    }
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(sweep) }
+    // Set up in a task of its own, so motion never lengthens hydration.
     const timer = window.setTimeout(() => {
-      const watch = new IntersectionObserver(entries => {
-        for (const entry of entries) if (entry.isIntersecting) { entry.target.classList.add('is-in'); watch.unobserve(entry.target) }
+      observer = new IntersectionObserver(entries => {
+        for (const entry of entries) if (entry.isIntersecting) reveal(entry.target)
       }, { rootMargin: '0px 0px -12% 0px' })
-      document.querySelectorAll('[data-reveal]:not(.is-in)').forEach(element => watch.observe(element))
-      observer = watch
+      document.querySelectorAll('[data-reveal]:not(.is-in)').forEach(element => observer!.observe(element))
+      sweep()
+      window.addEventListener('scroll', onScroll, { passive: true })
     })
     // A keyboard user tabbing ahead never lands on something still hidden.
-    const onFocus = (event: FocusEvent) => (event.target as Element | null)?.closest?.('[data-reveal]:not(.is-in)')?.classList.add('is-in')
+    const onFocus = (event: FocusEvent) => { const block = (event.target as Element | null)?.closest?.('[data-reveal]:not(.is-in)'); if (block) reveal(block) }
     document.addEventListener('focusin', onFocus)
-    return () => { window.clearTimeout(timer); observer?.disconnect(); document.removeEventListener('focusin', onFocus) }
+    return () => {
+      window.clearTimeout(timer)
+      cancelAnimationFrame(frame)
+      observer?.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      document.removeEventListener('focusin', onFocus)
+    }
   }, [pathname])
 }
 

@@ -82,17 +82,17 @@
   "/demos/selection-engine/": {
     "image": "/social/demo-selection-engine.jpg",
     "alt": "The Selection Engine, an interactive demo by Micheal Lanham",
-    "sha1": "49cde0466f402327e20eca9d66bd6daee0c7a081"
+    "sha1": "2409f0efd1110b9495bce1cd9f4b82583871bc4a"
   },
   "/demos/instinct-engine/": {
     "image": "/social/demo-instinct-engine.jpg",
     "alt": "The Instinct Engine, an interactive demo by Micheal Lanham",
-    "sha1": "a95c29b8917c8ecdf7e9b1fadb27248b3c077c9b"
+    "sha1": "8f2bececb2d1d270bb7a2bb332685f40f77c527b"
   },
   "/demos/difference-engine/": {
     "image": "/social/demo-difference-engine.jpg",
     "alt": "The Difference Engine, an interactive demo by Micheal Lanham",
-    "sha1": "57218f52518e7024295e4c9efbee555a9a1e437f"
+    "sha1": "520b02a936393940e79a0e9dbc3a8093b50104c2"
   },
   "/demos/perceptron/": {
     "image": "/social/demo-perceptron.jpg",

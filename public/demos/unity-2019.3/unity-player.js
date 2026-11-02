@@ -47,12 +47,19 @@
   var panel = make('div', 'unity-panel unity-hidden')
   stage.parentNode.insertBefore(status, stage)
   stage.parentNode.insertBefore(panel, stage)
+  // On screens narrower than the 1,050 px game, .stage scrolls sideways. Say so:
+  // a horizontal scrollbar under a canvas is easy to miss.
+  var hint = make('p', 'unity-hint unity-hidden', 'This game is 1,050 pixels wide. Scroll sideways to see all of it, or use the full-screen button under it.')
+  stage.parentNode.insertBefore(hint, stage.nextSibling)
+  function fitHint() { hint.classList.toggle('unity-hidden', embedded || stage.classList.contains('unity-hidden') || stage.scrollWidth <= stage.clientWidth + 1) }
+  window.addEventListener('resize', fitHint)
+  fitHint()
 
   function say(text, progress) {
     if (message.textContent !== text) message.textContent = text
     percent.textContent = progress === undefined ? '' : Math.round(progress * 100) + '%'
   }
-  function showStage(visible) { stage.classList.toggle('unity-hidden', !visible) }
+  function showStage(visible) { stage.classList.toggle('unity-hidden', !visible); fitHint() }
   function showStatus(visible) { status.classList.toggle('unity-hidden', !visible); if (!visible) say('') }
   function hidePanel() { panel.className = 'unity-panel unity-hidden'; panel.textContent = '' }
   function showPanel(kind, heading, text, action, onAction) {

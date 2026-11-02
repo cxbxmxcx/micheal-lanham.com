@@ -17,6 +17,8 @@ export default function CountUp({ value, suffix = '' }: { value: number; suffix?
       const watch = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting) return
         watch.disconnect()
+        // The visitor may have turned motion off since the page loaded.
+        if (!motionAllowed()) { show(value); return }
         const start = performance.now()
         const tick = (now: number) => {
           const t = Math.min(1, (now - start) / 1300)

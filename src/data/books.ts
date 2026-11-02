@@ -3,6 +3,8 @@ import { inquiry } from './contact'
 
 export const TOPICS = ['All topics', 'AI agents', 'Machine learning', 'Generative AI', 'Games & AR'] as const
 export type Topic = (typeof TOPICS)[number]
+/** A topic as it reads mid-sentence: "3 books in AI agents". */
+export const TOPIC_PHRASES: Record<Topic, string> = { 'All topics': 'all topics', 'AI agents': 'AI agents', 'Machine learning': 'machine learning', 'Generative AI': 'generative AI', 'Games & AR': 'games and AR' }
 export interface Book {
   slug: string
   title: string

@@ -10,11 +10,11 @@
     "preview": "vite preview",
     "images": "node scripts/build-images.mjs",
     "social": "node scripts/build-social.mjs",
+    "icons": "node scripts/build-icons.mjs",
     "test": "node scripts/build-images.mjs --check && node scripts/build-social.mjs --check && node scripts/check-palette.mjs",
     "test:browser": "playwright test"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router": "^7.6.1"

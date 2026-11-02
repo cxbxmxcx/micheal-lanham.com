@@ -1,13 +1,14 @@
 import { useSyncExternalStore } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { BOOKS, TOPICS, PUBLISHED_BOOKS, UPCOMING_BOOKS } from '@/data/books'
+import { BOOKS, TOPICS, TOPIC_PHRASES, PUBLISHED_BOOKS, UPCOMING_BOOKS } from '@/data/books'
+import { newestFirst } from '@/lib/shelf'
 import BookPreview from '@/components/BookPreview'
 import PageIntro from '@/components/PageIntro'
 import { listPriority } from '@/lib/images'
 
 const subscribe = () => () => {}
 // Published and early-access books lead; titles still in development follow in a compact strip.
-const LIBRARY = BOOKS.filter(book => book.status !== 'In development')
+const LIBRARY = newestFirst(BOOKS.filter(book => book.status !== 'In development'))
 const COMING = BOOKS.filter(book => book.status === 'In development')
 
 export default function BookLibrary() {
@@ -24,7 +25,7 @@ export default function BookLibrary() {
     <div className="filter-row mb-8 flex flex-wrap gap-2" role="group" aria-label="Filter books by topic">
       {TOPICS.map(value => <button key={value} className="filter-chip" aria-pressed={value === topic} onClick={() => setParams(value === 'All topics' ? {} : { topic: value }, { preventScrollReset: true })}>{value}</button>)}
     </div>
-    <p role="status" className="mb-6 text-sm text-muted">{books.length} {books.length === 1 ? 'book' : 'books'}{topic === 'All topics' ? ' across all topics' : ` in ${topic.toLowerCase()}`}</p>
+    <p role="status" className="mb-6 text-sm text-muted">{books.length} {books.length === 1 ? 'book' : 'books'}{topic === 'All topics' ? ' across all topics' : ` in ${TOPIC_PHRASES[topic]}`}</p>
     <div className="library-grid grid gap-6 md:grid-cols-2 lg:grid-cols-3">{books.map((book, index) => <BookPreview key={book.slug} book={book} heading="h2" priority={listPriority(index)} />)}</div>
     {coming.length > 0 && <section className="coming-next" aria-labelledby="coming-next-title">
       <h2 id="coming-next-title" className="kicker">Coming next</h2>

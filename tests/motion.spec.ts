@@ -39,6 +39,14 @@ test('the facts count up to their real values, and screen readers only hear the 
   await expect(facts.locator('[aria-hidden="true"]')).toHaveText(['12', '20+', '3'], { timeout: 5000 })
 })
 
+test('blocks the visitor jumps past are revealed, not left hidden', async ({ page }) => {
+  await page.goto('/#contact')
+  await expect(page.locator('html')).toHaveClass(/\bmotion-ready\b/)
+  // The laboratory sits above the contact band: jumped past, never scrolled into view.
+  await expect(page.locator('[data-reveal="engines"]')).toHaveClass(/\bis-in\b/)
+  await expect(page.locator('#books [data-reveal="shelf"]')).toHaveClass(/\bis-in\b/)
+})
+
 test('keyboard focus reveals a block before it scrolls into view', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('html')).toHaveClass(/\bmotion-ready\b/)

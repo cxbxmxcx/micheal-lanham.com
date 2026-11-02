@@ -86,6 +86,8 @@ test('the iron lab band leads into every demo', async ({ page }) => {
   const second = await page.locator('.lab-library-grid .demo-preview').first().boundingBox()
   expect(featured!.width).toBeGreaterThan(second!.width * 1.8)
   await expect(page.locator('.lab-library-grid .demo-preview')).toHaveCount(5)
+  // Every concept game can be played straight from the library.
+  for (const title of ['The Selection Engine', 'The Instinct Engine', 'The Difference Engine']) await expect(page.locator('.lab-library').getByRole('link', { name: `Play ${title}`, exact: true })).toBeVisible()
 })
 
 test('standalone demo pages share the site header, landmarks and footer', async ({ page }) => {
@@ -103,7 +105,7 @@ test('standalone demo pages share the site header, landmarks and footer', async 
       if (COMPANIONS[demo]) await expect(page.getByRole('link', { name: COMPANIONS[demo][0] })).toHaveAttribute('href', COMPANIONS[demo][1])
       const nav = page.getByRole('navigation', { name: 'Main navigation' })
       if (width === 390) await nav.locator('summary').click()
-      for (const [name, href] of [['Books', '/books/'], ['Demos', '/demos/'], ['Work with me', '/work/']]) await expect(nav.getByRole('link', { name, exact: true })).toHaveAttribute('href', href)
+      for (const [name, href] of [['Books', '/books/'], ['Demos', '/demos/'], ['About', '/#about'], ['Contact', '/#contact'], ['Work with me', '/work/']]) await expect(nav.getByRole('link', { name, exact: true })).toHaveAttribute('href', href)
       expect(await page.evaluate(() => document.documentElement.scrollWidth), `${demo} at ${width}`).toBeLessThanOrEqual(width)
     }
   }
@@ -120,7 +122,7 @@ test('the demo shell has no automated WCAG A/AA violations', async ({ page }) =>
 
 test('embedded demos hide the site shell and keep the dark stage', async ({ page }) => {
   await page.goto('/demos/selection-engine/')
-  await page.getByRole('button', { name: 'Play here', exact: true }).click()
+  await page.getByRole('button', { name: 'Play on this page', exact: true }).click()
   const frame = page.frameLocator('iframe')
   await expect(frame.locator('main h2').first()).toBeVisible()
   for (const selector of ['header', 'footer', 'h1', '.ml-skip']) await expect(frame.locator(selector)).toBeHidden()

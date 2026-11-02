@@ -25,3 +25,4 @@
 
 /* In the site's iframe the demo page shows the status and instructions. */
 .embedded .unity-status, .embedded .howto { display:none; }
+.unity-hint { margin:.5rem 0 0; font-size:.875rem; line-height:1.5; color:var(--dim); }

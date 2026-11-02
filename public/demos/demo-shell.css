@@ -46,6 +46,8 @@ html:not(.embedded) body.ml-page { background: repeating-linear-gradient(0deg, t
 a.ml-cta, .ml-links a.ml-cta { justify-content: center; padding: 12px 20px; border: 1px solid #6E4D17; border-radius: 8px; background: linear-gradient(180deg, #E3B964, var(--ml-brass) 55%, #A9782B); color: #1E160D; font-size: .875rem; font-weight: 600; line-height: 1.45; box-shadow: inset 0 1px 0 rgba(255, 244, 214, .7), 0 2px 0 #5C4218; text-decoration: none; }
 a.ml-cta:hover, .ml-links a.ml-cta:hover { filter: brightness(1.06); color: #1E160D; }
 .ml-menu { display: none; }
+/* A closed menu lays nothing out, so its panel can never widen the page. */
+.ml-menu:not([open]) .ml-menu-panel { display: none; }
 .ml-menu > summary { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--ml-line); border-radius: 8px; color: var(--ml-ink); cursor: pointer; list-style: none; }
 .ml-menu > summary::-webkit-details-marker { display: none; }
 .ml-menu .ml-icon-close, .ml-menu[open] .ml-icon-open { display: none; }

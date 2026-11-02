@@ -21,6 +21,7 @@ Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a cu
 - **Page metadata:** `src/lib/metadata.ts`; default social tags and font preloads: `index.html`.
 - **Fonts:** self-hosted subsets in `public/fonts/` (with their OFL licences), declared in `src/index.css` for the site and `public/fonts/fonts.css` for the demo pages. `scripts/subset-fonts.py` rebuilds them; it is needed only to change the character set or weights.
 - **Image sources:** `public/asset-sources.txt` documents the publisher-sourced author photograph and book covers. After adding or replacing a cover in `public/books/` or the portrait, run `npm run images` to rebuild the responsive WebP files in `public/img/` and `src/data/images.json`; `npm test` fails until you do.
+- **Icons:** after changing `public/logo.svg`, run `npm run icons` to rebuild `apple-touch-icon.png` and `favicon.ico`.
 - **Social cards:** after changing a book, a demo, the portrait or the logo, run `npm run social` (needs Chrome) to rebuild `public/social/` and `src/data/social.json`; `npm test` fails until you do.
 
 ## Run and verify

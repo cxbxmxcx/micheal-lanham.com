@@ -3,7 +3,15 @@ import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import { createServer } from 'vite'
 
-const template = await readFile('dist/index.html', 'utf8')
+// Inline the stylesheet: it is the only render-blocking request, and after the
+// first page every navigation is client-side, so a separate cached file buys
+// little while costing a round trip on every first visit.
+const built = await readFile('dist/index.html', 'utf8')
+const stylesheet = built.match(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/)
+if (!stylesheet) throw new Error('dist/index.html has no stylesheet link to inline')
+const css = await readFile(path.join('dist', stylesheet[1]), 'utf8')
+if (css.includes('</style')) throw new Error('the stylesheet contains "</style" and cannot be inlined')
+const template = built.replace(stylesheet[0], () => `<style>${css}</style>`)
 const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
 const escape = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 try {

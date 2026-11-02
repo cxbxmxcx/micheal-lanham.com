@@ -38,7 +38,7 @@ export default function DemoPlayer({ demo }: { demo: Demo }) {
   return <div className="mt-8">
     <div className="flex flex-wrap items-center gap-4">
       <a className={`btn-primary${desktopOnly}`} href={demo.playUrl}>Play {demo.title} <span aria-hidden="true">→</span></a>
-      {!active && <button ref={start} type="button" className={`btn-secondary hidden md:inline-flex${desktopOnly}`} onClick={() => { setStatus('loading'); setActive(true) }}>Play here</button>}
+      {!active && <button ref={start} type="button" className={`btn-secondary hidden md:inline-flex${desktopOnly}`} onClick={() => { setStatus('loading'); setActive(true) }}>Play on this page</button>}
     </div>
     {unity && <div className="notice unity-phone-gate"><h2>Desktop required</h2><p>{demo.title} is a Unity WebGL game made for desktop browsers. It needs a mouse or trackpad and a screen at least 1,050 pixels wide, and it downloads about 5&nbsp;MB.</p><a className="btn-secondary mt-4" href={`${demo.playUrl}?device=any`}>Continue anyway <span aria-hidden="true">→</span></a></div>}
     <p className="mt-4 text-sm text-muted">{demo.device}. Opens on its own page for more room to explore.</p>

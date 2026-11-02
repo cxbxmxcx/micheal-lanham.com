@@ -212,5 +212,107 @@
         "width": 350
       }
     ]
+  },
+  "/demo-autoencoder.webp": {
+    "sha1": "614529a2f280ec27d9cb52d93f04ddb358c2a531",
+    "width": 960,
+    "height": 600,
+    "variants": [
+      {
+        "src": "/img/demo-autoencoder-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/demo-autoencoder-960.webp",
+        "width": 960
+      }
+    ]
+  },
+  "/demo-difference-engine.webp": {
+    "sha1": "955f2a8e3f830d41768ff1841b756eb7a018e081",
+    "width": 1600,
+    "height": 1000,
+    "variants": [
+      {
+        "src": "/img/demo-difference-engine-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/demo-difference-engine-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/img/demo-difference-engine-1600.webp",
+        "width": 1600
+      }
+    ]
+  },
+  "/demo-instinct-engine.webp": {
+    "sha1": "e4758899c4c053f1203a592aeedf0a33dcdcaf5d",
+    "width": 1600,
+    "height": 1000,
+    "variants": [
+      {
+        "src": "/img/demo-instinct-engine-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/demo-instinct-engine-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/img/demo-instinct-engine-1600.webp",
+        "width": 1600
+      }
+    ]
+  },
+  "/demo-mlp.webp": {
+    "sha1": "097acf617ef7bbbf528c8975271a3e13ee78911d",
+    "width": 960,
+    "height": 600,
+    "variants": [
+      {
+        "src": "/img/demo-mlp-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/demo-mlp-960.webp",
+        "width": 960
+      }
+    ]
+  },
+  "/demo-perceptron.webp": {
+    "sha1": "2f9f9fc913a1671e7880b16afaefaaae12ffa468",
+    "width": 960,
+    "height": 600,
+    "variants": [
+      {
+        "src": "/img/demo-perceptron-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/demo-perceptron-960.webp",
+        "width": 960
+      }
+    ]
+  },
+  "/demo-selection-engine.webp": {
+    "sha1": "5d9ab272471ff0db51e004b49b552fd8b28eafab",
+    "width": 1600,
+    "height": 1000,
+    "variants": [
+      {
+        "src": "/img/demo-selection-engine-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/img/demo-selection-engine-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/img/demo-selection-engine-1600.webp",
+        "width": 1600
+      }
+    ]
   }
 }

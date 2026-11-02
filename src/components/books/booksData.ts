@@ -4,34 +4,6 @@
  * edit from memory; look the book up.
  */
 
-export interface DevBook {
-  title: string
-  publisher: string
-  badge: 'MEAP' | 'IN DEVELOPMENT'
-  flavor: string
-}
-
-export const DEV_BOOKS: DevBook[] = [
-  {
-    title: 'Self-Improving Agents',
-    publisher: 'Manning Publications',
-    badge: 'MEAP',
-    flavor: 'Agents that rewrite their own behavior.',
-  },
-  {
-    title: 'Learn AI Filmmaking',
-    publisher: 'BPB Publications',
-    badge: 'IN DEVELOPMENT',
-    flavor: 'Generative pipelines for cinematic craft.',
-  },
-  {
-    title: 'The Instinctual Learning Agent Harness',
-    publisher: 'Packt Publishing',
-    badge: 'IN DEVELOPMENT',
-    flavor: 'Instincts, drives, and self-improving agents.',
-  },
-]
-
 export interface PublishedBook {
   /** null when the source lists no year (BPB title) */
   year: string | null
@@ -47,11 +19,6 @@ export interface PublisherCluster {
   key: PublisherKey
   /** display label, e.g. "MANNING PUBLICATIONS" */
   label: string
-  /** branch node color — amber for Manning, teal for the others */
-  nodeColor: string
-  /** card spine-bar color (Manning amber, O'Reilly teal, Apress copper,
-   *  Packt teal-dim, BPB amber-dim/ember) */
-  spineColor: string
   books: PublishedBook[]
 }
 
@@ -59,8 +26,6 @@ export const PUBLISHER_CLUSTERS: PublisherCluster[] = [
   {
     key: 'MANNING',
     label: 'MANNING PUBLICATIONS',
-    nodeColor: '#E09B4A',
-    spineColor: '#E09B4A',
     books: [
       {
         year: '2026',
@@ -88,8 +53,6 @@ export const PUBLISHER_CLUSTERS: PublisherCluster[] = [
   {
     key: "O'REILLY",
     label: "O'REILLY MEDIA",
-    nodeColor: '#3E9E96',
-    spineColor: '#3E9E96',
     books: [
       {
         year: '2020',
@@ -103,8 +66,6 @@ export const PUBLISHER_CLUSTERS: PublisherCluster[] = [
   {
     key: 'APRESS',
     label: 'APRESS',
-    nodeColor: '#3E9E96',
-    spineColor: '#C2703C',
     books: [
       {
         year: '2021',
@@ -118,8 +79,6 @@ export const PUBLISHER_CLUSTERS: PublisherCluster[] = [
   {
     key: 'PACKT',
     label: 'PACKT PUBLISHING',
-    nodeColor: '#3E9E96',
-    spineColor: '#1E5A55',
     books: [
       {
         year: '2020',
@@ -168,8 +127,6 @@ export const PUBLISHER_CLUSTERS: PublisherCluster[] = [
   {
     key: 'BPB',
     label: 'BPB PUBLICATIONS',
-    nodeColor: '#3E9E96',
-    spineColor: '#8A4A22',
     books: [
       {
         year: '2024',
@@ -182,4 +139,3 @@ export const PUBLISHER_CLUSTERS: PublisherCluster[] = [
   },
 ]
 
-export const FILTER_KEYS: ('ALL' | PublisherKey)[] = ['ALL', 'MANNING', "O'REILLY", 'APRESS', 'PACKT', 'BPB']

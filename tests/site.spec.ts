@@ -90,6 +90,35 @@ test('the Work with me button marks the current section', async ({ page }) => {
   await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Work with me', exact: true })).not.toHaveAttribute('aria-current')
 })
 
+test('the library lists books newest first, and its filter status keeps "AI" in capitals', async ({ page }) => {
+  await page.goto('/books/')
+  const meta = await page.locator('.library-grid .book-preview > div > p:first-child').allTextContents()
+  expect(meta[0]).toContain('Early access')
+  const years = meta.map(text => Number(text.match(/(\d{4})$/)?.[1])).filter(Boolean)
+  expect(years).toEqual([...years].sort((a, b) => b - a))
+  await page.getByRole('button', { name: 'AI agents', exact: true }).click()
+  await expect(page.getByRole('status').first()).toContainText('in AI agents')
+})
+
+test('a book page keeps room for its cover before the image arrives, so the text never jumps', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.route('**/img/books/**', route => route.abort())
+  await page.goto('/books/self-improving-agents/')
+  const image = page.getByRole('img', { name: 'Self-Improving Agents cover' })
+  const cover = await image.boundingBox()
+  const [width, height] = await image.evaluate(img => [Number(img.getAttribute('width')), Number(img.getAttribute('height'))])
+  // The box already has the cover's full size and proportions (255 x 320 at this width).
+  expect(cover!.width).toBeGreaterThan(240)
+  expect(Math.abs(cover!.height - cover!.width * height / width)).toBeLessThan(2)
+})
+
+test('footer links are full-size tap targets on phones', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const heights = await page.locator('footer a').evaluateAll(links => links.map(link => link.getBoundingClientRect().height))
+  for (const height of heights.slice(1)) expect(height).toBeGreaterThanOrEqual(44)
+})
+
 test('book topic filters keep matching books and open a detail page', async ({ page }) => {
   await page.goto('/books/')
   await page.getByRole('button', { name: 'AI agents', exact: true }).click()
@@ -198,7 +227,7 @@ test('a failed embedded demo offers recovery without claiming it is running', as
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.route('**/demos/Selection_Engine/index.html', route => route.fulfill({ status: 503, body: 'Temporarily unavailable' }))
   await page.goto('/demos/selection-engine/')
-  await page.getByRole('button', { name: 'Play here', exact: true }).click()
+  await page.getByRole('button', { name: 'Play on this page', exact: true }).click()
   await expect(page.locator('iframe')).toBeAttached()
   await page.clock.fastForward(45_001)
   await expect(page.getByRole('status')).toHaveText('The demo has not reported ready.')
@@ -221,7 +250,7 @@ test('mobile demos use the full page instead of a tiny iframe', async ({ page })
 test('an embedded Unity game at 1,024 px keeps its left edge and can scroll to its right edge', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 })
   await page.goto('/demos/perceptron/')
-  await page.getByRole('button', { name: 'Play here', exact: true }).click()
+  await page.getByRole('button', { name: 'Play on this page', exact: true }).click()
   const game = page.frameLocator('iframe[title="The Perceptron Game"]').locator('#unityContainer')
   await expect(game).toBeAttached()
   // The 1,050 px canvas is wider than the iframe here; none of it may be out of reach.
@@ -291,9 +320,19 @@ test('a standalone Unity game that cannot load says so in the page and can try a
 test('an embedded Unity game that cannot load is reported straight away', async ({ page }) => {
   await page.route('**/Perceptron_Game/Build/Web.json', route => route.fulfill({ status: 503, body: 'Temporarily unavailable' }))
   await page.goto('/demos/perceptron/')
-  await page.getByRole('button', { name: 'Play here', exact: true }).click()
+  await page.getByRole('button', { name: 'Play on this page', exact: true }).click()
   await expect(page.locator('.demo-player [role="status"]')).toHaveText('The demo could not start.')
   await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible()
+})
+
+test('a Unity game wider than the window says how to see all of it', async ({ page }) => {
+  await page.route('**/*.unityweb', route => route.abort())
+  await page.setViewportSize({ width: 1024, height: 800 })
+  await page.goto('/demos/Perceptron_Game/index.html')
+  await expect(page.locator('.unity-hint')).toBeVisible()
+  await expect(page.locator('.unity-hint')).toContainText('Scroll sideways')
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await expect(page.locator('.unity-hint')).toBeHidden()
 })
 
 test('each Unity game explains how to play, with the same text on its site page and beside the game', async ({ page }) => {
@@ -312,11 +351,11 @@ test('each Unity game explains how to play, with the same text on its site page 
 
 test('desktop demo can start and close, with honest failure recovery', async ({ page }) => {
   await page.goto('/demos/selection-engine/')
-  await page.getByRole('button', { name: 'Play here', exact: true }).click()
+  await page.getByRole('button', { name: 'Play on this page', exact: true }).click()
   await expect(page.getByTitle('The Selection Engine', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Close demo', exact: true }).click()
   await expect(page.locator('iframe')).toHaveCount(0)
-  await expect(page.getByRole('button', { name: 'Play here', exact: true })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Play on this page', exact: true })).toBeFocused()
 })
 
 test('narrow and reduced-motion pages keep content readable', async ({ page }) => {
@@ -459,6 +498,19 @@ test.describe('production build', () => {
       expect(html).toContain(`<meta property="og:url" content="https://micheal-lanham.com/demos/${slug}/">`)
       expect(html).toContain(`<meta property="og:image" content="https://micheal-lanham.com/social/demo-${slug}.jpg">`)
     }
+  })
+
+  test('pages inline their stylesheet, and the icons and manifest are served', async ({ page }) => {
+    const html = await (await page.request.get('/')).text()
+    expect(html).not.toContain('<link rel="stylesheet"')
+    expect(html).toContain('<style>')
+    for (const [path, type] of [['/favicon.ico', 'image/'], ['/apple-touch-icon.png', 'image/png'], ['/site.webmanifest', '']]) {
+      const response = await page.request.get(path)
+      expect(response.status(), path).toBe(200)
+      if (type) expect(response.headers()['content-type'], path).toContain(type)
+    }
+    const manifest = await (await page.request.get('/site.webmanifest')).json()
+    expect(manifest.icons.map((icon: { sizes: string }) => icon.sizes)).toEqual(expect.arrayContaining(['192x192', '512x512']))
   })
 
   test('books and demos share their own social card, and every other page shares the site card', async ({ page }) => {

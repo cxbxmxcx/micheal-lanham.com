@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Link } from 'react-router'
 import type { Book } from '@/data/books'
 import { loadingProps, responsiveImage, type ImagePriority } from '@/lib/images'
@@ -5,12 +6,16 @@ import { transitionName } from '@/lib/motion'
 
 // Rendered widths: card covers are 264 px tall; detail covers are at most
 // 300 px wide and 390 px tall, and are never enlarged past the original.
-const cardSizes = (aspect: number) => `${Math.ceil(264 * aspect)}px`
+const cardSizes = (aspect: number) => `(max-width: 639px) 42vw, ${Math.ceil(264 * aspect)}px`
 const largeSizes = (aspect: number, width: number) => `${Math.ceil(Math.min(300, 390 * aspect, width))}px`
 
 export function BookArtwork({ book, large = false, priority }: { book: Book; large?: boolean; priority?: ImagePriority }) {
+  const image = book.cover ? responsiveImage(book.cover, large ? largeSizes : cardSizes) : null
+  // A large cover's width is known before it loads (index.css: .book-art-large),
+  // so the text below it never jumps when the image arrives.
+  const frame = large && image?.width && image.height ? { '--w': `${image.width}px`, '--aspect': image.width / image.height } as CSSProperties : undefined
   return <div className={`book-art ${large ? 'book-art-large' : ''}`}>
-    {book.cover ? <img {...responsiveImage(book.cover, large ? largeSizes : cardSizes)} alt={`${book.title} cover`} {...loadingProps(priority)} style={large ? transitionName('cover', book.slug) : undefined} /> : <div className="book-type-cover" aria-hidden="true" style={large ? transitionName('cover', book.slug) : undefined}><span>{book.publisher}</span><strong>{book.title}</strong><span>Micheal Lanham</span></div>}
+    {image ? <img {...image} alt={`${book.title} cover`} {...loadingProps(priority)} style={large ? { ...transitionName('cover', book.slug), ...frame } : undefined} /> : <div className="book-type-cover" aria-hidden="true" style={large ? transitionName('cover', book.slug) : undefined}><span>{book.publisher}</span><strong>{book.title}</strong><span>Micheal Lanham</span></div>}
   </div>
 }
 

@@ -1,5 +1,5 @@
-// Builds the responsive WebP versions of the book covers and the author
-// portrait, plus src/data/images.json, which src/lib/images.ts reads for
+// Builds the responsive WebP versions of the book covers, the author portrait
+// and the demo posters, plus src/data/images.json, which src/lib/images.ts reads for
 // srcset and intrinsic sizes. The originals stay in public/ for structured data.
 //
 //   npm run images                          regenerate after adding or replacing an image
@@ -12,11 +12,14 @@ const CHECK = process.argv.includes('--check')
 const MANIFEST = 'src/data/images.json'
 const COVER_WIDTHS = [240, 480, 720]
 const PORTRAIT_WIDTHS = [220, 440]
+const POSTER_WIDTHS = [480, 960, 1600]
 
 const covers = (await readdir('public/books')).filter(file => /\.(jpe?g|png)$/i.test(file)).sort()
+const posters = (await readdir('public')).filter(file => /^demo-[a-z-]+\.webp$/.test(file)).sort()
 const sources = [
   ...covers.map(file => ({ source: `/books/${file}`, widths: COVER_WIDTHS })),
   { source: '/micheal-lanham.png', widths: PORTRAIT_WIDTHS },
+  ...posters.map(file => ({ source: `/${file}`, widths: POSTER_WIDTHS })),
 ]
 const sha1 = buffer => createHash('sha1').update(buffer).digest('hex')
 const variantPath = (source, width) => `/img${source.replace(/\.\w+$/, '')}-${width}.webp`

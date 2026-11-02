@@ -18,7 +18,7 @@ export function getMetadata(path: string) {
   if (normalized === '/books/') { title = 'Books on AI, machine learning & games'; description = 'Find your next book by topic: AI agents, machine learning, generative AI, games, and augmented reality.' }
   else if (normalized === '/work/') { title = 'AI agent architecture reviews & workshops'; description = 'Work with Micheal Lanham on agent architecture reviews and practical team training, scoped around your system and learning goals.' }
   else if (normalized === '/demos/') { title = 'Interactive AI demos'; description = 'Learn by doing with The Selection Engine, The Instinct Engine, The Difference Engine, and three neural-network teaching games.' }
-  else if (normalized.startsWith('/books/')) { const book = BOOKS.find(item => normalized === `/books/${item.slug}/`); if (book) { title = book.title; description = fit(`${book.title} by Micheal Lanham.`, book.audience) } }
+  else if (normalized.startsWith('/books/')) { const book = BOOKS.find(item => normalized === `/books/${item.slug}/`); if (book) { title = book.title.length > 48 ? book.title.split(' — ')[0] : book.title; description = fit(`${book.title} by Micheal Lanham.`, book.audience) } }
   else if (normalized.startsWith('/work/')) { const service = SERVICES.find(item => normalized === `/work/${item.slug}/`); if (service) { title = service.title; description = service.summary } }
   else if (normalized.startsWith('/demos/')) { const demo = DEMOS.find(item => normalized === `/demos/${item.slug}/`); if (demo) { title = demo.title; description = fit(demo.description, demo.outcome, 'An interactive demo by Micheal Lanham.') } }
   const noindex = !PAGE_PATHS.includes(normalized)

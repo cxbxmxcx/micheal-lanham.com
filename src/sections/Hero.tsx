@@ -1,34 +1,15 @@
-import type { CSSProperties } from 'react'
 import { Link } from 'react-router'
 import { BOOKS, PUBLISHED_BOOKS } from '@/data/books'
 import { DEMOS } from '@/data/demos'
 import { responsiveImage } from '@/lib/images'
 import CountUp from '@/components/CountUp'
+import InkSketch from '@/components/InkSketch'
 
 const PUBLISHERS = ['Manning', 'O’Reilly', 'Apress', 'Packt', 'BPB']
 // Pinned beside the portrait, back to front.
 const COVERS = ['self-improving-agents', 'ai-agents-in-action-second-edition']
   .map(slug => BOOKS.find(book => book.slug === slug)!)
 const CONCEPT_GAMES = DEMOS.filter(demo => demo.engine).length
-
-// Each stroke draws in turn when motion is on (index.css: ink-draw).
-const ink = (i: number) => ({ pathLength: 1, style: { '--i': i } as CSSProperties })
-
-// After Darwin's 1837 "I think" notebook sketch: a tree of descent in ink.
-function ThinkSketch() {
-  return <svg viewBox="0 0 220 200">
-    <text x="18" y="26" fontFamily="Fraunces, Georgia, serif" fontStyle="italic" fontSize="20" fill="currentColor" stroke="none">I think</text>
-    <path {...ink(0)} d="M40 182 C 44 150, 60 140, 72 120 C 84 100, 86 84, 104 70" />
-    <path {...ink(1)} d="M72 120 C 92 122, 108 112, 126 100 C 144 88, 160 92, 176 78" />
-    <path {...ink(2)} d="M104 70 C 116 58, 120 46, 138 40" />
-    <path {...ink(2)} d="M104 70 C 96 54, 92 46, 98 30" />
-    <path {...ink(2)} d="M126 100 C 132 116, 146 124, 162 126" />
-    <path {...ink(1)} d="M60 140 C 46 130, 36 120, 30 104" />
-    <path {...ink(3)} d="M138 40 h 12 M98 30 v -10 M176 78 l 10 -6 M162 126 l 12 2 M30 104 l -8 -8" />
-    <circle {...ink(0)} cx="40" cy="182" r="3" />
-    <text x="44" y="196" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="currentColor" stroke="none">1</text>
-  </svg>
-}
 
 export default function Hero() {
   return <section id="top" className="hero-section">
@@ -40,7 +21,7 @@ export default function Hero() {
           <p className="hero-lede">My next Manning book, <Link className="hero-title" to="/books/self-improving-agents/">Self-Improving Agents</Link>, is in early access. I also help teams design better agent systems through architecture reviews and hands-on training.</p>
         </div>
         <div className="hero-art">
-          <div className="hero-tree" aria-hidden="true"><ThinkSketch /></div>
+          <div className="hero-tree" aria-hidden="true"><InkSketch /></div>
           {/* The oval is 62% of the plate: up to 270 px wide, 180 px on phones. */}
           <div className="hero-oval"><img className="hero-portrait" {...responsiveImage('/micheal-lanham.png', '(max-width: 639px) 180px, 270px')} alt="Micheal Lanham" fetchPriority="high" /></div>
           <ul className="hero-covers" aria-label="Featured books">
