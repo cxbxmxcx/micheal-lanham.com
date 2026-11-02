@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#F2E8D5" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Motion is an enhancement (see src/lib/motion.ts). Turn it on before the
+      // first paint, only for visitors who allow motion. If the app has not
+      // started within 3 seconds, turn it off so nothing waits hidden.
+      (function () {
+        var root = document.documentElement, reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)')
+        if (!reduce || reduce.matches) return
+        root.classList.add('motion')
+        if (reduce.addEventListener) reduce.addEventListener('change', function (event) { if (event.matches) root.classList.remove('motion') })
+        setTimeout(function () { if (!root.classList.contains('motion-ready')) root.classList.remove('motion') }, 3000)
+      })()
+    </script>
     <!-- Defaults match getMetadata('/') in src/lib/metadata.ts; the prerender
          replaces them on every page. -->
     <title>Micheal Lanham — AI agents, books &amp; training</title>

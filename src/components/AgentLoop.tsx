@@ -11,7 +11,7 @@ const PATHS = ['M146 48H248', 'M320 86V210', 'M254 252H152', 'M80 214V90']
 export default function AgentLoop() {
   const [selected, setSelected] = useState(0)
   const step = STEPS[selected]
-  return <figure className="agent-loop">
+  return <figure className="agent-loop" data-reveal="loop">
     <figcaption className="loop-caption"><span className="loop-dot" aria-hidden="true" /> The agent learning loop</figcaption>
     <div className="loop-diagram" role="group" aria-label="Explore the agent learning loop">
       <svg viewBox="0 0 400 300" fill="none" aria-hidden="true">

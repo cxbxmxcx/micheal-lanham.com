@@ -63,7 +63,7 @@ export default function Navbar() {
     <header className="site-header">
       <nav aria-label="Main navigation" className="container-x flex h-20 items-center justify-between gap-5">
         <Link to="/" className="flex shrink-0 items-center gap-3" aria-label="Micheal Lanham — home">
-          <img src="/logo.svg" width="32" height="32" alt="" />
+          <img className="brand-logo" src="/logo.svg" width="32" height="32" alt="" />
           <span className="font-display text-lg font-semibold tracking-tight">Micheal Lanham</span>
         </Link>
         <div className="hidden items-center gap-7 lg:flex">

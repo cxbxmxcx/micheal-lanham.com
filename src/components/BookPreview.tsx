@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import type { Book } from '@/data/books'
 import { loadingProps, responsiveImage, type ImagePriority } from '@/lib/images'
+import { transitionName } from '@/lib/motion'
 
 // Rendered widths: card covers are 264 px tall; detail covers are at most
 // 300 px wide and 390 px tall, and are never enlarged past the original.
@@ -9,7 +10,7 @@ const largeSizes = (aspect: number, width: number) => `${Math.ceil(Math.min(300,
 
 export function BookArtwork({ book, large = false, priority }: { book: Book; large?: boolean; priority?: ImagePriority }) {
   return <div className={`book-art ${large ? 'book-art-large' : ''}`}>
-    {book.cover ? <img {...responsiveImage(book.cover, large ? largeSizes : cardSizes)} alt={`${book.title} cover`} {...loadingProps(priority)} /> : <div className="book-type-cover" aria-hidden="true"><span>{book.publisher}</span><strong>{book.title}</strong><span>Micheal Lanham</span></div>}
+    {book.cover ? <img {...responsiveImage(book.cover, large ? largeSizes : cardSizes)} alt={`${book.title} cover`} {...loadingProps(priority)} style={large ? transitionName('cover', book.slug) : undefined} /> : <div className="book-type-cover" aria-hidden="true" style={large ? transitionName('cover', book.slug) : undefined}><span>{book.publisher}</span><strong>{book.title}</strong><span>Micheal Lanham</span></div>}
   </div>
 }
 

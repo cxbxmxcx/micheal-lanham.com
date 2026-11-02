@@ -3,7 +3,7 @@ import type { Demo } from '@/data/demos'
 
 // Poster tiles for the dark "lab" look: the homepage lab band and the end of each demo page.
 export default function LabTiles({ demos, label }: { demos: Demo[]; label: string }) {
-  return <ul className="lab-tiles" aria-label={label}>
+  return <ul className="lab-tiles" aria-label={label} data-reveal="stagger">
     {demos.map(demo => <li key={demo.slug}><Link to={`/demos/${demo.slug}/`}>
       <img src={demo.poster} width="960" height="600" alt="" loading="lazy" />
       <span className="lab-tile-title">{demo.title}</span>

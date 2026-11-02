@@ -4,10 +4,14 @@ import { useLocation, useNavigationType } from 'react-router'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import { getMetadata, getStructuredData } from '@/lib/metadata'
+import { routeCommitted, useReveal, useRouteTransitions, useTilt } from '@/lib/motion'
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
   const navigationType = useNavigationType()
+  useReveal(location.pathname)
+  useTilt()
+  useRouteTransitions()
   const positions = useRef(new Map<string, { left: number; top: number }>())
   const previous = useRef<{ pathname: string; hash: string } | null>(null)
   useEffect(() => {
@@ -49,6 +53,8 @@ export default function Layout({ children }: { children: ReactNode }) {
   }, [location.pathname])
 
   useLayoutEffect(() => {
+    // A page transition waits for the new page to render before it animates.
+    routeCommitted()
     const prior = previous.current
     const changedPage = !prior || prior.pathname !== location.pathname || prior.hash !== location.hash
     previous.current = { pathname: location.pathname, hash: location.hash }

@@ -14,7 +14,7 @@ interface SectionShellProps {
 export default function SectionShell({ id, kicker, title, lede, children, className }: SectionShellProps) {
   return <section id={id} tabIndex={-1} className={cn('section-space', className)}>
     <div className="container-x">
-      <div className="section-heading"><p className="kicker">{kicker}</p><h2>{title}</h2>{lede && <p className="section-lede">{lede}</p>}</div>
+      <div className="section-heading" data-reveal="up"><p className="kicker">{kicker}</p><h2>{title}</h2>{lede && <p className="section-lede">{lede}</p>}</div>
       {children}
     </div>
   </section>

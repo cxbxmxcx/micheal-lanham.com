@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Link } from 'react-router'
 import { DEMOS } from '@/data/demos'
 import SectionShell from '@/components/SectionShell'
@@ -13,8 +14,9 @@ export default function Demos() {
   const engines = DEMOS.filter(demo => demo.engine)
   const classics = DEMOS.filter(demo => !demo.engine)
   return <SectionShell id="demos" kicker="The laboratory" title={`${sentence(word(engines.length))} engines for agents that learn.`} lede="Each game is a small machine you can operate: measure what good means, turn slow reasoning into instinct, and find the rule that writes the memory." className="lab-band">
-    <ul className="engines" aria-label="Concept games">
-      {engines.map(demo => <li key={demo.slug} className="engine">
+    <ul className="engines" aria-label="Concept games" data-reveal="engines">
+      {engines.map((demo, index) => <li key={demo.slug} className="engine" data-tilt style={{ '--i': index } as CSSProperties}>
+        <span className="engine-scan" aria-hidden="true" /><span className="engine-glare" aria-hidden="true" />
         <EngineEmblem slug={demo.slug} />
         <p className="kicker">{demo.engine!.kicker}</p>
         <h3><Link to={`/demos/${demo.slug}/`}>{demo.title}</Link></h3>
@@ -23,7 +25,7 @@ export default function Demos() {
         <div className="engine-actions"><span className="lab-meta">{demo.duration}</span><a className="btn-lab" href={demo.playUrl}>Play {demo.title}</a></div>
       </li>)}
     </ul>
-    <div className="lab-more">
+    <div className="lab-more" data-reveal="up">
       <div className="lab-more-head">
         <h3>Also in the lab: {word(classics.length)} neural-network teaching games</h3>
         <Link className="lab-link" to="/demos/">See all {word(DEMOS.length)} demos <span aria-hidden="true">→</span></Link>

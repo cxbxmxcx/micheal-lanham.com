@@ -9,7 +9,7 @@ export default function DemoLibrary() {
     <div className="lab-band lab-library">
       <div className="container-x">
         <DemoPreview demo={featured} featured />
-        <div className="lab-library-grid">{others.map(demo => <DemoPreview key={demo.slug} demo={demo} />)}</div>
+        <div className="lab-library-grid" data-reveal="stagger">{others.map(demo => <DemoPreview key={demo.slug} demo={demo} />)}</div>
       </div>
     </div>
   </>

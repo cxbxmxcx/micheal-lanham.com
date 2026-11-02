@@ -15,6 +15,8 @@ export default defineConfig({
     baseURL: process.env.SITE_URL || 'http://127.0.0.1:3000',
     channel: process.env.CI ? undefined : 'chrome',
     viewport: { width: 1440, height: 900 },
+    // Tests check the finished page; tests/motion.spec.ts opts back into motion.
+    reducedMotion: 'reduce',
     trace: 'retain-on-failure',
   },
 })
