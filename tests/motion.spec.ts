@@ -32,22 +32,29 @@ test('sections reveal as they scroll in, and the revealed laboratory passes axe'
   expect((await new AxeBuilder({ page }).include('#demos').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([])
 })
 
-test('the hero plate follows the pointer by depth, and scrolling turns the lab gears', async ({ page }) => {
+test('the hero plate follows a mouse by depth, and scrolling turns the lab gears', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('html')).toHaveClass(/motion-ready/)
+  const depth = () => page.locator('.hero-art').evaluate(element => element.style.getPropertyValue('--px'))
   await page.mouse.move(200, 200)
   await page.mouse.move(1400, 820, { steps: 6 })
-  await expect.poll(() => page.locator('.hero-art').evaluate(element => element.style.getPropertyValue('--px'))).not.toBe('')
-  // Nearer layers move further: the covers shift more than the portrait, and the far sketch moves the other way.
-  const shift = (selector: string) => page.locator(selector).first().evaluate(element => parseFloat(getComputedStyle(element).translate) || 0)
-  await expect.poll(() => shift('.hero-covers a'), { timeout: 3000 }).toBeGreaterThan(10)
-  expect(await shift('.hero-oval')).toBeGreaterThan(0)
-  expect(await shift('.hero-oval')).toBeLessThan(await shift('.hero-covers a'))
-  expect(await shift('.hero-tree .ink-sketch')).toBeLessThan(0)
-  // Leaving the hero lets every layer settle back.
-  await page.mouse.move(700, 895)
-  await page.evaluate(() => window.scrollTo(0, document.querySelector<HTMLElement>('#work')!.offsetTop))
-  await expect.poll(() => page.locator('.hero-art').evaluate(element => element.style.getPropertyValue('--px'))).toBe('')
+  // Mouse and pen only: a browser that reports no fine pointer (a phone, or CI's
+  // headless shell) keeps the plate still.
+  if (await page.evaluate(() => matchMedia('(hover: hover) and (pointer: fine)').matches)) {
+    await expect.poll(depth).not.toBe('')
+    // Nearer layers move further: the covers shift more than the portrait, and the far sketch moves the other way.
+    const shift = (selector: string) => page.locator(selector).first().evaluate(element => parseFloat(getComputedStyle(element).translate) || 0)
+    await expect.poll(() => shift('.hero-covers a'), { timeout: 3000 }).toBeGreaterThan(10)
+    expect(await shift('.hero-oval')).toBeGreaterThan(0)
+    expect(await shift('.hero-oval')).toBeLessThan(await shift('.hero-covers a'))
+    expect(await shift('.hero-tree .ink-sketch')).toBeLessThan(0)
+    // Leaving the hero lets every layer settle back.
+    await page.mouse.move(700, 895)
+    await page.evaluate(() => window.scrollTo(0, document.querySelector<HTMLElement>('#work')!.offsetTop))
+    await expect.poll(depth).toBe('')
+  } else {
+    expect(await depth()).toBe('')
+  }
   // Scroll-driven gears (Chromium and Safari): two scroll positions, two angles.
   if (await page.evaluate(() => CSS.supports('animation-timeline: view()'))) {
     const angle = () => page.locator('#demos').evaluate(element => getComputedStyle(element, '::before').rotate)
