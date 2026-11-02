@@ -32,6 +32,43 @@ test('sections reveal as they scroll in, and the revealed laboratory passes axe'
   expect((await new AxeBuilder({ page }).include('#demos').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([])
 })
 
+test('the hero plate follows the pointer by depth, and scrolling turns the lab gears', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('html')).toHaveClass(/motion-ready/)
+  await page.mouse.move(200, 200)
+  await page.mouse.move(1400, 820, { steps: 6 })
+  await expect.poll(() => page.locator('.hero-art').evaluate(element => element.style.getPropertyValue('--px'))).not.toBe('')
+  // Nearer layers move further: the covers shift more than the portrait, and the far sketch moves the other way.
+  const shift = (selector: string) => page.locator(selector).first().evaluate(element => parseFloat(getComputedStyle(element).translate) || 0)
+  await expect.poll(() => shift('.hero-covers a'), { timeout: 3000 }).toBeGreaterThan(10)
+  expect(await shift('.hero-oval')).toBeGreaterThan(0)
+  expect(await shift('.hero-oval')).toBeLessThan(await shift('.hero-covers a'))
+  expect(await shift('.hero-tree .ink-sketch')).toBeLessThan(0)
+  // Leaving the hero lets every layer settle back.
+  await page.mouse.move(700, 895)
+  await page.evaluate(() => window.scrollTo(0, document.querySelector<HTMLElement>('#work')!.offsetTop))
+  await expect.poll(() => page.locator('.hero-art').evaluate(element => element.style.getPropertyValue('--px'))).toBe('')
+  // Scroll-driven gears (Chromium and Safari): two scroll positions, two angles.
+  if (await page.evaluate(() => CSS.supports('animation-timeline: view()'))) {
+    const angle = () => page.locator('#demos').evaluate(element => getComputedStyle(element, '::before').rotate)
+    await page.locator('#demos').evaluate(element => element.scrollIntoView({ block: 'end' }))
+    const first = await angle()
+    await page.locator('#demos').evaluate(element => element.scrollIntoView({ block: 'start' }))
+    await expect.poll(angle).not.toBe(first)
+  }
+})
+
+test('a chosen loop step sends a brass token along its arrow', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('html')).toHaveClass(/motion-ready/)
+  await scrollIntoView(page, '.agent-loop')
+  await expect(page.locator('.loop-token')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Act', exact: true }).click()
+  await expect(page.locator('.loop-token')).toHaveCount(1)
+  await page.getByRole('button', { name: 'Evaluate', exact: true }).click()
+  await expect(page.locator('.loop-token')).toHaveCount(1)
+})
+
 test('the facts count up to their real values, and screen readers only hear the final value', async ({ page }) => {
   await page.goto('/')
   const facts = page.locator('.hero-facts dd')
@@ -98,5 +135,12 @@ test.describe('with reduced motion', () => {
     expect(await page.locator('.hero-tree path').first().evaluate(element => getComputedStyle(element).animationName)).toBe('none')
     expect(await page.locator('.engine').first().evaluate(element => getComputedStyle(element).opacity)).toBe('1')
     await expect(page.locator('.hero-facts dd [aria-hidden="true"]')).toHaveText(['12', '20+', '3'])
+    // The hero holds still under the pointer, and the loop sends no token.
+    await page.mouse.move(200, 200)
+    await page.mouse.move(1400, 820, { steps: 4 })
+    expect(await page.locator('.hero-art').evaluate(element => element.style.getPropertyValue('--px'))).toBe('')
+    await page.getByRole('button', { name: 'Act', exact: true }).click()
+    await expect(page.getByRole('button', { name: 'Act', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.locator('.loop-token')).toHaveCount(0)
   })
 })

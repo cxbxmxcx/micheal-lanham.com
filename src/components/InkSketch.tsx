@@ -1,7 +1,4 @@
-import type { CSSProperties } from 'react'
-
-// Each stroke draws in turn when motion is on (index.css: .ink-sketch, ink-draw).
-const ink = (i: number) => ({ pathLength: 1, style: { '--i': i } as CSSProperties })
+import { ink } from '@/lib/ink'
 
 /** After Darwin's 1837 "I think" notebook sketch: a tree of descent in ink.
  * Decorative: the caller hides it from assistive technology. */

@@ -49,6 +49,16 @@ test('the home bookshelf shows every book newest first, and only the home page c
   expect(await page.locator('#contact').evaluate(element => getComputedStyle(element).backgroundImage)).toBe('none')
 })
 
+test('ink drawings and plate labels are decoration that screen readers skip', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('#work .service-ink')).toHaveCount(2)
+  for (const drawing of await page.locator('.service-ink').all()) await expect(drawing).toHaveAttribute('aria-hidden', 'true')
+  const card = page.locator('#about .specimen-card')
+  await expect(card.getByRole('img', { name: 'Micheal Lanham' })).toBeVisible()
+  await expect(card.locator('.specimen-label')).toHaveAttribute('aria-hidden', 'true')
+  await expect(card.locator('.specimen-label')).toHaveText('Plate II · the author')
+})
+
 test('book and demo pages end with somewhere to go next', async ({ page }) => {
   await page.goto('/books/evolutionary-deep-learning/')
   const related = page.getByRole('region', { name: 'More on machine learning' })

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motionAllowed } from '@/lib/motion'
 
 const STEPS = [
   { name: 'Observe', label: 'Gather context', description: 'Bring together the task, relevant knowledge, and feedback from the environment.' },
@@ -10,6 +11,9 @@ const PATHS = ['M146 48H248', 'M320 86V210', 'M254 252H152', 'M80 214V90']
 
 export default function AgentLoop() {
   const [selected, setSelected] = useState(0)
+  // Counts the visitor's choices: the token only appears after one, so the
+  // server-rendered page and the first client render stay identical.
+  const [moves, setMoves] = useState(0)
   const step = STEPS[selected]
   return <figure className="agent-loop" data-reveal="loop">
     <figcaption className="loop-caption"><span className="loop-dot" aria-hidden="true" /> The agent learning loop</figcaption>
@@ -19,9 +23,11 @@ export default function AgentLoop() {
         <circle cx="200" cy="150" r="67" className="loop-orbit" />
         <path d="M120 80L155 115M280 80L245 115M280 220L245 185M120 220L155 185" className="loop-spokes" />
         {PATHS.map((path, index) => <path key={path} d={path} markerEnd="url(#loop-arrow)" className={`loop-flow ${index === selected ? 'is-selected' : ''}`} />)}
+        {/* A brass token runs along the chosen step (motion only). */}
+        {moves > 0 && motionAllowed() && <g key={moves} className="loop-token"><circle r="10" className="loop-token-halo" /><circle r="4.5" /><animateMotion dur="0.9s" fill="freeze" begin="indefinite" calcMode="spline" keyTimes="0;1" keySplines="0.3 0 0.2 1" path={PATHS[selected]} ref={element => { (element as SVGAnimationElement | null)?.beginElement() }} /></g>}
       </svg>
       <div className="loop-core" aria-hidden="true"><span>Agent</span><small>Context + memory</small></div>
-      {STEPS.map((item, index) => <button key={item.name} type="button" className="loop-node" data-step={index} aria-pressed={index === selected} aria-controls="agent-step" onClick={() => setSelected(index)}><span aria-hidden="true">0{index + 1}</span>{item.name}</button>)}
+      {STEPS.map((item, index) => <button key={item.name} type="button" className="loop-node" data-step={index} aria-pressed={index === selected} aria-controls="agent-step" onClick={() => { setSelected(index); setMoves(count => count + 1) }}><span aria-hidden="true">0{index + 1}</span>{item.name}</button>)}
     </div>
     <div id="agent-step" className="loop-explanation" role="status" aria-live="polite" aria-atomic="true"><p className="font-display font-semibold">{step.label}</p><p>{step.description}</p></div>
     <p className="loop-hint">Select a step to explore.</p>

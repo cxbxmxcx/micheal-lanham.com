@@ -5,7 +5,8 @@ import { responsiveImage } from '@/lib/images'
 export default function About() {
   return <SectionShell id="about" kicker="About Micheal" title="A career spent making ideas work.">
     <div className="grid items-start gap-8 md:grid-cols-[220px_1fr] lg:gap-14" data-reveal="up">
-      <img {...responsiveImage('/micheal-lanham.png', '(min-width: 768px) 220px, 176px')} alt="Micheal Lanham" loading="lazy" className="w-44 rounded-card border border-line md:w-full" />
+      {/* Mounted like a specimen card: brass pins at the top, a plate label below. */}
+      <div className="specimen-card"><img {...responsiveImage('/micheal-lanham.png', '(min-width: 768px) 200px, 172px')} alt="Micheal Lanham" loading="lazy" /><p className="specimen-label" aria-hidden="true">Plate II · the author</p></div>
       <div className="reading-copy"><p className="!mt-0 text-lg">I’m Micheal Lanham, a software practitioner and author based in Calgary, Canada. Over more than 20 years, I’ve worked across games, graphics, geoscience, and machine learning.</p><p>I began using neural networks and evolutionary algorithms in game development around 2000. That work still shapes what I write and build: systems that learn from experience, and practical ways to understand whether they are improving.</p><p>Today my focus is AI agents, evolutionary learning, and the tools that help teams put those ideas into practice.</p><div className="mt-6 flex flex-wrap gap-5"><a className="text-link" href="https://github.com/cxbxmxcx/self-improving-agents">Explore the Helix companion code <span aria-hidden="true">↗</span></a><Link className="text-link" to="/books/ai-agents-in-action-second-edition/">AI Agents in Action <span aria-hidden="true">→</span></Link></div></div>
     </div>
   </SectionShell>

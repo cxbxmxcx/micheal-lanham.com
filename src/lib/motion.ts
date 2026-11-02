@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, type RefObject } from 'react'
 import { useNavigate } from 'react-router'
 import { PAGE_PATHS } from '@/lib/metadata'
 
@@ -90,6 +90,39 @@ export function useTilt() {
       document.documentElement.removeEventListener('pointerleave', reset)
     }
   }, [])
+}
+
+/** Sets --px and --py (each -1 to 1) on `layers` as the pointer crosses `zone`,
+ * so index.css can shift each layer by its depth. Mouse and pen only. */
+export function usePointerDepth(zone: RefObject<HTMLElement | null>, layers: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const area = zone.current, target = layers.current
+    if (!area || !target || !motionAllowed() || !matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    let frame = 0
+    const unit = (value: number) => Math.max(-1, Math.min(1, value)).toFixed(3)
+    const move = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') return
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const box = area.getBoundingClientRect()
+        target.style.setProperty('--px', unit(((event.clientX - box.left) / box.width) * 2 - 1))
+        target.style.setProperty('--py', unit(((event.clientY - box.top) / box.height) * 2 - 1))
+      })
+    }
+    // The layers ease back to rest (index.css transitions their translate).
+    const leave = () => {
+      cancelAnimationFrame(frame)
+      target.style.removeProperty('--px')
+      target.style.removeProperty('--py')
+    }
+    area.addEventListener('pointermove', move, { passive: true })
+    area.addEventListener('pointerleave', leave)
+    return () => {
+      leave()
+      area.removeEventListener('pointermove', move)
+      area.removeEventListener('pointerleave', leave)
+    }
+  }, [zone, layers])
 }
 
 // Page transitions: a link click inside the site runs the navigation inside
