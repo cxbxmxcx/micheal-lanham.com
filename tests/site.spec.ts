@@ -83,14 +83,14 @@ test('service inquiries start in the first phone screen, with a copy-email fallb
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('cxbxmxcx@micheal-lanham.com')
 })
 
-test('the navigation underlines the current section, and other links on hover', async ({ page }) => {
+test('the navigation marks the current section, and other links on hover', async ({ page }) => {
   await page.goto('/books/')
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
-  const underline = (name: string) => nav.getByRole('link', { name, exact: true }).evaluate(element => getComputedStyle(element, '::after').transform)
-  expect(await underline('Books')).toBe('matrix(1, 0, 0, 1, 0, 0)')
-  expect(await underline('Demos')).toBe('matrix(0, 0, 0, 1, 0, 0)')
+  const background = (name: string) => nav.getByRole('link', { name, exact: true }).evaluate(element => getComputedStyle(element).backgroundColor)
+  expect(await background('Books')).toBe('rgb(228, 234, 248)')
+  expect(await background('Demos')).toBe('rgba(0, 0, 0, 0)')
   await nav.getByRole('link', { name: 'Demos', exact: true }).hover()
-  await expect.poll(() => underline('Demos')).toBe('matrix(1, 0, 0, 1, 0, 0)')
+  await expect.poll(() => background('Demos')).toBe('rgb(255, 255, 255)')
 })
 
 test('the Work with me button marks the current section', async ({ page }) => {
