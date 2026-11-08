@@ -1,5 +1,5 @@
-// Builds the social cards (Open Graph and Twitter images) in the cobalt
-// editorial style: one per book, one per demo, and one for every other page. Chrome
+// Builds the social cards (Open Graph and Twitter images) in the Darwin-engine
+// style: one per book, one per demo, and one for every other page. Chrome
 // renders each card as a 1200 x 630 HTML page with its fonts and images
 // inlined, and src/data/social.json records each page's card, its alt text
 // and a hash of everything that went into it. src/lib/metadata.ts reads it.
@@ -33,31 +33,31 @@ const cards = [
 const STYLE = `
 * { box-sizing: border-box; margin: 0; }
 html, body { width: 1200px; height: 630px; overflow: hidden; }
-body { position: relative; color: #14283B; font-family: Inter, sans-serif; background: radial-gradient(900px 520px at 10% 0, rgba(255, 255, 255, .65), transparent 70%), repeating-linear-gradient(0deg, transparent 0 39px, rgba(45, 80, 200, .06) 39px 40px), #F5F6F8; }
-.frame { position: absolute; inset: 22px; border: 1px solid #D4DCE7; outline: 1px solid #D4DCE7; outline-offset: -7px; }
+body { position: relative; color: #2A2118; font-family: Inter, sans-serif; background: radial-gradient(900px 520px at 10% 0, rgba(255, 255, 255, .55), transparent 70%), repeating-linear-gradient(0deg, transparent 0 31px, rgba(160, 128, 80, .1) 31px 32px), #F2E8D5; }
+.frame { position: absolute; inset: 22px; border: 1px solid #CDB892; outline: 1px solid #CDB892; outline-offset: -7px; }
 .copy { position: absolute; left: 76px; top: 72px; bottom: 70px; display: flex; flex-direction: column; }
-.kicker { font: 500 19px/1.4 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: #2D50C8; }
+.kicker { font: 500 19px/1.4 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: #74501C; }
 h1 { margin-top: 20px; font: 600 var(--size, 64px)/1.06 Fraunces, serif; letter-spacing: -.015em; text-wrap: balance; }
-h1 em { font-style: italic; color: #2D50C8; white-space: nowrap; }
-.text { margin-top: 22px; font-size: 25px; line-height: 1.45; color: #536477; }
+h1 em { font-style: italic; color: #74501C; white-space: nowrap; }
+.text { margin-top: 22px; font-size: 25px; line-height: 1.45; color: #5B4A37; }
 .brand { margin-top: auto; padding-top: 24px; display: flex; align-items: center; gap: 14px; font: 600 27px/1 Fraunces, serif; }
 .brand svg { width: 46px; height: 46px; }
-.brand span { margin-left: 8px; font: 500 18px/1 'JetBrains Mono', monospace; letter-spacing: .06em; color: #536477; }
+.brand span { margin-left: 8px; font: 500 18px/1 'JetBrains Mono', monospace; letter-spacing: .06em; color: #5B4A37; }
 .art { position: absolute; top: 50%; transform: translateY(-50%); }
 .book .copy { width: 640px; } .book .art { right: 92px; }
-.cover { display: block; width: 290px; border: 1px solid #D4DCE7; box-shadow: 0 26px 50px rgba(20, 40, 59, .25); transform: rotate(3deg); }
-.typeset { width: 290px; height: 390px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; background: #FFFFFF; border-left: 7px solid #2D50C8; box-shadow: 0 26px 50px rgba(20, 40, 59, .22); transform: rotate(3deg); }
-.typeset small { font: 500 15px/1.4 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: #536477; }
+.cover { display: block; width: 290px; border: 1px solid #CDB892; box-shadow: 0 26px 50px rgba(42, 33, 24, .35); transform: rotate(3deg); }
+.typeset { width: 290px; height: 390px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; background: #FBF6EA; border-left: 7px solid #74501C; box-shadow: 0 26px 50px rgba(42, 33, 24, .25); transform: rotate(3deg); }
+.typeset small { font: 500 15px/1.4 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: #5B4A37; }
 .typeset strong { font: 600 32px/1.15 Fraunces, serif; }
 .demo .copy { width: 560px; } .demo .art { right: 66px; }
-.engine { position: relative; width: 460px; padding: 14px; border-radius: 12px; background: linear-gradient(180deg, #221B14, #17130E); box-shadow: 0 0 0 1px #8E6526, 0 0 0 5px #5C4218, 0 26px 50px rgba(20, 40, 59, .3); }
+.engine { position: relative; width: 460px; padding: 14px; border-radius: 12px; background: linear-gradient(180deg, #221B14, #17130E); box-shadow: 0 0 0 1px #8E6526, 0 0 0 5px #5C4218, 0 26px 50px rgba(42, 33, 24, .35); }
 .engine img { display: block; width: 100%; border-radius: 6px; }
 .site .copy { width: 590px; } .site .art { right: 70px; width: 420px; height: 470px; }
-.oval { position: absolute; right: 0; top: 18px; width: 270px; height: 338px; padding: 10px; border-radius: 50%; background: linear-gradient(135deg, #2D50C8, #14283B); box-shadow: 0 20px 44px rgba(20, 40, 59, .3); }
+.oval { position: absolute; right: 0; top: 18px; width: 270px; height: 338px; padding: 10px; border-radius: 50%; background: linear-gradient(135deg, #E3B964, #8E6526); box-shadow: 0 20px 44px rgba(42, 33, 24, .3); }
 .oval img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.tree { position: absolute; left: 0; top: 0; width: 200px; color: #14283B; opacity: .72; }
+.tree { position: absolute; left: 0; top: 0; width: 200px; color: #2A2118; opacity: .72; }
 .tree svg { display: block; width: 100%; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
-.pinned { position: absolute; width: 112px; border: 1px solid #D4DCE7; box-shadow: 0 14px 26px rgba(20, 40, 59, .25); }
+.pinned { position: absolute; width: 112px; border: 1px solid #CDB892; box-shadow: 0 14px 26px rgba(42, 33, 24, .35); }
 .pinned.one { left: 6px; bottom: 58px; transform: rotate(-8deg); }
 .pinned.two { left: 96px; bottom: 40px; transform: rotate(3deg); }
 `

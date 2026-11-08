@@ -7,7 +7,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import sharp from 'sharp'
 
 const logo = await readFile('public/logo.svg')
-const PAPER = '#F5F6F8'
+const PAPER = '#F2E8D5'
 
 // The gear at 80% of an opaque paper square.
 const onPaper = async size => sharp({ create: { width: size, height: size, channels: 4, background: PAPER } })

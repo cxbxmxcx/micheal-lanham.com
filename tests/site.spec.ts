@@ -87,10 +87,10 @@ test('the navigation marks the current section, and other links on hover', async
   await page.goto('/books/')
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
   const background = (name: string) => nav.getByRole('link', { name, exact: true }).evaluate(element => getComputedStyle(element).backgroundColor)
-  expect(await background('Books')).toBe('rgb(228, 234, 248)')
+  expect(await background('Books')).toBe('rgb(232, 218, 189)')
   expect(await background('Demos')).toBe('rgba(0, 0, 0, 0)')
   await nav.getByRole('link', { name: 'Demos', exact: true }).hover()
-  await expect.poll(() => background('Demos')).toBe('rgb(255, 255, 255)')
+  await expect.poll(() => background('Demos')).toBe('rgb(251, 246, 234)')
 })
 
 test('the Work with me button marks the current section', async ({ page }) => {

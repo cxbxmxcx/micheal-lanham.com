@@ -1,5 +1,5 @@
 /* The Darwin engine kit: editorial pages with mechanical lab instruments.
-   Cool neutral paper and cobalt ink for reading, brass instruments on dark
+   Notebook paper and sepia ink for reading, brass instruments on dark
    iron for the machines, and cyan readouts. Shared by the concept games and site.
 
    Load /fonts/fonts.css first (Fraunces, Inter, JetBrains Mono). Every
@@ -7,16 +7,16 @@
    surface they sit on (…-ink on paper, plain names on iron). Prefix: de-. */
 
 :root {
-  /* Cool notebook paper and cobalt ink */
-  --de-paper: #F5F6F8;
-  --de-paper-2: #EBEFF5;        /* wells, table stripes */
-  --de-rule: #D4DCE7;           /* hairlines and ruled lines */
-  --de-ink: #14283B;
-  --de-ink-soft: #536477;
-  --de-brass-ink: #2D50C8;
+  /* Notebook paper and sepia ink */
+  --de-paper: #F2E8D5;
+  --de-paper-2: #E8DABD;        /* wells, table stripes */
+  --de-rule: #CDB892;           /* hairlines and ruled lines */
+  --de-ink: #2A2118;
+  --de-ink-soft: #5B4A37;
+  --de-brass-ink: #74501C;
   --de-good-ink: #2F6B2A;
   --de-bad-ink: #9A2F20;
-  --de-verdigris-ink: #08736C;
+  --de-verdigris-ink: #1F5F55;
 
   /* the engine */
   --de-iron: #17130E;
@@ -39,13 +39,13 @@
   --de-radius: 10px;
 }
 
-/* Paper: a soft light and faint cobalt rules. */
+/* Paper: a soft light and faint sepia rules. */
 .de-page {
   margin: 0; color: var(--de-ink); font: 400 1rem/1.6 var(--de-body);
   background:
-    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, .65), transparent 40%),
-    radial-gradient(circle at 82% 70%, rgba(45, 80, 200, .06), transparent 45%),
-    repeating-linear-gradient(0deg, transparent 0 39px, rgba(45, 80, 200, .05) 39px 40px),
+    radial-gradient(circle at 18% 12%, rgba(255, 252, 244, .8), transparent 40%),
+    radial-gradient(circle at 82% 70%, rgba(201, 151, 62, .08), transparent 45%),
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(160, 128, 80, .09) 31px 32px),
     var(--de-paper);
 }
 .de-page :focus-visible { outline: 2px solid var(--de-ink); outline-offset: 3px; }

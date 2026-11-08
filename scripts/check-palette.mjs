@@ -30,7 +30,7 @@ const SHARED = [
   ['--de-glow', '--glow', null],
 ]
 // Site-only tones: not in the kit, but fixed wherever they appear.
-const SITE_ONLY = { [SITE]: { '--surface': '#FFFFFF' }, [SHELL]: { '--ml-surface': '#FFFFFF', '--ml-accent-hover': '#2445AC' } }
+const SITE_ONLY = { [SITE]: { '--surface': '#FBF6EA' }, [SHELL]: { '--ml-surface': '#FBF6EA', '--ml-accent-hover': '#5E4015' } }
 
 const hex = value => value.toUpperCase()
 const tokens = css => Object.fromEntries([...css.matchAll(/(--[\w-]+)\s*:\s*(#[0-9a-fA-F]{6})\b/g)].map(([, name, value]) => [name, hex(value)]))

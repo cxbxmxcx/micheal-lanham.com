@@ -6,7 +6,7 @@ Live at https://micheal-lanham.com/ on GitHub Pages.
 
 ## Stack and structure
 
-Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a curated overview; books, services, and demos have collection and detail pages. The visual system pairs cool neutral surfaces and cobalt accents with navy interactive panels; the demo laboratory retains its brass, dark iron, and cyan instruments. Shared colour tokens come from `public/demos/kit/darwin-engine.css` and are copied into `src/index.css`. An interactive agent learning loop introduces the work. Diagram motion is brief and respects reduced-motion preferences. All 12 published books have verified cover artwork.
+Vite 7, React 19, TypeScript, Tailwind 3, and React Router. The homepage is a curated overview; books, services, and demos have collection and detail pages. The visual system uses the games' notebook paper, sepia ink, brass, and dark iron, with cyan instrument readouts. Shared colour tokens come from `public/demos/kit/darwin-engine.css` and are copied into `src/index.css`. An interactive agent learning loop introduces the work. Diagram motion is brief and respects reduced-motion preferences. All 12 published books have verified cover artwork.
 
 `scripts/prerender.mjs` uses `src/entry-server.tsx` to generate HTML for every content route, plus a 404 page, sitemap, and robots.txt. The browser hydrates the same route tree. Keep `PAGE_PATHS` in `src/lib/metadata.ts` aligned with the data and router when adding page types.
 
