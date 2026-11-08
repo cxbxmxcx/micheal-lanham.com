@@ -1,4 +1,4 @@
-// Checks that the Darwin-engine palette agrees everywhere it is copied by hand:
+// Checks that the shared site and laboratory palette agrees wherever it is copied:
 // the kit (public/demos/kit/darwin-engine.css, the source), the site's tokens
 // (src/index.css), the game page shell (public/demos/demo-shell.css) and the
 // social card template (scripts/build-social.mjs). npm test runs it.
@@ -30,7 +30,7 @@ const SHARED = [
   ['--de-glow', '--glow', null],
 ]
 // Site-only tones: not in the kit, but fixed wherever they appear.
-const SITE_ONLY = { [SITE]: { '--surface': '#FBF6EA' }, [SHELL]: { '--ml-surface': '#FBF6EA', '--ml-accent-hover': '#5E4015' } }
+const SITE_ONLY = { [SITE]: { '--surface': '#FFFFFF' }, [SHELL]: { '--ml-surface': '#FFFFFF', '--ml-accent-hover': '#2445AC' } }
 
 const hex = value => value.toUpperCase()
 const tokens = css => Object.fromEntries([...css.matchAll(/(--[\w-]+)\s*:\s*(#[0-9a-fA-F]{6})\b/g)].map(([, name, value]) => [name, hex(value)]))
